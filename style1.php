@@ -79,7 +79,7 @@ a{
     text-decoration: underline;
 }
 
-input, button, textarea{
+input, button, textarea, select{
     box-sizing: border-box;
     width: 100%;
     padding: 20px;
@@ -353,7 +353,13 @@ label{
     border: 1px solid <?php echo $primarycolor ?>;
     border-radius: 10px;
     padding: 10px;
-    background-color: white;
+    
+    background: url(images/chatbg.jpg) repeat; 
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    
 }
 .messaging p{
     font-size: 14px;
@@ -391,7 +397,7 @@ tr:hover{
 .msg{
     border: 1px solid gray;
     background-color: white;
-    margin: 20px;
+    margin: 5px;
     border-radius: 20px 0px 20px 20px;
     padding: 10px;
     display: inline-block;
@@ -413,6 +419,29 @@ tr:hover{
 
 
 .msgbody{
-    font-size: 15px;
+    font-size: 17px;
     padding: 5px;
+}
+
+#onlinestatus{
+    background-color: gray;
+    color: white;
+    padding: 3px 5px 3px 5px;
+    border-radius: 20px;
+    font-size : 10px;
+}
+
+#chats{
+    display: table;
+    width: 100%;
+}
+
+#chatmessages{
+    display: table-cell;
+    width: 100px;
+    
+}
+
+#chatconversations{
+    display: table-cell;
 }

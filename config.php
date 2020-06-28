@@ -9,6 +9,11 @@ $primarycolor = "#9503f1";
 $primarycolordarker = "#7e00ce";
 $bodybg = "#cbcbcb";
 
+//mailing settings
+$emailhost = "mail.alkalomeclat.com";
+$emailusername = "alkalomnewwebsite@alkalomeclat.com"; // Change it to yours
+$emailpassword = ".c;N[AcfbXMX";
+
 //database connection
 $host = "localhost";
 $dbuser = "alkalome_habibie";
@@ -32,7 +37,10 @@ name VARCHAR(30) NOT NULL,
 email VARCHAR(30) NOT NULL,
 password VARCHAR(30) NOT NULL,
 phone VARCHAR(30) NOT NULL,
-address VARCHAR(150) NOT NULL
+address VARCHAR(150) NOT NULL,
+isonline INT(6),
+waenabled INT(6),
+lastonline VARCHAR(50) NOT NULL
 )");
 
 //creating database table for user products
@@ -51,6 +59,7 @@ ext VARCHAR(10) NOT NULL
 mysqli_query($connection, "CREATE TABLE IF NOT EXISTS $tablemessages (
 id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 userid VARCHAR(30) NOT NULL,
+productid VARCHAR(30) NOT NULL,
 messageid VARCHAR(30) NOT NULL,
 offlinemessage INT(6),
 senderemail VARCHAR(30) NOT NULL

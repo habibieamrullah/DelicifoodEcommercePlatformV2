@@ -2,6 +2,7 @@
     session_start();
     include("config.php");
     include("functions.php");
+    include("mailing.php");
 ?>
 
 
@@ -53,6 +54,22 @@
         <link rel="stylesheet" type="text/css" href="slick/slick-theme.css"/>
         <script type="text/javascript" src="slick/slick.min.js"></script>
         
+        
+        <script>
+            var onlineinterval
+            function stoponlinechat(e, p){
+                $("#chats").html("Getting online. Please wait a moment...")
+                clearInterval(onlineinterval)
+                $("#onlinestatus").html("Offline")
+                $("#onlinestatus").css({
+                    "background-color" : "gray"
+                })
+                $.post("messagingsystem.php", {
+                    "selleroffline" : e,
+                    "password" : p
+                })
+            }
+        </script>
     </head>
     <body>
         <div id="appbar">
@@ -99,6 +116,7 @@
                             $result = mysqli_query($connection, "SELECT * FROM $tableusers WHERE email = '$email' AND password = '$password'");
                             if(mysqli_num_rows($result) > 0){
                                 $_SESSION["email"] = $email;
+                                $_SESSION["password"] = $password;
                                 $_SESSION["userid"] = mysqli_fetch_assoc($result)["userid"];
                                 ?>
                                 <p>Welcome!</p>
@@ -151,7 +169,7 @@
                                     <p>This email address is already registered. Try to use another email.</p>
                                     <?php
                                 }else{
-                                    mysqli_query($connection, "INSERT INTO $tableusers (datereg, email, password, name, phone, address, userid) VALUES ('$datereg', '$email', '$password', '$name', '$phone', '$address', '$userid')");
+                                    mysqli_query($connection, "INSERT INTO $tableusers (datereg, email, password, name, phone, address, userid, isonline) VALUES ('$datereg', '$email', '$password', '$name', '$phone', '$address', '$userid', 0)");
                                     ?>
                                     <p>Thank you for registering!</p>
                                     <script>
@@ -162,6 +180,7 @@
                                     <?php
                                     $_SESSION["email"] = $email;
                                     $_SESSION["userid"] = $userid;
+                                    $_SESSION["password"] = $password;
                                 }
                             }else{
                                 ?>
@@ -215,6 +234,7 @@
                             
                             $email = $_SESSION["email"];
                             $userid = $_SESSION["userid"];
+                            $waenabled = 0;
                             $name = "";
                             $phone = "";
                             $address = "";
@@ -226,6 +246,7 @@
                                 $name = $row["name"];
                                 $phone = $row["phone"];
                                 $address = $row["address"];
+                                $waenabled = $row["waenabled"];
                             }
                             ?>
                             
@@ -237,7 +258,8 @@
                                     <div class="dashboardleftbutton" onclick="dbpage(1)"><i class="fa fa-plus" style="width: 20px;"></i> New</div>
                                     <div class="dashboardleftbutton" onclick="dbpage(2)"><i class="fa fa-cutlery" style="width: 20px;"></i> Products</div>
                                     <div class="dashboardleftbutton" onclick="dbpage(3)"><i class="fa fa-user" style="width: 20px;"></i> Profile</div>
-                                    <div class="dashboardleftbutton" onclick="dbpage(4)"><i class="fa fa-envelope" style="width: 20px;"></i> Messages</div>
+                                    <div class="dashboardleftbutton" onclick="dbpage(4)"><i class="fa fa-envelope" style="width: 20px;"></i> Messages <span id="messagescount"></span></div>
+                                    <!--<div class="dashboardleftbutton" onclick="dbpage(5)"><i class="fa fa-commenting" style="width: 20px;"></i> Chats <span id="onlinestatus">Offline</span></div>-->
                                 </div>
                                 <div class="dashboardcell dbcright">
                                     <div class="dbp dbp1">
@@ -300,13 +322,30 @@
                                             <input name="phone" type="number" placeholder="Phone number" value="<?php echo $phone ?>">
                                             <label>Address</label>
                                             <input name="address" type="text" placeholder="Address" value="<?php echo $address ?>">
+                                            <label>Are you willing to be contacted via WhatsApp chat?</label>
+                                            <p style="font-size: 12px;">This option will enable WhatsApp chat button on your products.</p>
+                                            <select name="waenabled">
+                                                <?php
+                                                if($waenabled){
+                                                    ?>
+                                                    <option value=1>Yes</option>
+                                                    <option value=0>No</option>
+                                                    <?php
+                                                }else{
+                                                    ?>
+                                                    <option value=0>No</option>
+                                                    <option value=1>Yes</option>
+                                                    <?php
+                                                }
+                                                ?>
+                                            </select>
                                             <input name="updateprofile" type="submit" value="Update" class="submitbutton">
                                         </form>
                                     </div>
                                     <div class="dbp dbp4">
                                         <h3>Messages</h3>
                                         <?php
-                                        
+                                        $unreadcount = 0;
                                         if(isset($_GET["readmessage"])){
                                             
                                             $messageid = mysqli_real_escape_string($connection, $_GET["readmessage"]);
@@ -315,7 +354,7 @@
                                             $row = mysqli_fetch_assoc($result);
                                             
                                             if(mysqli_num_rows($result) > 0){
-                                                $msql = "SELECT * FROM $tableconversations WHERE messageid = '$messageid' AND fromseller = 1";
+                                                $msql = "SELECT * FROM $tableconversations WHERE messageid = '$messageid' AND fromseller = 0";
                                                 $mresult = mysqli_query($connection, $msql);
                                                 $mrow = mysqli_fetch_assoc($mresult);
                                                 mysqli_query($connection, "UPDATE $tableconversations SET isread = 1 WHERE messageid = '$messageid'");
@@ -323,13 +362,13 @@
                                                 <script>
                                                     setTimeout(function(){
                                                         $("#messagestable").hide()
-                                                        $("#messagecontent").show().html("<div><div onclick='backToMessages()' class='textlink'><i class='fa fa-arrow-left'></i> Back</div><div style='padding: 20px; font-size: 12px;'><p style='font-size: 12px;'>Message ID: <? echo $row["messageid"] ?></p><p><b>Sender:</b> <?php echo $row["senderemail"] ?><br><b>Date:</b> <?php echo $mrow["timestamp"] ?><br><b>Product link:</b> <?php echo $baseurl ?>?product=123123123123</p><div align='left'><div class='msgthatperson'><div class='msgtimestamp'><?php echo $mrow["timestamp"] ?></div><div class='msgbody'><?php echo $mrow["content"] ?></div></div></div></div><div id='replies'></div><textarea id='offlinereplyinput'></textarea><button class='submitbutton' onclick='offlinereply()'>Reply</button></div>")
+                                                        $("#messagecontent").show().html("<div><div onclick='backToMessages()' class='textlink'><i class='fa fa-arrow-left'></i> Back</div><div style='padding: 20px; font-size: 12px;'><p style='font-size: 12px;'>Message ID: <? echo $row["messageid"] ?></p><p><b>Sender:</b> <?php echo $row["senderemail"] ?><br><b>Date:</b> <?php echo $mrow["timestamp"] ?><br><b>Product ID:</b> <a class='textlink' href='<?php echo $baseurl ?>?product=<?php echo $row["productid"] ?>'><?php echo $row["productid"] ?></a></p><div align='left'><div class='msgthatperson'><div class='msgtimestamp'><?php echo $mrow["timestamp"] ?></div><div class='msgbody'><?php echo $mrow["content"] ?></div></div></div></div><div id='replies'></div><textarea id='offlinereplyinput' style='margin-bottom: 0px; margin-top: 20px;'></textarea><p style='font-size: 12px;'>*Your reply message will be mailed to: <?php echo $row["senderemail"] ?></p><button class='submitbutton' onclick='offlinereply()'>Reply</button></div>")
                                                     }, 500)
                                                     
                                                     
                                                     <?php
                                                 
-                                                    $repliessql = "SELECT * FROM $tableconversations WHERE messageid = '$messageid' AND fromseller = 0";
+                                                    $repliessql = "SELECT * FROM $tableconversations WHERE messageid = '$messageid' AND fromseller = 1";
                                                     
                                                     $repliesresult = mysqli_query($connection, $repliessql);
                                                     if(mysqli_num_rows($repliesresult) > 0){
@@ -351,6 +390,7 @@
                                                                 "userid" : "<?php echo $userid ?>",
                                                                 "senderemail" : "<?php echo $_SESSION["email"] ?>",
                                                                 "content" : replyinput,
+                                                                "sellername" : "<?php echo $name ?>",
                                                                 "offlinereply" : "yes",
                                                             }, function(data){
                                                                 //location.href = "<?php echo $baseurl ?>?dashboard&readmessage=<?php echo $messageid ?>#4"
@@ -387,69 +427,98 @@
                                         $sql = "SELECT * FROM $tablemessages WHERE userid = '$userid' AND offlinemessage = 1 ORDER BY id DESC";
                                         $result = mysqli_query($connection, $sql);
                                         
-                                        ?>
-                                        <div id="messagecontent"></div>
-                                        <div id="messagestable">
-                                            <table style="width=100%">
-                                                <tr>
-                                                    <th>
-                                                        <i class="fa fa-envelope"></i>
-                                                    </th>
-                                                    <th>
-                                                        Date
-                                                    </th>
-                                                    <th>
-                                                        Sender
-                                                    </th>
-                                                    <th>
-                                                        Message
-                                                    </th>
-                                                </tr>
-                                                <?php
-                                            
-                                                while($row = mysqli_fetch_assoc($result)){
+                                        if(mysqli_num_rows($result) > 0){
+                                        
+                                            ?>
+                                            <div id="messagecontent"></div>
+                                            <div id="messagestable">
+                                                <table style="width=100%">
+                                                    <tr>
+                                                        <th>
+                                                            <i class="fa fa-envelope"></i>
+                                                        </th>
+                                                        <th>
+                                                            Date
+                                                        </th>
+                                                        <th>
+                                                            Sender
+                                                        </th>
+                                                        <th>
+                                                            Message
+                                                        </th>
+                                                    </tr>
+                                                    <?php
                                                     
-                                                    $messageid = $row["messageid"];
-                                                    $msql = "SELECT * FROM $tableconversations WHERE messageid = '$messageid'";
-                                                    $mresult = mysqli_query($connection, $msql);
-                                                    while($mrow = mysqli_fetch_assoc($mresult)){
-                                                        if($mrow["fromseller"] == 1){
-                                                        ?>
-                                                            <tr<?php if($mrow["isread"] == 0){ echo " style='font-weight: bold;' "; } ?> onclick=openlink("<?php echo $baseurl ?>?dashboard&readmessage=<?php echo $messageid ?>#4")>
-                                                                <td style="text-align: center;">
-                                                                    <?php
-                                                                    if($mrow["isread"] == 1){
-                                                                        ?>
-                                                                        <i class="fa fa-envelope-open-o"></i>
-                                                                        <?php
-                                                                    }else{
-                                                                        ?>
-                                                                        <i class="fa fa-envelope"></i>
-                                                                        <?php
-                                                                    }
-                                                                    ?>
-                                                                </td>
-                                                                <td>
-                                                                    <?php echo $mrow["timestamp"] ?>
-                                                                </td>
-                                                                <td>
-                                                                    <?php echo $row["senderemail"] ?>
-                                                                </td>
-                                                                <td>
-                                                                    <?php echo shorten_text($mrow["content"], 30, '...', true); ?>
-                                                                </td>
-                                                            </tr>
-                                                        <?php
+                                                    while($row = mysqli_fetch_assoc($result)){
+                                                        
+                                                        $messageid = $row["messageid"];
+                                                        $msql = "SELECT * FROM $tableconversations WHERE messageid = '$messageid'";
+                                                        $mresult = mysqli_query($connection, $msql);
+                                                        while($mrow = mysqli_fetch_assoc($mresult)){
+                                                            if($mrow["fromseller"] == 0){
+                                                                if($mrow["isread"] == 0){
+                                                                    $unreadcount++;
+                                                                }
+                                                                ?>
+                                                                    <tr<?php if($mrow["isread"] == 0){ echo " style='font-weight: bold;' "; } ?> onclick=openlink("<?php echo $baseurl ?>?dashboard&readmessage=<?php echo $messageid ?>#4")>
+                                                                        <td style="text-align: center;">
+                                                                            <?php
+                                                                            if($mrow["isread"] == 1){
+                                                                                ?>
+                                                                                <i class="fa fa-envelope-open-o"></i>
+                                                                                <?php
+                                                                            }else{
+                                                                                ?>
+                                                                                <i class="fa fa-envelope"></i>
+                                                                                <?php
+                                                                            }
+                                                                            ?>
+                                                                        </td>
+                                                                        <td>
+                                                                            <?php echo $mrow["timestamp"] ?>
+                                                                        </td>
+                                                                        <td>
+                                                                            <?php echo $row["senderemail"] ?>
+                                                                        </td>
+                                                                        <td>
+                                                                            <?php echo shorten_text($mrow["content"], 30, '...', true); ?>
+                                                                        </td>
+                                                                    </tr>
+                                                                <?php
+                                                            }
                                                         }
                                                     }
+                                                    ?>
+                                                </table>
+                                            </div>
+                                            
+                                            <script>
+                                                $("#messagescount").html(" <?php if($unreadcount > 0){ echo $unreadcount; } ?>")
+                                                <?php
+                                                if($unreadcount > 0){
+                                                    ?>
+                                                    $("#messagescount").css({
+                                                        "background-color": "green",
+                                                        "color": "white",
+                                                        "padding": "3px 5px 3px 5px",
+                                                        "border-radius": "20px",
+                                                        "font-size" : "10px",
+                                                    })
+                                                    <?php
                                                 }
                                                 ?>
-                                            </table>
-                                        </div>
-                                        <?php
-                                        
+                                            </script>
+                                            <?php
+                                        }else{
+                                            ?>
+                                            <script>
+                                                $(".dbp4").append("<p>There is no message yet.</p>")
+                                            </script>
+                                            <?php
+                                        }
                                         ?>
                                     </div>
+                                    
                                     
                                     <?php
                             
@@ -521,10 +590,11 @@
                                         $name = mysqli_real_escape_string($connection, $_POST["name"]);
                                         $phone = mysqli_real_escape_string($connection, $_POST["phone"]);
                                         $address = mysqli_real_escape_string($connection, $_POST["address"]);
+                                        $waenabled = mysqli_real_escape_string($connection, $_POST["waenabled"]);
                                         
                                         if($name != "" && $phone != "" && $address != ""){
                                             
-                                            mysqli_query($connection, "UPDATE $tableusers SET name='$name', phone='$phone', address='$address' WHERE userid = '$userid'");
+                                            mysqli_query($connection, "UPDATE $tableusers SET name='$name', phone='$phone', address='$address', waenabled = $waenabled WHERE userid = '$userid'");
                                             
                                             ?>
 
@@ -640,6 +710,9 @@
                                             
                                             <p><i class="fa fa-link"></i> Click <a class="textlink" href="<?php echo $baseurl ?>?product=<?php echo $productid ?>">here</a> to view this product.</p>
                                             <p style="color: red"><i class="fa fa-trash"></i> Or click <a class="textlink" href="<?php echo $baseurl ?>?dashboard&delete=<?php echo $productid ?>">here</a> to delete it.</p>
+                                            
+                                            
+                                            
                                             <?php
                                             
                                         }
@@ -686,7 +759,14 @@
                                     }
                                     
                                     ?>
+                                    
+                                    <div class="dbp dbp5">
+                                        <h3>Chats</h3>
+                                        <div id="chats"></div>
+                                        <div id="chatsupdatecripts"></div>
+                                    </div>
                                 </div>
+                                
                             </div>
                             
                             
@@ -696,6 +776,12 @@
                                 function dbpage(num){
                                     $(".dbp").hide()
                                     $(".dbp" + num).show()
+                                    if(num == 5){
+                                        $("#chats").html("<div id='chatmessages'>Loading...</div><div id='chatconversations'>Loading...</div>")
+                                        onlineinterval = setInterval(function(){startonlinechat()},3000)
+                                    }else{
+                                        stoponlinechat("<?php echo $_SESSION["email"] ?>", "<?php echo $_SESSION["password"] ?>")
+                                    }
                                 }
                                 
                                 dbpage(1)
@@ -714,6 +800,20 @@
                                         dbpage(location.href.split("#")[1])
                                     }
                                 }
+                                
+                                function startonlinechat(){
+                                    $("#onlinestatus").html("Online")
+                                    $("#onlinestatus").css({
+                                        "background-color" : "<?php echo $primarycolor ?>"
+                                    })
+                                    var d = new Date()
+                                    d = d.getTime()
+                                    $.post("messagingsystem.php", { "sol" : "<?php echo $userid ?>", "password" : "<?php echo $_SESSION["password"] ?>", "lastonline" : d }, function(data){
+                                        $("#chatsupdatecripts").html(data)
+                                    })
+                                }
+
+                                
                                 
                             </script>
                             <?php
@@ -762,6 +862,7 @@
                                                 <div class="messaging">
                                                     <h3>Messaging</h3>
                                                     <p style="font-size: 12px;">You are sending a message to <a class="textlink" href="<?php echo $baseurl ?>?user=<?php echo $sellerid ?>"><i class="fa fa-user"></i> <?php echo $sellerinfo["name"] ?></a>.</p>
+                                                    <div id="onlinechatboard"></div>
                                                     <div id="messaging"></div>
                                                     <script>
                                                         <?php
@@ -772,9 +873,26 @@
                                                 <?php
                                             }else{
                                                 
+                                                if($sellerinfo["waenabled"] == 1){
+                                                    ?>
+                                                    <a href="https://wa.me/<?php echo $sellerinfo["phone"] ?>?text=Hi, I came across this link <?php echo $baseurl . "?product=" . "$productid" ?> and I want to ask some questions..."><div class="chatbutton" style="margin-right: 20px;"><i class="fa fa-whatsapp"></i> Chat on WhatsApp</div></a>
+                                                    <?php
+                                                }
+                                                
                                                 ?>
-                                                <a href="https://wa.me/<?php echo $sellerinfo["phone"] ?>?text=Hi, I came across this link <?php echo $baseurl . "?product=" . "$productid" ?> and I want to ask some questions..."><div class="chatbutton" style="margin-right: 20px;"><i class="fa fa-whatsapp"></i> Chat Now</div></a>
-                                                <a href="<?php echo $baseurl ?>?product=<?php echo $productid ?>&chat=<?php echo $sellerid ?>"><div class="chatbutton"><i class="fa fa-envelope"></i> Send Message</div></a>
+                                                <a href="<?php echo $baseurl ?>?product=<?php echo $productid ?>&chat=<?php echo $sellerid ?>"><div class="chatbutton" id="onlinechatbutton"><i class="fa fa-envelope"></i> Send Message</div></a>
+                                                
+                                                <script>
+                                                    $.post("messagingsystem.php", { "isselleronline" : "<?php echo $sellerid ?>" }, function(data){
+                                                        if(data != "0"){
+                                                            var d = new Date()
+                                                            d = d.getTime()
+                                                            var lastonline = parseInt(data)
+                                                            if(d - lastonline < 10000)
+                                                                $("#onlinechatbutton").html("<i class='fa fa-commenting'></i> Chat Now")
+                                                        }
+                                                    } )
+                                                </script>
                                                 <?php
                                             }
                                         //}
@@ -1027,7 +1145,17 @@
                 location.href = url
             }
             
+                
             
+            <?php
+            if(!isset($_GET["dashboard"])){
+                if(isset($_SESSION["email"])){
+                    ?>
+                    stoponlinechat("<?php echo $_SESSION["email"] ?>", "<?php echo $_SESSION["password"] ?>")
+                    <?php
+                }
+            }
+            ?>
             
         </script>
     </body>
