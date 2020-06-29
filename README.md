@@ -17,4 +17,6 @@ Features:
 Watch the step by step tutorial in this video: coming soon...
 
 What's new in this version?
-- Coming soon...
+- Internal messaging system with email notification
+- Built in chat
+- An option to disable and disable WhatsApp chat button
