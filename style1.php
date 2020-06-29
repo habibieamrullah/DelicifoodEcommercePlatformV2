@@ -1,3 +1,22 @@
+/* SCROLLBAR STYLING */
+/* width */
+::-webkit-scrollbar {
+    width: 2px;
+	height: 2px;
+}
+/* Track */
+::-webkit-scrollbar-track {
+    background: white; 
+}
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: black; 
+}
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+}
+
 h1, h2, h3, h4, h5, p{
     margin: 0px;
     margin-bottom: 10px;
@@ -138,7 +157,7 @@ button, .submitbutton{
 
 .middlebox{
     margin: 0 auto;
-    max-width: 800px;
+    max-width: 920px;
 }
 
 
@@ -405,7 +424,7 @@ tr:hover{
 
 .msgthatperson{
     background-color: <?php echo $primarycolor ?>;
-    margin: 20px;
+    margin: 5px;
     border-radius: 0px 20px 20px 20px;
     padding: 10px;
     color: white;
@@ -434,14 +453,38 @@ tr:hover{
 #chats{
     display: table;
     width: 100%;
+    border: 1px solid <?php echo $primarycolor ?>;
+    border-radius: 10px;
+    padding-bottom: 20px;
+    padding-top: 20px;
+    
+    background: url(images/chatbg.jpg) repeat; 
+    
 }
 
 #chatmessages{
     display: table-cell;
-    width: 100px;
-    
+    width: 250px;
+    vertical-align: top;
 }
 
 #chatconversations{
     display: table-cell;
+    padding: 20px;
+    vertical-align: top;
+}
+
+.chatmessageschild{
+    padding: 10px;
+    cursor: pointer;
+}
+
+.chatmessageschild:hover{
+    color: white;
+    background-color: <?php echo $primarycolor ?>;
+}
+
+#currentchatconversation{
+    max-height: 300px;
+    overflow: auto;
 }

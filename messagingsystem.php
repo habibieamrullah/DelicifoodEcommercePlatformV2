@@ -23,7 +23,7 @@ if(isset($_POST["offlinemessage"]) && !isset($_POST["chatmessaging"])){
     if($offlinemessage == 1)
         echo "<p>Your message has been received. The seller will contact you via email soon.</p>";
     else
-        echo "<div align='right'><div class='msg'><div class='msgtimestamp'>" .$timestamp. "</div><div class='msgbody'>" .$content. "</div></div></div><script>var chatmessageid = '" .$messageid. "'</script>";
+        echo $messageid;
 }
 
 if(isset($_POST["chatmessaging"])){
@@ -34,10 +34,17 @@ if(isset($_POST["chatmessaging"])){
     $content = mysqli_real_escape_string($connection, preg_replace( "/(\r|\n)/", "", $_POST["content"]));
     $timestamp = date("Y, F j, g:i a");
     $messageid = mysqli_real_escape_string($connection, $_POST["messageid"]);
-
-    mysqli_query($connection, "INSERT INTO $tableconversations (messageid, timestamp, fromseller, isread, content) VALUES ('$messageid', '$timestamp', 0, 0, '$content')");
     
-    echo "<div align='right'><div class='msg'><div class='msgtimestamp'>" .$timestamp. "</div><div class='msgbody'>" .$content. "</div></div></div>";
+    $fromseller = 0;
+    $isread = 0;
+    if(isset($_POST["selleranswer"])){
+        $fromseller = 1;
+        $isread = 1;
+    }
+
+    mysqli_query($connection, "INSERT INTO $tableconversations (messageid, timestamp, fromseller, isread, content) VALUES ('$messageid', '$timestamp', $fromseller, $isread, '$content')");
+    
+    echo $messageid;
 }
 
 
@@ -58,6 +65,8 @@ if(isset($_POST["offlinereply"]) && !isset($_POST["chatmessaging"])){
     echo "Message has been replied.";
 }
 
+
+
 if(isset($_POST["selleroffline"])){
     $email = mysqli_real_escape_string($connection, $_POST["selleroffline"]);
     $password = mysqli_real_escape_string($connection, $_POST["password"]);
@@ -73,17 +82,32 @@ if(isset($_POST["sol"])){
     $sql = "SELECT * FROM $tablemessages WHERE userid = '$userid' AND offlinemessage = 0 ORDER BY id DESC";
     $result = mysqli_query($connection, $sql);
     if(mysqli_num_rows($result) > 0){
+        
         ?>
         <script>
             $("#chatmessages").html("<?php
             while($row = mysqli_fetch_assoc($result)){
-                ?><div class='chatmessageschild'><?php echo $row["senderemail"] ?></div><?php
+                $firstmssgid = $row["messageid"];
+                $msql = "SELECT * FROM $tableconversations WHERE messageid = '$firstmssgid' ORDER BY id DESC LIMIT 1";
+                $mrow = mysqli_fetch_assoc(mysqli_query($connection, $msql));
+                $isread = $mrow["isread"];
+                $isreadstyle = "";
+                $commentingo = "-o";
+                if($isread == 0){
+                    $isreadstyle = " style='font-weight: bold;'";
+                    $commentingo = "";
+                }
+                ?><div onclick=\"openchatmessage('<?php echo $mrow["messageid"] ?>')\" class='chatmessageschild'<?php echo $isreadstyle ?>><div style='font-size: 10px;'><?php echo $row["senderemail"] ?> on <?php echo $mrow["timestamp"] ?></div><div><i class='fa fa-commenting<?php echo $commentingo ?>'></i> <?php echo shorten_text($mrow["content"], 20, '...', true); ?></div></div><?php
             }
             ?>")
         </script>
         <?php
     }else{
-        echo "<p>No chat message yet.</p>";
+        ?>
+        <script>
+            $("#chatmessages").html("<div class='chatmessageschild'>There is no chat message here.</div>")
+        </script>
+        <?php
     }
     
 }
@@ -98,4 +122,37 @@ if(isset($_POST["isselleronline"])){
         echo "0";
     }
 }
+
+if(isset($_POST["updatechatconversation"])){
+    
+    $messageid = mysqli_real_escape_string($connection, $_POST["updatechatconversation"]);
+    
+    $sql = "SELECT * FROM $tablemessages WHERE messageid = '$messageid' AND offlinemessage = 0 ORDER BY id DESC";
+    $result = mysqli_query($connection, $sql);
+    if(mysqli_num_rows($result) > 0){
+        
+        ?>
+        <script>
+            $("#currentchatconversation").html("<?php
+            $msql = "SELECT * FROM $tableconversations WHERE messageid = $messageid ORDER BY id ASC";
+            $mresult = mysqli_query($connection, $msql);
+            while($row = mysqli_fetch_assoc($mresult)){
+                
+                if($row["fromseller"] == 0){
+                    ?><div align='right'><div class='msg'><div class='msgtimestamp'><?php echo $row["timestamp"] ?></div><div class='msgbody'><?php echo $row["content"] ?></div></div></div><?php
+                }else{
+                    ?><div align='left'><div class='msgthatperson'><div class='msgtimestamp'><?php echo $row["timestamp"] ?></div><div class='msgbody'><?php echo $row["content"] ?></div></div></div><?php
+                }
+            }
+            ?>")
+        </script>
+        <?php
+    }
+    
+}
+
+
+
+
+
 ?>

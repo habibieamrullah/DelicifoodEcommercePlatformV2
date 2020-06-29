@@ -57,9 +57,11 @@
         
         <script>
             var onlineinterval
+            var chatupdateinterval
             function stoponlinechat(e, p){
                 $("#chats").html("Getting online. Please wait a moment...")
                 clearInterval(onlineinterval)
+                clearInterval(chatupdateinterval)
                 $("#onlinestatus").html("Offline")
                 $("#onlinestatus").css({
                     "background-color" : "gray"
@@ -259,7 +261,7 @@
                                     <div class="dashboardleftbutton" onclick="dbpage(2)"><i class="fa fa-cutlery" style="width: 20px;"></i> Products</div>
                                     <div class="dashboardleftbutton" onclick="dbpage(3)"><i class="fa fa-user" style="width: 20px;"></i> Profile</div>
                                     <div class="dashboardleftbutton" onclick="dbpage(4)"><i class="fa fa-envelope" style="width: 20px;"></i> Messages <span id="messagescount"></span></div>
-                                    <!--<div class="dashboardleftbutton" onclick="dbpage(5)"><i class="fa fa-commenting" style="width: 20px;"></i> Chats <span id="onlinestatus">Offline</span></div>-->
+                                    <div class="dashboardleftbutton" onclick="dbpage(5)"><i class="fa fa-commenting" style="width: 20px;"></i> Chats <span id="onlinestatus">Offline</span></div>
                                 </div>
                                 <div class="dashboardcell dbcright">
                                     <div class="dbp dbp1">
@@ -362,7 +364,7 @@
                                                 <script>
                                                     setTimeout(function(){
                                                         $("#messagestable").hide()
-                                                        $("#messagecontent").show().html("<div><div onclick='backToMessages()' class='textlink'><i class='fa fa-arrow-left'></i> Back</div><div style='padding: 20px; font-size: 12px;'><p style='font-size: 12px;'>Message ID: <? echo $row["messageid"] ?></p><p><b>Sender:</b> <?php echo $row["senderemail"] ?><br><b>Date:</b> <?php echo $mrow["timestamp"] ?><br><b>Product ID:</b> <a class='textlink' href='<?php echo $baseurl ?>?product=<?php echo $row["productid"] ?>'><?php echo $row["productid"] ?></a></p><div align='left'><div class='msgthatperson'><div class='msgtimestamp'><?php echo $mrow["timestamp"] ?></div><div class='msgbody'><?php echo $mrow["content"] ?></div></div></div></div><div id='replies'></div><textarea id='offlinereplyinput' style='margin-bottom: 0px; margin-top: 20px;'></textarea><p style='font-size: 12px;'>*Your reply message will be mailed to: <?php echo $row["senderemail"] ?></p><button class='submitbutton' onclick='offlinereply()'>Reply</button></div>")
+                                                        $("#messagecontent").show().html("<div><div onclick='backToMessages()' class='textlink'><i class='fa fa-arrow-left'></i> Back</div><div style='padding: 20px; font-size: 12px;'><p style='font-size: 12px;'>Message ID: <? echo $row["messageid"] ?></p><p><b>Sender:</b> <?php echo $row["senderemail"] ?><br><b>Date:</b> <?php echo $mrow["timestamp"] ?><br><b>Product ID:</b> <a class='textlink' href='<?php echo $baseurl ?>?product=<?php echo $row["productid"] ?>'><?php echo $row["productid"] ?></a></p><div align='right'><div class='msg'><div class='msgtimestamp'><?php echo $mrow["timestamp"] ?></div><div class='msgbody'><?php echo $mrow["content"] ?></div></div></div></div><div id='replies'></div><textarea id='offlinereplyinput' style='margin-bottom: 0px; margin-top: 20px;'></textarea><p style='font-size: 12px;'>*Your reply message will be mailed to: <?php echo $row["senderemail"] ?></p><button class='submitbutton' onclick='offlinereply()'>Reply</button></div>")
                                                     }, 500)
                                                     
                                                     
@@ -375,7 +377,7 @@
                                                         while($repliesrow = mysqli_fetch_assoc($repliesresult)){
                                                             ?>
                                                             setTimeout(function(){
-                                                                $("#replies").append("<div align='right'><div class='msg'><div class='msgtimestamp'>You replied on <?php echo $repliesrow["timestamp"] ?>:</div><div class='msgbody'><?php echo preg_replace( "/(\r|\n)/", "", nl2br($repliesrow["content"])) ?></div></div></div>")
+                                                                $("#replies").append("<div align='left'><div class='msgthatperson'><div class='msgtimestamp'>You replied on <?php echo $repliesrow["timestamp"] ?>:</div><div class='msgbody'><?php echo preg_replace( "/(\r|\n)/", "", nl2br($repliesrow["content"])) ?></div></div></div>")
                                                             }, 1000)
                                                             <?php
                                                         }
@@ -416,8 +418,9 @@
                                             <script>
                                                 
                                                 function backToMessages(){
-                                                    $("#messagestable").show()
-                                                    $("#messagecontent").hide()
+                                                    /*$("#messagestable").show()
+                                                    $("#messagecontent").hide()*/
+                                                    location.href = "<?php echo $baseurl ?>?dashboard#4"
                                                 }
                                             </script>
                                             <?php
@@ -777,7 +780,7 @@
                                     $(".dbp").hide()
                                     $(".dbp" + num).show()
                                     if(num == 5){
-                                        $("#chats").html("<div id='chatmessages'>Loading...</div><div id='chatconversations'>Loading...</div>")
+                                        $("#chats").html("<div id='chatmessages'><p align='center' style='margin: 20px;'>Loading...</p></div><div id='chatconversations'><p><i class='fa fa-info'></i> To start replying chat messages, click one of items on the left panel.</p></div>")
                                         onlineinterval = setInterval(function(){startonlinechat()},3000)
                                     }else{
                                         stoponlinechat("<?php echo $_SESSION["email"] ?>", "<?php echo $_SESSION["password"] ?>")
@@ -803,6 +806,8 @@
                                 
                                 function startonlinechat(){
                                     $("#onlinestatus").html("Online")
+                                    $("#chats").css({ "height" : (innerHeight - 300) + "px" })
+                                    $("#chatmessages").css({ "box-sizing" : "border-box", "height" : "100%", "overflow" : "auto" })
                                     $("#onlinestatus").css({
                                         "background-color" : "<?php echo $primarycolor ?>"
                                     })
@@ -812,8 +817,25 @@
                                         $("#chatsupdatecripts").html(data)
                                     })
                                 }
-
                                 
+                                
+                                function openchatmessage(n){
+                                    $("#chatconversations").html("<div id='currentchatconversation'><p>Viewing chat message with ID " + n + ". Please wait...</p></div><textarea id='currentchatreplyinput' placeholder='Write your message...' style='margin-top: 20px; margin-bottom: 5px;'></textarea><button onclick=replycurrentchat('"+n+"')>Send</button>")
+                                    
+                                    clearInterval(chatupdateinterval)
+                                    chatupdateinterval = setInterval(function(){
+                                        updatechatconversation(n)
+                                    }, 1500)
+                                    
+                                    setTimeout(function(){
+                                        $("#currentchatconversation").scrollTop($('#currentchatconversation')[0].scrollHeight);
+                                    }, 2000)
+                                    
+                                    $('html,body').animate({
+                                        scrollTop: $("#chats").offset().top - 100
+                                    }, 'slow');
+                                }
+
                                 
                             </script>
                             <?php
@@ -862,7 +884,7 @@
                                                 <div class="messaging">
                                                     <h3>Messaging</h3>
                                                     <p style="font-size: 12px;">You are sending a message to <a class="textlink" href="<?php echo $baseurl ?>?user=<?php echo $sellerid ?>"><i class="fa fa-user"></i> <?php echo $sellerinfo["name"] ?></a>.</p>
-                                                    <div id="onlinechatboard"></div>
+                                                    <div id="currentchatconversation"></div>
                                                     <div id="messaging"></div>
                                                     <script>
                                                         <?php
@@ -1122,7 +1144,7 @@
             </div>
             
         </div>
-        
+        <div id="buyerchatscript"></div>
         <script>
         
             function toggleDrawer(){
@@ -1156,6 +1178,42 @@
                 }
             }
             ?>
+            
+            function updatechatconversation(n){
+                $.post("messagingsystem.php", {
+                    "updatechatconversation" : n
+                }, function(data){
+                    $("#currentchatconversation").html(data)
+                })
+            }
+            
+            function replycurrentchat(messageid){
+                
+                var currentreply = $("#currentchatreplyinput").val()
+                if(currentreply != ""){
+                    var messagingtype = 0
+                    $.post("messagingsystem.php", {
+                        "userid" : "xxx",
+                        "productid" : "xxx",
+                        "offlinemessage" : messagingtype,
+                        "senderemail" : "xxx",
+                        "content" : currentreply,
+                        "messageid" : messageid,
+                        "chatmessaging" : "yes",
+                        "selleranswer" : "yes"
+                    }, function(data){
+                        $("#currentchatreplyinput").val("").focus()
+                        $("#currentchatconversation").append("Sending...")
+                        setTimeout(function(){
+                            $("#currentchatconversation").scrollTop($('#currentchatconversation')[0].scrollHeight);
+                        }, 2000)
+                        
+                    })
+                }else{
+                    alert("Write something first.")
+                }
+                
+            }
             
         </script>
     </body>

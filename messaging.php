@@ -34,9 +34,14 @@ function sendmessage(){
             if(!sellerisonline){
                 $("#messaging").html(data)
             }else{
-                $("#onlinechatboard").append(data)
+                $("#currentchatconversation").html("Sending...")
                 $("#messagetext").val("").focus()
                 $("#chatsendbutton").attr({ "onclick" : "sendonlinemessage()" })
+                
+                clearInterval(chatupdateinterval)
+                chatupdateinterval = setInterval(function(){
+                    updatechatconversation(data)
+                }, 1500)
             }
         })
     }else{
@@ -59,9 +64,13 @@ function sendonlinemessage(){
             "messageid" : chatmessageid,
             "chatmessaging" : "yes"
         }, function(data){
-            $("#onlinechatboard").append(data)
+            $("#currentchatconversation").append("Sending...")
             $("#messagetext").val("").focus()
             $("#chatsendbutton").attr({ "onclick" : "sendonlinemessage()" })
+            clearInterval(chatupdateinterval)
+            chatupdateinterval = setInterval(function(){
+                updatechatconversation(data)
+            }, 1500)
         })
     }else{
         alert("Write something first.")
