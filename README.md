@@ -20,3 +20,5 @@ What's new in this version?
 - Internal messaging system with email notification
 - Built in chat
 - An option to disable and disable WhatsApp chat button
+
+Previous version: https://github.com/habibieamrullah/DelicifoodEcommercePlatform
