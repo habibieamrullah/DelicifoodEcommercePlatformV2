@@ -1,8 +1,8 @@
 <?php
 
 //general configuration
-$websitetitle = "Hubby | Home Cooks for everyone";
-$baseurl = "https://alkalomeclat.com/hubby/index.php";
+$websitetitle = "Delicifood Ecommerce Platform V2";
+$baseurl = "https://ciihuy.com/index.php";
 
 //appearance & color settings
 $primarycolor = "#9503f1";
@@ -10,23 +10,23 @@ $primarycolordarker = "#7e00ce";
 $bodybg = "#cbcbcb";
 
 //mailing settings
-$emailhost = "mail.alkalomeclat.com";
-$emailusername = "alkalomnewwebsite@alkalomeclat.com"; // Change it to yours
-$emailpassword = ".c;N[AcfbXMX";
+$emailhost = "mail.somedomain.com";
+$emailusername = "username@somedomain.com"; // Change it to yours
+$emailpassword = "somepassword";
 
 //database connection
 $host = "localhost";
-$dbuser = "alkalome_habibie";
-$dbpassword = "+mY-Eef^Ox_0";
-$databasename = "alkalome_testdb";
+$dbuser = "root";
+$dbpassword = "xxx";
+$databasename = "somedatabase";
 $connection = mysqli_connect($host, $dbuser, $dbpassword, $databasename);
 $connection->set_charset("utf8");
 
 //database tables
-$tableusers = "hubbyusers";
-$tableproducts = "hubbyproducts";
-$tablemessages = "hubbymessages";
-$tableconversations = "hubbyconversations";
+$tableusers = "delicifoodusers";
+$tableproducts = "delicifoodproducts";
+$tablemessages = "delicifoodmessages";
+$tableconversations = "delicifoodconversations";
 
 //creating database table for user registration
 mysqli_query($connection, "CREATE TABLE IF NOT EXISTS $tableusers (
