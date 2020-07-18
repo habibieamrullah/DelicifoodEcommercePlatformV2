@@ -23,8 +23,12 @@ h1, h2, h3, h4, h5, p{
 }
 
 p{
-    font-size: 18px;
+    font-size: 20px;
     margin-bottom: 15px;
+}
+
+.invisibleblock{
+    display: none;
 }
 
 body{
@@ -46,6 +50,8 @@ body{
     top: 0;
     left: 0;
     right: 0;
+    
+    z-index: 10;
     
     background: <?php echo $primarycolor ?>;
     background: linear-gradient(90deg, <?php echo $primarycolordarker ?> 0%, <?php echo $primarycolor ?> 100%);
@@ -82,7 +88,6 @@ body{
 
 .footeritem:hover{
     text-decoration: underline;
-    color: #;
 }
 
 a{
@@ -129,6 +134,7 @@ button, .submitbutton{
     color: white;
     font-size: 20px;
     text-align: center;
+    margin-bottom: 10px;
     /*background-color: <?php echo $primarycolor ?>;*/
     border: 2px solid <?php echo $primarycolor ?>;
     cursor: pointer;

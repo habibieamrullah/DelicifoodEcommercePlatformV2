@@ -2,6 +2,7 @@
 include("config.php");
 include("functions.php");
 include("mailing.php");
+include("uilang.php");
 
 
 if(isset($_POST["offlinemessage"]) && !isset($_POST["chatmessaging"])){
@@ -18,10 +19,13 @@ if(isset($_POST["offlinemessage"]) && !isset($_POST["chatmessaging"])){
     mysqli_query($connection, "INSERT INTO $tablemessages (messageid, productid, userid, senderemail, offlinemessage) VALUES ('$messageid', '$productid', '$userid', '$senderemail', '$offlinemessage')");
     mysqli_query($connection, "INSERT INTO $tableconversations (messageid, timestamp, fromseller, isread, content) VALUES ('$messageid', '$timestamp', 0, 0, '$content')");
     
-    sendmail($selleremail, "You got new message from Hubby", "<p>You got a new message from " .$senderemail. ":</p><p>" .$content. "</p><p>Log in to your Hubby account to reply it from Hubby Dashboard.</p>");
+    if($defaultlang == "id")
+        sendmail($selleremail, "Anda mendapatkan pesan baru dari" . " " . $websitename, "<p>" . "Anda mendapatkan pesan baru dari" . " " . $senderemail. ":</p><p>" .$content. "</p><p><a href='" .$baseurl. "?login'>Log in</a> ke akun " .$websitename. " untuk membalasnya.</p>");
+    else
+        sendmail($selleremail, "You got a new message from" . " " . $websitename, "<p>" . "You got a new message from" . " " . $senderemail. ":</p><p>" .$content. "</p><p><a href='" .$baseurl. "?login'>Log in</a> to your " . $websitename . " account to reply it from Hubby Dashboard.</p>");
     
     if($offlinemessage == 1)
-        echo "<p>Your message has been received. The seller will contact you via email soon.</p>";
+        echo "<p>" . uilang("Your message has been received. The seller will contact you via email soon") . ".</p>";
     else
         echo $messageid;
 }
@@ -105,7 +109,7 @@ if(isset($_POST["sol"])){
     }else{
         ?>
         <script>
-            $("#chatmessages").html("<div class='chatmessageschild'>There is no chat message here.</div>")
+            $("#chatmessages").html("<div class='chatmessageschild'><?php uilang("There is no message yet.") ?></div>")
         </script>
         <?php
     }

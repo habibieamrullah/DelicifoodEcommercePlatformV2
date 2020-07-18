@@ -1,6 +1,7 @@
 <?php
     session_start();
     include("config.php");
+    include("uilang.php");
     include("functions.php");
     include("mailing.php");
 ?>
@@ -9,7 +10,52 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title><?php echo $websitetitle ?></title>
+        
+        <?php
+        if(isset($_GET["product"])){
+            
+            $productid = mysqli_real_escape_string($connection, $_GET["product"]);
+            $sql = "SELECT * FROM $tableproducts WHERE productid = '$productid'";
+            $result = mysqli_query($connection, $sql);
+            
+            if(mysqli_num_rows($result) > 0){
+                $row = mysqli_fetch_assoc($result);
+                ?>
+                <title><?php echo $row["title"] ?> | <?php echo $websitename ?></title>
+                <meta name="description" content="<?php echo shorten_text($row["description"], 180, '', true) ?>">
+                <?php
+            }
+        }else if(isset($_GET["user"])){
+            
+            $userid = mysqli_real_escape_string($connection, $_GET["user"]);
+            $sql = "SELECT * FROM $tableusers WHERE userid = '$userid'";
+            $result = mysqli_query($connection, $sql);
+            
+            if(mysqli_num_rows($result) > 0){
+                $row = mysqli_fetch_assoc($result);
+                ?>
+                <title><?php uilang("Products added by") ?> <?php echo $row["name"] ?> | <?php echo $websitename ?></title>
+                <meta name="description" content="<?php echo $websitetitle ?>">
+                <?php
+            }
+        }else if(isset($_GET["about"])){
+            ?>
+            <title><?php uilang("About"); echo " " . $websitename; ?></title>
+            <meta name="description" content="<?php echo $websitetitle ?>">
+            <?php
+        }else{
+            
+            ?>
+            <title><?php echo $websitename ?> | <?php echo $websitetitle ?></title>
+            <meta name="description" content="<?php echo $websitetitle ?>">
+            <?php
+            
+        }
+        
+        ?>
+        
+        <meta name="keywords" content="<?php echo $websitetags ?>">
+        
         <meta charset="utf-8">
         <meta http-equiv="Pragma" content="no-cache" />
         <meta http-equiv="Expires" content="0" />
@@ -25,23 +71,8 @@
           crossorigin="anonymous"></script>
         <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@300&display=swap" rel="stylesheet">
         
-        <link rel="apple-touch-icon" sizes="57x57" href="favicon/apple-icon-57x57.png">
-        <link rel="apple-touch-icon" sizes="60x60" href="favicon/apple-icon-60x60.png">
-        <link rel="apple-touch-icon" sizes="72x72" href="favicon/apple-icon-72x72.png">
-        <link rel="apple-touch-icon" sizes="76x76" href="favicon/apple-icon-76x76.png">
-        <link rel="apple-touch-icon" sizes="114x114" href="favicon/apple-icon-114x114.png">
-        <link rel="apple-touch-icon" sizes="120x120" href="favicon/apple-icon-120x120.png">
-        <link rel="apple-touch-icon" sizes="144x144" href="favicon/apple-icon-144x144.png">
-        <link rel="apple-touch-icon" sizes="152x152" href="favicon/apple-icon-152x152.png">
-        <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-icon-180x180.png">
-        <link rel="icon" type="image/png" sizes="192x192"  href="favicon/android-icon-192x192.png">
-        <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="96x96" href="favicon/favicon-96x96.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
-        <link rel="manifest" href="favicon/manifest.json">
-        <meta name="msapplication-TileColor" content="#ffffff">
-        <meta name="msapplication-TileImage" content="favicon/ms-icon-144x144.png">
-        <meta name="theme-color" content="#ffffff">
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+		<link rel="icon" href="favicon.ico" type="image/x-icon">
         
         
         <style>
@@ -72,8 +103,16 @@
                 })
             }
         </script>
+        
+        <?php include("adscriptheader.php"); ?>
     </head>
     <body>
+        
+        <div class="invisibleblock">
+            <h1><?php echo $websitename ?></h1>
+            <p><?php echo $websitetitle ?></p>
+        </div>
+        
         <div id="appbar">
             <div style="display: inline-block;">
                 <a href="<?php echo $baseurl ?>"><img src="images/weblogo.png" width="200px"></a>
@@ -81,31 +120,34 @@
             <div id="mobilebutton" class="mobilevisible" onclick="toggleDrawer()"><i class="fa fa-bars"></i></div>
             <div id="appbarmenu">
                 <div class="ablink mobilevisible" onclick="toggleDrawer()" style="padding: 40px;"><i class="fa fa-times"></i></div>
-                <a href="<?php echo $baseurl ?>"><div class="ablink">Home</div></a>
+                <a href="<?php echo $baseurl ?>"><div class="ablink"><?php uilang("Home"); ?></div></a>
                 <?php 
                 if(isset($_SESSION["email"])){
                     ?>
-                    <a href="<?php echo $baseurl ?>?dashboard"><div class="ablink">Dashboard</div></a>
-                    <a href="<?php echo $baseurl ?>?logout"><div class="ablink">Logout</div></a>
+                    <a href="<?php echo $baseurl ?>?dashboard"><div class="ablink"><?php uilang("Dashboard"); ?></div></a>
+                    <a href="<?php echo $baseurl ?>?logout"><div class="ablink"><?php uilang("Logout"); ?></div></a>
                     <?php
                 }else{
                     ?>
-                    <a href="<?php echo $baseurl ?>?login"><div class="ablink">Login</div></a>
-                    <a href="<?php echo $baseurl ?>?register"><div class="ablink">Register</div></a>
+                    <a href="<?php echo $baseurl ?>?login"><div class="ablink"><?php uilang("Login"); ?></div></a>
+                    <a href="<?php echo $baseurl ?>?register"><div class="ablink"><?php uilang("Register"); ?></div></a>
                     <?php
                 }
                 ?>
-                <a href="<?php echo $baseurl ?>?about"><div class="ablink">About</div></a>
+                <a href="<?php echo $baseurl ?>?about"><div class="ablink"><?php uilang("About"); ?></div></a>
                 <a href="<?php echo $baseurl ?>?search"><div class="ablink"><i class="fa fa-search"></i></div></a>
                 
             </div>
         </div>
         <div id="mainbanner">
-            <h2>Tasty Home Cooks</h2><h4>For Everyone</h4>
+            <h2><?php echo $websitename ?></h2><h4><?php echo $websitetitle ?></h4>
         </div>
         <div class="middle">
             
+            
             <?php
+            
+            
                 if(isset($_GET["login"])){
                     ?>
                     <div class="middlebox">
@@ -121,7 +163,7 @@
                                 $_SESSION["password"] = $password;
                                 $_SESSION["userid"] = mysqli_fetch_assoc($result)["userid"];
                                 ?>
-                                <p>Welcome!</p>
+                                <p><?php uilang("Welcome!"); ?></p>
                                 <script>
                                     setTimeout(function(){
                                         location.href = "<?php echo $baseurl ?>?dashboard"
@@ -130,18 +172,18 @@
                                 <?php
                             }else{
                                 ?>
-                                <p>Incorrect email and/or password!</p>
+                                <p><?php uilang("Incorrect email and/or password!"); ?></p>
                                 <?php
                             }
                         }else{
                             ?>
-                            <h2>Login</h2>
+                            <h2><?php uilang("Login"); ?></h2>
                             <form method="post" action="<?php echo $baseurl ?>?login">
                                 <label>Email</label>
                                 <input name="email" type="email" placeholder="Email">
                                 <label>Password</label>
                                 <input name="password" type="password" placeholder="Password">
-                                <input name="login" type="submit" placeholder="Login" class="submitbutton"> 
+                                <input name="login" type="submit" value="<?php uilang("Login"); ?>" class="submitbutton"> 
                             </form>
                             <?php
                         }
@@ -168,12 +210,12 @@
                                 
                                 if(mysqli_num_rows(mysqli_query($connection, "SELECT * FROM $tableusers WHERE email = '$email'")) > 0){
                                     ?>
-                                    <p>This email address is already registered. Try to use another email.</p>
+                                    <p><?php uilang("This email address is already registered. Try to use another email."); ?></p>
                                     <?php
                                 }else{
                                     mysqli_query($connection, "INSERT INTO $tableusers (datereg, email, password, name, phone, address, userid, isonline) VALUES ('$datereg', '$email', '$password', '$name', '$phone', '$address', '$userid', 0)");
                                     ?>
-                                    <p>Thank you for registering!</p>
+                                    <p><?php uilang("Thank you for registering!"); ?></p>
                                     <script>
                                         setTimeout(function(){
                                             location.href = "<?php echo $baseurl ?>?dashboard"
@@ -186,26 +228,26 @@
                                 }
                             }else{
                                 ?>
-                                <p>You did not fill all the fields. Please try again.</p>
+                                <p><p><?php uilang("You did not fill all the fields. Please try again."); ?></p></p>
                                 <?php
                             }
 
                         }else{
                             ?>
-                            <h2>Register</h2>
+                            <h2><?php uilang("Register"); ?></h2>
                             <form method="post" action="<?php echo $baseurl ?>?register">
                                 <label>Email</label>
                                 <input name="email" type="email" placeholder="Email">
                                 <label>Password</label>
                                 <input name="password" type="password" placeholder="Password">
-                                <label>Name/Nickname</label>
+                                <label><?php uilang("Name/Nickname"); ?></label>
                                 <input name="name" type="text" placeholder="Your name or nickname">
-                                <label>Phone Number</label>
-                                <p>*Include your country code before your phone number like this: 6590611234</p>
-                                <input name="phone" type="number" placeholder="Phone number">
-                                <label>Address</label>
-                                <input name="address" type="text" placeholder="Address">
-                                <input name="register" type="submit" value="Register" class="submitbutton">
+                                <label><?php uilang("Phone Number"); ?></label>
+                                <p><?php uilang("*Include your country code before your phone number like this: 6590611234"); ?></p>
+                                <input name="phone" type="number" placeholder="<?php uilang("Phone Number"); ?>">
+                                <label><?php uilang("Address"); ?></label>
+                                <input name="address" type="text" placeholder="<?php uilang("Address"); ?>">
+                                <input name="register" type="submit" value="<?php uilang("Register"); ?>" class="submitbutton">
                             </form>
                             <?php
                         }
@@ -216,7 +258,7 @@
                     <?php
                 }else if(isset($_GET["logout"])){
                     ?>
-                    <p align="center">Good bye!</p>
+                    <p align="center"><?php uilang("Good bye!"); ?></p>
                     <script>
                         setTimeout(function(){
                             location.href = "<?php echo $baseurl ?>"
@@ -257,41 +299,42 @@
                             <div class="dashboardcontentholder">
                                 
                                 <div class="dashboardcell dbcleft">
-                                    <div class="dashboardleftbutton" onclick="dbpage(1)"><i class="fa fa-plus" style="width: 20px;"></i> New</div>
-                                    <div class="dashboardleftbutton" onclick="dbpage(2)"><i class="fa fa-cutlery" style="width: 20px;"></i> Products</div>
-                                    <div class="dashboardleftbutton" onclick="dbpage(3)"><i class="fa fa-user" style="width: 20px;"></i> Profile</div>
-                                    <div class="dashboardleftbutton" onclick="dbpage(4)"><i class="fa fa-envelope" style="width: 20px;"></i> Messages <span id="messagescount"></span></div>
-                                    <div class="dashboardleftbutton" onclick="dbpage(5)"><i class="fa fa-commenting" style="width: 20px;"></i> Chats <span id="onlinestatus">Offline</span></div>
+                                    <div class="dashboardleftbutton" onclick="dbpage(1)"><i class="fa fa-plus" style="width: 20px;"></i> <?php uilang("Add") ?></div>
+                                    <div class="dashboardleftbutton" onclick="dbpage(2)"><i class="fa fa-cutlery" style="width: 20px;"></i> <?php uilang("Products") ?></div>
+                                    <div class="dashboardleftbutton" onclick="dbpage(3)"><i class="fa fa-user" style="width: 20px;"></i> <?php uilang("Profile") ?></div>
+                                    <div class="dashboardleftbutton" onclick="dbpage(4)"><i class="fa fa-envelope" style="width: 20px;"></i> <?php uilang("Messages") ?> <span id="messagescount"></span></div>
+                                    <div class="dashboardleftbutton" onclick="dbpage(5)"><i class="fa fa-commenting" style="width: 20px;"></i> <?php uilang("Chats") ?> <span id="onlinestatus">Offline</span></div>
                                 </div>
                                 <div class="dashboardcell dbcright">
                                     <div class="dbp dbp1">
-                                        <h3>Add New Product</h3>
+                                        <h3><?php uilang("Add"); ?></h3>
                                         <form method="post" action="<?php echo $baseurl ?>?dashboard" enctype="multipart/form-data">
-                                            <input name="title" placeholder="Title">
-                                            <input name="price" type="number" placeholder="Price">
-                                            <textarea name="description" placeholder="Description"></textarea>
-                                            <p>Choose your product photo:</p>
+                                            <input name="title" placeholder="<?php uilang("Title"); ?>">
+                                            <input name="price" type="number" placeholder="<?php uilang("Price"); ?>">
+                                            <textarea name="description" placeholder="<?php uilang("Description"); ?>"></textarea>
+                                            <p><?php uilang("Choose your product photo:"); ?></p>
                                             <input type="file" name="productimage" accept="image/*">
-                                            <input name="addnew" type="submit" value="Sell" class="submitbutton">
+                                            <input name="addnew" type="submit" value="<?php uilang("Submit"); ?>" class="submitbutton">
                                         </form>
                                     </div>
                                     <div class="dbp dbp2">
-                                        <h3>Your Products</h3>
+                                        <h3><?php uilang("Products"); ?></h3>
                                         <?php
                                         $sql = "SELECT * FROM $tableproducts WHERE userid = '$userid' ORDER BY id DESC";
                                         $result = mysqli_query($connection, $sql);
                                         if(mysqli_num_rows($result) > 0){
                                             ?>
-                                            <p>Click to edit one of your published products.</p>
+                                            <p><?php uilang("Click to edit one of your published products.") ?></p>
                                             <?php
                                             while($productrow = mysqli_fetch_assoc($result)){
                                                 
                                                 ?>
                                                 <a href="<?php echo $baseurl ?>?dashboard&edit=<?php echo $productrow["productid"] ?>">
+                                                    
                                                     <div class="productthumbnail">
                                                         <div class="thumbnailimage" style="margin-bottom: 10px; background: url(upload/<?php echo $productrow["productid"] ?>-thumb.<?php echo $productrow["ext"] ?>) no-repeat center center; background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;">
                                                             <div style="display: inline-block;">
-                                                                <div class="pricetag"><i class="fa fa-tag"></i> $<?php echo $productrow["price"] ?></div>
+                                                                <div class="pricetag"><i class="fa fa-tag"></i> <?php echo $currencysymbol . $productrow["price"] ?></div>
                                                             </div>
                                                         </div>
                                                         
@@ -302,50 +345,51 @@
                                                             <?php echo $productrow["description"] ?>
                                                         </div>
                                                     </div>
+                                                    
                                                 </a>
                                                 <?php
                                                 
                                             }
                                         }else{
                                             ?>
-                                            <p align="center">You don't have any product yet.</p>
+                                            <p align="center"><?php uilang("You don't have any product yet.") ?></p>
                                             <?php
                                         }
                                         ?>
                                     </div>
                                     
                                     <div class="dbp dbp3">
-                                        <h3>Profile</h3>
+                                        <h3><?php uilang("Profile") ?></h3>
                                         <form action="<?php echo $baseurl ?>?dashboard" method="post">
-                                            <label>Name/Nickname</label>
-                                            <input name="name" type="text" placeholder="Your name or nickname" value="<?php echo $name ?>">
-                                            <label>Phone Number</label>
-                                            <p>*Include your country code before your phone number like this: 6590611234</p>
-                                            <input name="phone" type="number" placeholder="Phone number" value="<?php echo $phone ?>">
-                                            <label>Address</label>
-                                            <input name="address" type="text" placeholder="Address" value="<?php echo $address ?>">
-                                            <label>Are you willing to be contacted via WhatsApp chat?</label>
-                                            <p style="font-size: 12px;">This option will enable WhatsApp chat button on your products.</p>
+                                            <label><?php uilang("Name/Nickname") ?></label>
+                                            <input name="name" type="text" placeholder="<?php uilang("Name/Nickname") ?>" value="<?php echo $name ?>">
+                                            <label><?php uilang("Phone Number") ?></label>
+                                            <p><?php uilang("*Include your country code before your phone number like this: 6590611234"); ?></p>
+                                            <input name="phone" type="number" placeholder="<?php uilang("Phone Number") ?>" value="<?php echo $phone ?>">
+                                            <label><?php uilang("Address") ?></label>
+                                            <input name="address" type="text" placeholder="<?php uilang("Address") ?>" value="<?php echo $address ?>">
+                                            <label><?php uilang("Are you willing to be contacted via WhatsApp chat?") ?></label>
+                                            <p style="font-size: 12px;"><?php uilang("This option will enable WhatsApp chat button on your products.") ?></p>
                                             <select name="waenabled">
                                                 <?php
                                                 if($waenabled){
                                                     ?>
-                                                    <option value=1>Yes</option>
-                                                    <option value=0>No</option>
+                                                    <option value=1><?php uilang("Yes") ?></option>
+                                                    <option value=0><?php uilang("No") ?></option>
                                                     <?php
                                                 }else{
                                                     ?>
-                                                    <option value=0>No</option>
-                                                    <option value=1>Yes</option>
+                                                    <option value=0><?php uilang("No") ?></option>
+                                                    <option value=1><?php uilang("Yes") ?></option>
                                                     <?php
                                                 }
                                                 ?>
                                             </select>
-                                            <input name="updateprofile" type="submit" value="Update" class="submitbutton">
+                                            <input name="updateprofile" type="submit" value="<?php uilang("Update") ?>" class="submitbutton">
                                         </form>
                                     </div>
                                     <div class="dbp dbp4">
-                                        <h3>Messages</h3>
+                                        <h3><?php uilang("Messages") ?></h3>
                                         <?php
                                         $unreadcount = 0;
                                         if(isset($_GET["readmessage"])){
@@ -364,7 +408,7 @@
                                                 <script>
                                                     setTimeout(function(){
                                                         $("#messagestable").hide()
-                                                        $("#messagecontent").show().html("<div><div onclick='backToMessages()' class='textlink'><i class='fa fa-arrow-left'></i> Back</div><div style='padding: 20px; font-size: 12px;'><p style='font-size: 12px;'>Message ID: <? echo $row["messageid"] ?></p><p><b>Sender:</b> <?php echo $row["senderemail"] ?><br><b>Date:</b> <?php echo $mrow["timestamp"] ?><br><b>Product ID:</b> <a class='textlink' href='<?php echo $baseurl ?>?product=<?php echo $row["productid"] ?>'><?php echo $row["productid"] ?></a></p><div align='right'><div class='msg'><div class='msgtimestamp'><?php echo $mrow["timestamp"] ?></div><div class='msgbody'><?php echo $mrow["content"] ?></div></div></div></div><div id='replies'></div><textarea id='offlinereplyinput' style='margin-bottom: 0px; margin-top: 20px;'></textarea><p style='font-size: 12px;'>*Your reply message will be mailed to: <?php echo $row["senderemail"] ?></p><button class='submitbutton' onclick='offlinereply()'>Reply</button></div>")
+                                                        $("#messagecontent").show().html("<div><div onclick='backToMessages()' class='textlink'><i class='fa fa-arrow-left'></i> <?php uilang("Back") ?></div><div style='padding: 20px; font-size: 12px;'><p style='font-size: 12px;'><?php uilang("Message ID") ?>: <? echo $row["messageid"] ?></p><p><b><?php uilang("Sender") ?>:</b> <?php echo $row["senderemail"] ?><br><b><?php uilang("Date") ?>:</b> <?php echo $mrow["timestamp"] ?><br><b><?php uilang("Product ID") ?>:</b> <a class='textlink' href='<?php echo $baseurl ?>?product=<?php echo $row["productid"] ?>'><?php echo $row["productid"] ?></a></p><div align='right'><div class='msg'><div class='msgtimestamp'><?php echo $mrow["timestamp"] ?></div><div class='msgbody'><?php echo $mrow["content"] ?></div></div></div></div><div id='replies'></div><textarea id='offlinereplyinput' style='margin-bottom: 0px; margin-top: 20px;'></textarea><p style='font-size: 12px;'>*<?php uilang("Your reply message will be mailed to") ?>: <?php echo $row["senderemail"] ?></p><button class='submitbutton' onclick='offlinereply()'><?php uilang("Send Message") ?></button></div>")
                                                     }, 500)
                                                     
                                                     
@@ -407,7 +451,7 @@
                                                 <script>
                                                     setTimeout(function(){
                                                         $("#messagestable").hide()
-                                                        $("#messagecontent").show().html("<div><div onclick='backToMessages()' class='textlink'><i class='fa fa-arrow-left'></i> Back</div><p>You are not authorized to view this message.</p></div>")
+                                                        $("#messagecontent").show().html("<div><div onclick='backToMessages()' class='textlink'><i class='fa fa-arrow-left'></i> <?php uilang("Back") ?></div><p>You are not authorized to view this message.</p></div>")
                                                     }, 500)
                                                 </script>
                                                 <?php
@@ -441,13 +485,13 @@
                                                             <i class="fa fa-envelope"></i>
                                                         </th>
                                                         <th>
-                                                            Date
+                                                            <?php uilang("Date") ?>
                                                         </th>
                                                         <th>
-                                                            Sender
+                                                            <?php uilang("Sender") ?>
                                                         </th>
                                                         <th>
-                                                            Message
+                                                            <?php uilang("Messages") ?>
                                                         </th>
                                                     </tr>
                                                     <?php
@@ -515,7 +559,7 @@
                                         }else{
                                             ?>
                                             <script>
-                                                $(".dbp4").append("<p>There is no message yet.</p>")
+                                                $(".dbp4").append("<p><?php uilang("There is no message yet.") ?></p>")
                                             </script>
                                             <?php
                                         }
@@ -630,7 +674,7 @@
                                         $row = mysqli_fetch_assoc(mysqli_query($connection, $sql));
 
                                         ?>
-                                        <h3>Edit Product</h3>
+                                        <h3><? uilang("Edit Product") ?></h3>
                                         
                                         <?php 
                                         if(isset($_POST["updateproduct"])){
@@ -676,7 +720,7 @@
                                                     }
                                                     
                                                     ?>
-                                                    <p>Product has been successfully updated.</p>
+                                                    <p><?php uilang("Product has been successfully updated") ?>.</p>
                                                     <script>
                                                         setTimeout(function(){
                                                             location.href = "<?php echo $baseurl ?>?dashboard"
@@ -699,20 +743,20 @@
                                             ?>
                                             
                                             <form method="post" action="<?php echo $baseurl ?>?dashboard&edit=<?php echo $productid ?>" enctype="multipart/form-data">
-                                                <label>Title</label>
-                                                <input name="title" placeholder="Title" value="<?php echo $row["title"] ?>">
-                                                <label>Price</label>
-                                                <input name="price" type="number" placeholder="Price" value="<?php echo $row["price"] ?>">
-                                                <label>Description</label>
-                                                <textarea name="description" placeholder="Description"><?php echo $row["description"] ?></textarea>
+                                                <label><?php uilang("Title") ?></label>
+                                                <input name="title" placeholder="<?php uilang("Title") ?>" value="<?php echo $row["title"] ?>">
+                                                <label><?php uilang("Price") ?></label>
+                                                <input name="price" type="number" placeholder="<?php uilang("Price") ?>" value="<?php echo $row["price"] ?>">
+                                                <label><?php uilang("Description") ?></label>
+                                                <textarea name="description" placeholder="<?php uilang("Description") ?>"><?php echo $row["description"] ?></textarea>
                                                 <p>Current product photo (Click if you want to replace it):</p>
                                                 <img src="upload/<?php echo $productid ?>.<?php echo $row["ext"] ?>" width="100%" style="cursor: pointer; border-radius: 10px;" onclick="$('#productimageupdate').click()">
                                                 <input type="file" name="productimage" accept="image/*" id="productimageupdate" style="display: none;">
                                                 <input  name="updateproduct" type="submit" value="Update" class="submitbutton">
                                             </form>
                                             
-                                            <p><i class="fa fa-link"></i> Click <a class="textlink" href="<?php echo $baseurl ?>?product=<?php echo $productid ?>">here</a> to view this product.</p>
-                                            <p style="color: red"><i class="fa fa-trash"></i> Or click <a class="textlink" href="<?php echo $baseurl ?>?dashboard&delete=<?php echo $productid ?>">here</a> to delete it.</p>
+                                            <p><i class="fa fa-link"></i> <?php uilang("Click") ?> <a class="textlink" href="<?php echo $baseurl ?>?product=<?php echo $productid ?>"><?php uilang("here") ?></a> <?php uilang("to view this product") ?>.</p>
+                                            <p style="color: red"><i class="fa fa-trash"></i> <?php uilang("Click") ?> <a class="textlink" href="<?php echo $baseurl ?>?dashboard&delete=<?php echo $productid ?>"><?php uilang("here") ?></a> <?php uilang("to delete it") ?>.</p>
                                             
                                             
                                             
@@ -742,7 +786,7 @@
                                             mysqli_query($connection, "DELETE FROM $tableproducts WHERE productid = '$productid' AND userid = '$userid'");
                                             
                                             ?>
-                                            <p>Product has been successfully deleted.</p>
+                                            <p><?php uilang("Product has been successfully deleted") ?>.</p>
                                             <script>
                                                 setTimeout(function(){
                                                     location.href = "<?php echo $baseurl ?>?dashboard"
@@ -764,7 +808,7 @@
                                     ?>
                                     
                                     <div class="dbp dbp5">
-                                        <h3>Chats</h3>
+                                        <h3><?php uilang("Chats") ?></h3>
                                         <div id="chats"></div>
                                         <div id="chatsupdatecripts"></div>
                                     </div>
@@ -780,7 +824,7 @@
                                     $(".dbp").hide()
                                     $(".dbp" + num).show()
                                     if(num == 5){
-                                        $("#chats").html("<div id='chatmessages'><p align='center' style='margin: 20px;'>Loading...</p></div><div id='chatconversations'><p><i class='fa fa-info'></i> To start replying chat messages, click one of items on the left panel.</p></div>")
+                                        $("#chats").html("<div id='chatmessages'><p align='center' style='margin: 20px;'><?php uilang("Loading") ?>...</p></div><div id='chatconversations'><p><i class='fa fa-info'></i> <?php uilang("To start replying chat messages, click one of items on the left panel") ?>.</p></div>")
                                         onlineinterval = setInterval(function(){startonlinechat()},3000)
                                     }else{
                                         stoponlinechat("<?php echo $_SESSION["email"] ?>", "<?php echo $_SESSION["password"] ?>")
@@ -820,7 +864,7 @@
                                 
                                 
                                 function openchatmessage(n){
-                                    $("#chatconversations").html("<div id='currentchatconversation'><p>Viewing chat message with ID " + n + ". Please wait...</p></div><textarea id='currentchatreplyinput' placeholder='Write your message...' style='margin-top: 20px; margin-bottom: 5px;'></textarea><button onclick=replycurrentchat('"+n+"')>Send</button>")
+                                    $("#chatconversations").html("<div id='currentchatconversation'><p><?php uilang("Loading chat") ?> ID " + n + ". <?php uilang("Loading") ?>...</p></div><textarea id='currentchatreplyinput' placeholder='<?php uilang("Type your message here") ?>...' style='margin-top: 20px; margin-bottom: 5px;'></textarea><button onclick=replycurrentchat('"+n+"')><?php uilang("Send Message") ?></button>")
                                     
                                     clearInterval(chatupdateinterval)
                                     chatupdateinterval = setInterval(function(){
@@ -853,6 +897,8 @@
                     <?php
                 }else if(isset($_GET["product"])){
                     
+                    include("adscript.php");
+                    
                     $productid = mysqli_real_escape_string($connection, $_GET["product"]);
                     $sql = "SELECT * FROM $tableproducts WHERE productid = '$productid'";
                     $result = mysqli_query($connection, $sql);
@@ -872,8 +918,8 @@
                                 </div>
                                 <div class="singleproductrow">
                                     <div class="sprright">
-                                        <h1><?php echo $row["title"] ?> <span style="font-size: 14px;">Just for</span> <span style="color: <?php echo $primarycolor ?>"><i class="fa fa-tag"></i>$<?php echo $row["price"] ?></span></h1>
-                                        <h4><span style="font-size: 12px;">Added by</span> <a class="textlink" href="<?php echo $baseurl ?>?user=<?php echo $sellerid ?>"><i class="fa fa-user"></i> <?php echo $sellerinfo["name"] ?></a> <span style="font-size: 12px;">from</span> <i class="fa fa-map-marker"></i> <?php echo $sellerinfo["address"] ?></h4>
+                                        <h1><?php echo $row["title"] ?> <span style="font-size: 14px;"><?php uilang("Just for") ?></span> <span style="color: <?php echo $primarycolor ?>"><i class="fa fa-tag"></i><?php echo $currencysymbol . $row["price"] ?></span></h1>
+                                        <h4><span style="font-size: 12px;"><?php uilang("Added by") ?></span> <a class="textlink" href="<?php echo $baseurl ?>?user=<?php echo $sellerid ?>"><i class="fa fa-user"></i> <?php echo $sellerinfo["name"] ?></a> <span style="font-size: 12px;"><?php uilang("from") ?></span> <i class="fa fa-map-marker"></i> <?php echo $sellerinfo["address"] ?></h4>
                                         <p><?php echo $row["description"] ?></p>
                                         
                                         <?php
@@ -882,8 +928,8 @@
                                             if(isset($_GET["chat"])){
                                                 ?>
                                                 <div class="messaging">
-                                                    <h3>Messaging</h3>
-                                                    <p style="font-size: 12px;">You are sending a message to <a class="textlink" href="<?php echo $baseurl ?>?user=<?php echo $sellerid ?>"><i class="fa fa-user"></i> <?php echo $sellerinfo["name"] ?></a>.</p>
+                                                    <h3><?php uilang("Messaging") ?></h3>
+                                                    <p style="font-size: 12px;"><?php uilang("You are sending a message to") ?> <a class="textlink" href="<?php echo $baseurl ?>?user=<?php echo $sellerid ?>"><i class="fa fa-user"></i> <?php echo $sellerinfo["name"] ?></a>.</p>
                                                     <div id="currentchatconversation"></div>
                                                     <div id="messaging"></div>
                                                     <script>
@@ -897,12 +943,12 @@
                                                 
                                                 if($sellerinfo["waenabled"] == 1){
                                                     ?>
-                                                    <a href="https://wa.me/<?php echo $sellerinfo["phone"] ?>?text=Hi, I came across this link <?php echo $baseurl . "?product=" . "$productid" ?> and I want to ask some questions..."><div class="chatbutton" style="margin-right: 20px;"><i class="fa fa-whatsapp"></i> Chat on WhatsApp</div></a>
+                                                    <a href="https://wa.me/<?php echo $sellerinfo["phone"] ?>?text=<?php uilang("Hi, I came across this link")?> <?php echo $baseurl . "?product=" . "$productid" ?> <?php uilang("and I want to ask some questions") ?>..."><div class="chatbutton" style="margin-right: 20px;"><i class="fa fa-whatsapp"></i> <?php uilang("Chat on WhatsApp") ?></div></a>
                                                     <?php
                                                 }
                                                 
                                                 ?>
-                                                <a href="<?php echo $baseurl ?>?product=<?php echo $productid ?>&chat=<?php echo $sellerid ?>"><div class="chatbutton" id="onlinechatbutton"><i class="fa fa-envelope"></i> Send Message</div></a>
+                                                <a href="<?php echo $baseurl ?>?product=<?php echo $productid ?>&chat=<?php echo $sellerid ?>"><div class="chatbutton" id="onlinechatbutton"><i class="fa fa-envelope"></i> <?php uilang("Send Message") ?></div></a>
                                                 
                                                 <script>
                                                     $.post("messagingsystem.php", { "isselleronline" : "<?php echo $sellerid ?>" }, function(data){
@@ -911,7 +957,7 @@
                                                             d = d.getTime()
                                                             var lastonline = parseInt(data)
                                                             if(d - lastonline < 10000)
-                                                                $("#onlinechatbutton").html("<i class='fa fa-commenting'></i> Chat Now")
+                                                                $("#onlinechatbutton").html("<i class='fa fa-commenting'></i> <?php uilang("Chat Now") ?>")
                                                         }
                                                     } )
                                                 </script>
@@ -920,13 +966,13 @@
                                         //}
                                         
                                         ?>
-                                        
-                                        <br><br><br>
-                                        <div id="fb-root"></div>
-                                        <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&amp;version=v5.0&amp;appId=569420283509636&amp;autoLogAppEvents=1"></script>
-                                         
-                                        <div class="fb-comments" data-href="<?php echo $baseurl ?>?product=<?php echo $productid ?>" data-width="" data-numposts="5"></div>
-                                        
+                                        <div style="width: 100%; overflow: auto; box-sizing: border-box;">
+                                            <br><br><br>
+                                            <div id="fb-root"></div>
+                                            <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&amp;version=v5.0&amp;appId=569420283509636&amp;autoLogAppEvents=1"></script>
+                                             
+                                            <div class="fb-comments" data-href="<?php echo $baseurl ?>?product=<?php echo $productid ?>" data-width="100%" style="width: 100%; box-sizing: border-box;" data-numposts="5"></div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -940,6 +986,8 @@
                     }
                 }else if(isset($_GET["user"])){
                     
+                    include("adscript.php");
+                    
                     $userid = mysqli_real_escape_string($connection, $_GET["user"]);
                     $sql = "SELECT * FROM $tableusers WHERE userid = '$userid'";
                     $result = mysqli_query($connection, $sql);
@@ -950,7 +998,7 @@
                         
                         <div class="middlebox">
                             
-                            <h1>Products added by <?php echo $row["name"] ?></h1>
+                            <h1><?php uilang("Products added by") ?> <?php echo $row["name"] ?></h1>
                             <p><i class="fa fa-map-marker"></i> <?php echo $row["address"] ?></p>
                             
                             <?php
@@ -964,7 +1012,7 @@
                                         <div class="productthumbnail">
                                             <div class="thumbnailimage" style="margin-bottom: 10px; background: url(upload/<?php echo $productrow["productid"] ?>-thumb.<?php echo $productrow["ext"] ?>) no-repeat center center; background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;">
                                                 <div style="display: inline-block;">
-                                                    <div class="pricetag"><i class="fa fa-tag"></i> $<?php echo $productrow["price"] ?></div>
+                                                    <div class="pricetag"><i class="fa fa-tag"></i> <?php echo $currencysymbol . $productrow["price"] ?></div>
                                                 </div>
                                             </div>
                                             
@@ -982,7 +1030,7 @@
                                 }
                             }else{
                                 ?>
-                                <p align="center">Coming soon!</p>
+                                <p align="center"><?php uilang("Coming soon!") ?></p>
                                 <?php
                             }
                             ?>
@@ -1005,6 +1053,8 @@
                     <?php
                     
                 }else if(isset($_GET["search"])){
+                    
+                    
                     ?>
                     <div class="middlebox">
                         <form method="post" action="<?php echo $baseurl ?>?search">
@@ -1031,7 +1081,11 @@
                                 $result = mysqli_query($connection, $sql);
                                 if($query != ""){
                                     if(mysqli_num_rows($result) > 0){
+                                        
+                                        include("adscript.php");
+                                        
                                         ?>
+                                        
                                         <h3 align="center" style="margin: 30px;">Search results:</h3>
                                         <?php
                                         while($row = mysqli_fetch_assoc($result)){
@@ -1043,7 +1097,7 @@
                                                 <div class="productthumbnail">
                                                     <div class="thumbnailimage" style="margin-bottom: 10px; background: url(upload/<?php echo $row["productid"] ?>-thumb.<?php echo $row["ext"] ?>) no-repeat center center; background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;">
                                                         <div style="display: inline-block;">
-                                                            <div class="pricetag"><i class="fa fa-tag"></i> $<?php echo $row["price"] ?></div>
+                                                            <div class="pricetag"><i class="fa fa-tag"></i> <?php echo $currencysymbol . $row["price"] ?></div>
                                                         </div>
                                                     </div>
     
@@ -1077,42 +1131,47 @@
                     <?php
                 }else{
                     
+                    //include("adscript.php");
+                    
                     ?>
                     <div style="text-align: center;">
-                    <?php
-                    
-                    $sql = "SELECT * FROM $tableproducts ORDER BY id DESC";
-                    $result = mysqli_query($connection, $sql);
-                    if(mysqli_num_rows($result) > 0){
-                        while($row = mysqli_fetch_assoc($result)){
-                            $uid = $row["userid"];
+                        
+                        
                             
-                            
-                            $sellername = mysqli_fetch_assoc(mysqli_query($connection, "SELECT * FROM $tableusers WHERE userid = '$uid'"))["name"];
-                            
-                            ?>
-                            <a href="<?php echo $baseurl ?>?product=<?php echo $row["productid"] ?>">
-                                <div class="productthumbnail">
-                                    <div class="thumbnailimage" style="margin-bottom: 10px; background: url(upload/<?php echo $row["productid"] ?>-thumb.<?php echo $row["ext"] ?>) no-repeat center center; background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;">
-                                        <div style="display: inline-block;">
-                                            <div class="pricetag"><i class="fa fa-tag"></i> $<?php echo $row["price"] ?></div>
+                        <?php
+                        
+                        $sql = "SELECT * FROM $tableproducts ORDER BY id DESC";
+                        $result = mysqli_query($connection, $sql);
+                        if(mysqli_num_rows($result) > 0){
+                            while($row = mysqli_fetch_assoc($result)){
+                                $uid = $row["userid"];
+                                
+                                
+                                $sellername = mysqli_fetch_assoc(mysqli_query($connection, "SELECT * FROM $tableusers WHERE userid = '$uid'"))["name"];
+                                
+                                ?>
+                                <a href="<?php echo $baseurl ?>?product=<?php echo $row["productid"] ?>">
+                                    <div class="productthumbnail">
+                                        <div class="thumbnailimage" style="margin-bottom: 10px; background: url(upload/<?php echo $row["productid"] ?>-thumb.<?php echo $row["ext"] ?>) no-repeat center center; background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;">
+                                            <div style="display: inline-block;">
+                                                <div class="pricetag"><i class="fa fa-tag"></i> <?php echo $currencysymbol . $row["price"] ?></div>
+                                            </div>
+                                        </div>
+                                        <h3 style="margin: 0px; display: block;"><?php echo $row["title"] ?></h3>
+                                        <h5 style="margin: 0px;"><i class="fa fa-user"></i> <?php echo $sellername ?></h5>
+                                        <div class="shorttext">
+                                            <?php echo $row["description"] ?>
                                         </div>
                                     </div>
-                                    <h3 style="margin: 0px; display: block;"><?php echo $row["title"] ?></h3>
-                                    <h5 style="margin: 0px;"><i class="fa fa-user"></i> <?php echo $sellername ?></h5>
-                                    <div class="shorttext">
-                                        <?php echo $row["description"] ?>
-                                    </div>
-                                </div>
-                            </a>
+                                </a>
+                                <?php
+                            }
+                        }else{
+                            ?>
+                            <p align="center"><?php uilang("Coming soon!") ?></p>
                             <?php
                         }
-                    }else{
                         ?>
-                        <p align="center">Coming soon!</p>
-                        <?php
-                    }
-                    ?>
                     </div>
                     <?php
                 }
@@ -1122,25 +1181,25 @@
         <div id="footer">
             
             <div>
-                <div class="footeritem"><a href="<?php echo $baseurl ?>">Home</a></div>
+                <div class="footeritem"><a href="<?php echo $baseurl ?>"><?php uilang("Home"); ?></a></div>
                 <?php 
                 if(isset($_SESSION["email"])){
                     ?>
-                    <div class="footeritem"><a href="<?php echo $baseurl ?>?dashboard">Dashboard</a></div>
-                    <div class="footeritem"><a href="<?php echo $baseurl ?>?logout">Logout</a></div>
+                    <div class="footeritem"><a href="<?php echo $baseurl ?>?dashboard"><?php uilang("Dashboard"); ?></a></div>
+                    <div class="footeritem"><a href="<?php echo $baseurl ?>?logout"><?php uilang("Logout"); ?></a></div>
                     <?php
                 }else{
                     ?>
-                    <div class="footeritem"><a href="<?php echo $baseurl ?>?login">Login</a></div>
-                    <div class="footeritem"><a href="<?php echo $baseurl ?>?register">Register</a></div>
+                    <div class="footeritem"><a href="<?php echo $baseurl ?>?login"><?php uilang("Login"); ?></a></div>
+                    <div class="footeritem"><a href="<?php echo $baseurl ?>?register"><?php uilang("Register"); ?></a></div>
                     <?php
                 }
                 ?>
-                <div class="footeritem"><a href="<?php echo $baseurl ?>?about">About</a></div>
+                <div class="footeritem"><a href="<?php echo $baseurl ?>?about"><?php uilang("About"); ?></a></div>
             </div>
             
             <div style="margin: 30px;">
-                <p style="font-size: 10px;">Copyright 2020. All rights reserved.</p>
+                <p style="font-size: 10px;">© Copyright <?php echo $websitename ?> <?php echo date("Y"); ?>. All rights reserved.</p>
             </div>
             
         </div>
@@ -1203,7 +1262,7 @@
                         "selleranswer" : "yes"
                     }, function(data){
                         $("#currentchatreplyinput").val("").focus()
-                        $("#currentchatconversation").append("Sending...")
+                        $("#currentchatconversation").append("<?php uilang("Loading") ?>...")
                         setTimeout(function(){
                             $("#currentchatconversation").scrollTop($('#currentchatconversation')[0].scrollHeight);
                         }, 2000)
@@ -1216,5 +1275,9 @@
             }
             
         </script>
+        
+        <?php 
+            echo uilang("Messaging", 0);
+        ?>
     </body>
 </html>

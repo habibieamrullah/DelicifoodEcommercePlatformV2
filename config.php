@@ -1,34 +1,41 @@
 <?php
 
-//general configuration
+//General configuration
+$websitename = "Delicifood";
 $websitetitle = "Delicifood Ecommerce Platform V2";
-$baseurl = "https://ciihuy.com/index.php";
+$websitetags = "ecommerce, platform, php, source code";
+$baseurl = "https://localhost/delicifood/index.php";
+$currencysymbol = "$";
 
-//appearance & color settings
+//Site UI language: en (English), id (Bahasa Indonesia)
+$defaultlang = "en";
+
+//Appearance & color settings
 $primarycolor = "#9503f1";
 $primarycolordarker = "#7e00ce";
 $bodybg = "#cbcbcb";
 
-//mailing settings
+//Mailing settings
 $emailhost = "mail.somedomain.com";
 $emailusername = "username@somedomain.com"; // Change it to yours
 $emailpassword = "somepassword";
 
-//database connection
+//Database connection
 $host = "localhost";
 $dbuser = "root";
 $dbpassword = "xxx";
 $databasename = "somedatabase";
+$databaseprefix = "delicifood_";
 $connection = mysqli_connect($host, $dbuser, $dbpassword, $databasename);
 $connection->set_charset("utf8");
 
-//database tables
-$tableusers = "delicifoodusers";
-$tableproducts = "delicifoodproducts";
-$tablemessages = "delicifoodmessages";
-$tableconversations = "delicifoodconversations";
+//Database tables
+$tableusers = $databaseprefix . "users";
+$tableproducts = $databaseprefix . "products";
+$tablemessages = $databaseprefix . "messages";
+$tableconversations = $databaseprefix . "conversations";
 
-//creating database table for user registration
+//Creating database table for user registration
 mysqli_query($connection, "CREATE TABLE IF NOT EXISTS $tableusers (
 id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 userid VARCHAR(30) NOT NULL,
@@ -43,7 +50,7 @@ waenabled INT(6),
 lastonline VARCHAR(50) NOT NULL
 )");
 
-//creating database table for user products
+//Creating database table for user products
 mysqli_query($connection, "CREATE TABLE IF NOT EXISTS $tableproducts (
 id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 userid VARCHAR(30) NOT NULL,
@@ -55,7 +62,7 @@ ext VARCHAR(10) NOT NULL
 )");
 
 
-//creating database table for messages
+//Creating database table for messages
 mysqli_query($connection, "CREATE TABLE IF NOT EXISTS $tablemessages (
 id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 userid VARCHAR(30) NOT NULL,
@@ -65,7 +72,7 @@ offlinemessage INT(6),
 senderemail VARCHAR(30) NOT NULL
 )");
 
-//creating database table for conversations
+//Creating database table for conversations
 mysqli_query($connection, "CREATE TABLE IF NOT EXISTS $tableconversations (
 id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 messageid VARCHAR(30) NOT NULL,

@@ -1,15 +1,15 @@
 var senderemail
 var sellerisonline
 
-$("#messaging").html("<p id='sellerstatus'><!--The seller is <span style='color: red;'>offline</span>. -->You will get the response by email.</p><div><input id='senderemail' type='email' placeholder='Enter your email address...' value='<?php
+$("#messaging").html("<p id='sellerstatus'><!--The seller is <span style='color: red;'>offline</span>. --><?php uilang("You will get the response by email") ?>.</p><div><input id='senderemail' type='email' placeholder='<?php uilang("Enter your email address") ?>...' value='<?php
 if(isset($_SESSION["email"]))
     echo $_SESSION["email"];
-?>'><button style='margin-bottom: 0px;' onclick='checksendermail()'>Continue</button></div>")
+?>'><button style='margin-bottom: 0px;' onclick='checksendermail()'><?php uilang("Continue") ?></button></div>")
 
 function checksendermail(){
     senderemail = $("#senderemail").val()
     if(senderemail.indexOf("@") > -1 && senderemail.indexOf(".") > -1 && senderemail !=  ""){
-        $("#messaging").html("<textarea id='messagetext' placeholder='Type your message here...' style='margin-bottom: 0px; margin-top: 20px;'></textarea><button id='chatsendbutton' onclick='sendmessage()' style='margin-bottom: 0px;'>Send</button>")
+        $("#messaging").html("<textarea id='messagetext' placeholder='<?php uilang("Type your message here") ?>...' style='margin-bottom: 0px; margin-top: 20px;'></textarea><button id='chatsendbutton' onclick='sendmessage()' style='margin-bottom: 0px;'><?php uilang("Send Message") ?></button>")
     }else{
         alert("Invalid email address.")
     }
@@ -34,7 +34,7 @@ function sendmessage(){
             if(!sellerisonline){
                 $("#messaging").html(data)
             }else{
-                $("#currentchatconversation").html("Sending...")
+                $("#currentchatconversation").html("<?php uilang("Loading") ?>...")
                 $("#messagetext").val("").focus()
                 $("#chatsendbutton").attr({ "onclick" : "sendonlinemessage()" })
                 
@@ -64,7 +64,7 @@ function sendonlinemessage(){
             "messageid" : chatmessageid,
             "chatmessaging" : "yes"
         }, function(data){
-            $("#currentchatconversation").append("Sending...")
+            $("#currentchatconversation").append("<?php uilang("Loading") ?>...")
             $("#messagetext").val("").focus()
             $("#chatsendbutton").attr({ "onclick" : "sendonlinemessage()" })
             clearInterval(chatupdateinterval)
@@ -84,7 +84,7 @@ $.post("messagingsystem.php", { "isselleronline" : "<?php echo $sellerid ?>" }, 
         d = d.getTime()
         var lastonline = parseInt(data)
         if(d - lastonline < 10000){
-            $("#sellerstatus").html("The seller is <span style='color: green;'>online</span>. Enter your email to continue.")
+            $("#sellerstatus").html("<?php uilang("The seller is") ?> <span style='color: green;'>online</span>. <?php uilang("Enter your email to continue") ?>.")
             sellerisonline = true
         }
     }
