@@ -1,1 +1,1 @@
-<script data-ad-client="ca-pub-5796843895531667" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- Your Ad Script here -->
