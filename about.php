@@ -1,4 +1,4 @@
-<img src="images/woman.jpg" width="100%">
+<img src="images/aboutimage.jpg" width="100%">
 <h1>About</h1>
 <p>Statistics from e-commerce platform JD show that from January to March, sales of baking staples such as cream, yeast, butter and flour rose by 321 percent year-on-year, and those for utensils, including egg beaters, spatulas, greaseproof paper and flour sifters, grew by 360 percent.</p>
 <p>Baking is taking the internet by storm, as people look for ways to occupy themselves and reduce stress.</p>
