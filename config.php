@@ -6,6 +6,7 @@ $websitetitle = "Delicifood Ecommerce Platform V2";
 $websitetags = "ecommerce, platform, php, source code";
 $baseurl = "https://localhost/delicifood/index.php";
 $currencysymbol = "$";
+$maxgalleryimg = 100; //Maximum amount of images a user can add to the image gallery.
 
 //Site UI language: en (English), id (Bahasa Indonesia)
 $defaultlang = "en";
@@ -34,8 +35,9 @@ $tableusers = $databaseprefix . "users";
 $tableproducts = $databaseprefix . "products";
 $tablemessages = $databaseprefix . "messages";
 $tableconversations = $databaseprefix . "conversations";
+$tablegallery = $databaseprefix . "gallery";
 
-//Creating database table for user registration
+//Creating user registration table
 mysqli_query($connection, "CREATE TABLE IF NOT EXISTS $tableusers (
 id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 userid VARCHAR(30) NOT NULL,
@@ -50,7 +52,7 @@ waenabled INT(6),
 lastonline VARCHAR(50) NOT NULL
 )");
 
-//Creating database table for user products
+//Creating user products table
 mysqli_query($connection, "CREATE TABLE IF NOT EXISTS $tableproducts (
 id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 userid VARCHAR(30) NOT NULL,
@@ -58,11 +60,12 @@ productid VARCHAR(30) NOT NULL,
 title VARCHAR(100) NOT NULL,
 price INT(6),
 description VARCHAR(500) NOT NULL,
-ext VARCHAR(10) NOT NULL
+ext VARCHAR(10) NOT NULL,
+moreimages VARCHAR(500) NOT NULL
 )");
 
 
-//Creating database table for messages
+//Creating messages table
 mysqli_query($connection, "CREATE TABLE IF NOT EXISTS $tablemessages (
 id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 userid VARCHAR(30) NOT NULL,
@@ -72,7 +75,7 @@ offlinemessage INT(6),
 senderemail VARCHAR(30) NOT NULL
 )");
 
-//Creating database table for conversations
+//Creating conversations table
 mysqli_query($connection, "CREATE TABLE IF NOT EXISTS $tableconversations (
 id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 messageid VARCHAR(30) NOT NULL,
@@ -82,6 +85,15 @@ isread INT(6),
 content VARCHAR(500) NOT NULL
 )");
 
+//Creating gallery table
+mysqli_query($connection, "CREATE TABLE IF NOT EXISTS $tablegallery (
+id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+userid VARCHAR(30) NOT NULL,
+imagefile VARCHAR(200) NOT NULL,
+ext VARCHAR(10) NOT NULL,
+)");
+
+//Creating upload folder
 if(!file_exists("upload"))
 	mkdir("upload");
 

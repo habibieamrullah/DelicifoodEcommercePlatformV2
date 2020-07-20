@@ -21,7 +21,7 @@
             if(mysqli_num_rows($result) > 0){
                 $row = mysqli_fetch_assoc($result);
                 ?>
-                <title><?php echo $row["title"] ?> | <?php echo $websitename ?></title>
+                <title><?php echo $row["title"] ?> - <?php echo $websitename ?></title>
                 <meta name="description" content="<?php echo shorten_text($row["description"], 180, '', true) ?>">
                 <?php
             }
@@ -34,7 +34,7 @@
             if(mysqli_num_rows($result) > 0){
                 $row = mysqli_fetch_assoc($result);
                 ?>
-                <title><?php uilang("Products added by") ?> <?php echo $row["name"] ?> | <?php echo $websitename ?></title>
+                <title><?php echo $row["name"] ?> - <?php echo $websitename ?></title>
                 <meta name="description" content="<?php echo $websitetitle ?>">
                 <?php
             }
@@ -46,7 +46,7 @@
         }else{
             
             ?>
-            <title><?php echo $websitename ?> | <?php echo $websitetitle ?></title>
+            <title><?php echo $websitename ?> - <?php echo $websitetitle ?></title>
             <meta name="description" content="<?php echo $websitetitle ?>">
             <?php
             
@@ -102,6 +102,22 @@
                     "password" : p
                 })
             }
+            
+            function makeagallery(galdata){
+                var tmp = galdata.split(",")
+                for(var i = 0; i < tmp.length; i++){
+                    if(tmp[i] != ""){
+                        //$(".singleproductgallery").append("<div style='display: inline-block; width: 100px;'><img src='upload/"+tmp[i].split('.')[0] + "-thumb." + tmp[i].split('.')[1] +"' width='100px;'></div>")
+                        $(".singleproductgallery").append("<div class='productthumbnail' style='width: 100px;' onclick=\"viewimage('"+tmp[i].split('.')[0]+"','" + tmp[i].split('.')[1] +"', false)\"><div style='width: 100px; height: 100px; background: url(upload/" + tmp[i].split('.')[0] + "-thumb." + tmp[i].split('.')[1] + ") no-repeat center center; background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;'></div></div>")
+                        
+                    }
+                }
+                
+            }
+            
+            $(document).ready(function(){
+
+            })
         </script>
         
         <?php include("adscriptheader.php"); ?>
@@ -163,7 +179,7 @@
                                 $_SESSION["password"] = $password;
                                 $_SESSION["userid"] = mysqli_fetch_assoc($result)["userid"];
                                 ?>
-                                <p><?php uilang("Welcome!"); ?></p>
+                                <p><?php uilang("Welcome"); ?>!</p>
                                 <script>
                                     setTimeout(function(){
                                         location.href = "<?php echo $baseurl ?>?dashboard"
@@ -268,11 +284,15 @@
                     session_destroy();
                 }else if(isset($_GET["dashboard"])){
                     
+                    
                     ?>
                     <div class="middlebox">
+                        
                         <?php
                         
                         if(isset($_SESSION["email"])){
+                            
+                            //include("adscript.php");
                             
                             include("thumbnailgenerator.php");
                             
@@ -301,19 +321,28 @@
                                 <div class="dashboardcell dbcleft">
                                     <div class="dashboardleftbutton" onclick="dbpage(1)"><i class="fa fa-plus" style="width: 20px;"></i> <?php uilang("Add") ?></div>
                                     <div class="dashboardleftbutton" onclick="dbpage(2)"><i class="fa fa-cutlery" style="width: 20px;"></i> <?php uilang("Products") ?></div>
-                                    <div class="dashboardleftbutton" onclick="dbpage(3)"><i class="fa fa-user" style="width: 20px;"></i> <?php uilang("Profile") ?></div>
-                                    <div class="dashboardleftbutton" onclick="dbpage(4)"><i class="fa fa-envelope" style="width: 20px;"></i> <?php uilang("Messages") ?> <span id="messagescount"></span></div>
-                                    <div class="dashboardleftbutton" onclick="dbpage(5)"><i class="fa fa-commenting" style="width: 20px;"></i> <?php uilang("Chats") ?> <span id="onlinestatus">Offline</span></div>
+                                    <div class="dashboardleftbutton" onclick="dbpage(3)"><i class="fa fa-image" style="width: 20px;"></i> <?php uilang("Gallery") ?></div>
+                                    <div class="dashboardleftbutton" onclick="dbpage(4)"><i class="fa fa-user" style="width: 20px;"></i> <?php uilang("Profile") ?></div>
+                                    <div class="dashboardleftbutton" onclick="dbpage(5)"><i class="fa fa-envelope" style="width: 20px;"></i> <?php uilang("Messages") ?> <span id="messagescount"></span></div>
+                                    <div class="dashboardleftbutton" onclick="dbpage(6)"><i class="fa fa-commenting" style="width: 20px;"></i> <?php uilang("Chats") ?> <span id="onlinestatus">Offline</span></div>
                                 </div>
                                 <div class="dashboardcell dbcright">
                                     <div class="dbp dbp1">
                                         <h3><?php uilang("Add"); ?></h3>
                                         <form method="post" action="<?php echo $baseurl ?>?dashboard" enctype="multipart/form-data">
+                                            <label><?php uilang("Title") ?></label>
                                             <input name="title" placeholder="<?php uilang("Title"); ?>">
+                                            <label><?php uilang("Price") ?></label>
                                             <input name="price" type="number" placeholder="<?php uilang("Price"); ?>">
+                                            <label><?php uilang("Description") ?></label>
                                             <textarea name="description" placeholder="<?php uilang("Description"); ?>"></textarea>
-                                            <p><?php uilang("Choose your product photo:"); ?></p>
+                                            <label><?php uilang("Choose your primary product photo:"); ?></label>
                                             <input type="file" name="productimage" accept="image/*">
+                                            <label><?php uilang("Add more images from Gallery") ?>:</label>
+                                            <input name="moreimages" style="display: none;" class="moreimagesinput">
+                                            <div class="addmoreimgvisual"></div>
+                                            <div class="addmoreimgbutton" onclick="showGalPicker()"><i class="fa fa-image"></i> <?php uilang("Click to add more images from Gallery") ?></div>
+                                            <br><br>
                                             <input name="addnew" type="submit" value="<?php uilang("Submit"); ?>" class="submitbutton">
                                         </form>
                                     </div>
@@ -334,7 +363,7 @@
                                                     <div class="productthumbnail">
                                                         <div class="thumbnailimage" style="margin-bottom: 10px; background: url(upload/<?php echo $productrow["productid"] ?>-thumb.<?php echo $productrow["ext"] ?>) no-repeat center center; background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;">
                                                             <div style="display: inline-block;">
-                                                                <div class="pricetag"><i class="fa fa-tag"></i> <?php echo $currencysymbol . $productrow["price"] ?></div>
+                                                                <div class="pricetag"><i class="fa fa-tag"></i> <?php echo $currencysymbol . number_format($productrow["price"]) ?></div>
                                                             </div>
                                                         </div>
                                                         
@@ -352,13 +381,96 @@
                                             }
                                         }else{
                                             ?>
-                                            <p align="center"><?php uilang("You don't have any product yet.") ?></p>
+                                            <p><?php uilang("You don't have any product yet.") ?></p>
                                             <?php
                                         }
                                         ?>
                                     </div>
-                                    
                                     <div class="dbp dbp3">
+                                        
+                                        <?php
+                                        if(isset($_POST["submitnewimage"])){
+                                            $maxsize = 2097152;
+                                            if(($_FILES['newimageforgallery']['size'] >= $maxsize)){
+                                                echo "<div class='alert'>Your image is too large. Try different image.</div>";
+                                            }else if($_FILES["newimageforgallery"]["size"] == 0){
+                                                //
+                                            }else{
+                                            	if($_FILES['newimageforgallery']['error'] > 0) { echo "<div class='alert'>Error during uploading new picture, try again</div>"; }
+                                            	$extsAllowed = array( 'jpg', 'jpeg', 'png' );
+                                            	$uploadedfile = $_FILES["newimageforgallery"]["name"];
+                                            	$extension = pathinfo($uploadedfile, PATHINFO_EXTENSION);
+                                            	if (in_array($extension, $extsAllowed) ) { 
+                                            	    $newppic = substr(str_shuffle(str_repeat("0123456789abcdefghijklmnopqrstuvwxyz", 5)), 0, 10);
+                                                	$name = "upload/" . $newppic .".". $extension;
+                                                	$result = move_uploaded_file($_FILES['newimageforgallery']['tmp_name'], $name);
+                                                	?>
+                                                	<div class="alert"><?php uilang("New image has been added") ?></div>
+                                                	<?php
+                                                	mysqli_query($connection, "INSERT INTO $tablegallery (userid, imagefile, ext) VALUES ('$userid', '$newppic', '$extension')");
+                                                	createThumbnail($name, "upload/" . $newppic ."-thumb." . $extension, 256);
+                                                	
+                                            	} else { echo "<div class='alert'>Image file is not valid. Please try again.</div>"; }
+                                            }
+                                            ?>
+                                            <?php
+                                        }
+                                        
+                                        if(isset($_GET["deletegalimage"])){
+                                            $imagefile = mysqli_real_escape_string($connection, $_GET["deletegalimage"]);
+                                            $imageext = mysqli_real_escape_string($connection, $_GET["ext"]);
+                                            $sql = "SELECT * FROM $tablegallery WHERE imagefile = '$imagefile' AND userid = '$userid'";
+                                            if(mysqli_num_rows(mysqli_query($connection, $sql)) > 0){
+                                                mysqli_query($connection, "DELETE FROM $tablegallery WHERE imagefile = '$imagefile'");
+                                                if(file_exists("upload/" . $imagefile . "." . $imageext))
+                                                    unlink("upload/" . $imagefile . "." . $imageext);
+                                                if(file_exists("upload/" . $imagefile . "-thumb" . "." . $imageext))
+                                                    unlink("upload/" . $imagefile . "-thumb" . "." . $imageext);
+                                                ?>
+                                                <div class="alert"><?php uilang("Image removed") ?>.</div>
+                                                <?php
+                                            }else{
+                                                ?>
+                                                <div class="alert">Unauthorized Access!</div>
+                                                <?php
+                                            }
+                                            
+                                        }
+                                        ?>
+                                        
+                                        <h3><?php uilang("Gallery") ?></h3>
+                                        <?php
+                                        $sql = "SELECT * FROM $tablegallery WHERE userid = '$userid' ORDER BY id DESC";
+                                        $result = mysqli_query($connection, $sql);
+                                        if(mysqli_num_rows($result) > 0){
+                                            ?>
+                                            <p><?php uilang("You have") ?> <?php echo mysqli_num_rows($result) ?> <?php uilang("images in your Gallery. You can upload up to") ?> <?php echo $maxgalleryimg ?> <?php uilang("images to this Gallery") ?>.</p>
+                                            <div id="usergallery">
+                                            <?php
+                                            while($row = mysqli_fetch_assoc($result)){
+                                                ?>
+                                                <div class="productthumbnail" style="width: 100px;" onclick="viewimage('<?php echo $row["imagefile"] ?>', '<?php echo $row["ext"] ?>', true)">
+                                                    <div style="width: 100px; height: 100px; background: url(upload/<?php echo $row["imagefile"] . "-thumb." . $row["ext"] ?>) no-repeat center center; background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;"><i style="display: none"><?php echo $row["imagefile"] . "." . $row["ext"] ?></i></div>
+                                                </div>
+                                                <?php
+                                            }
+                                            ?>
+                                            </div>
+                                            <?php
+                                        }else{
+                                            ?>
+                                            <p><?php uilang("You did not add any image yet") ?></p>
+                                            <?php
+                                        }
+                                        ?>
+                                        <h3><?php uilang("Add new Image") ?></h3>
+                                        <p><?php uilang("Choose any image file and click Sumbit to upload") ?>.</p>
+                                        <form action="<?php echo $baseurl ?>?dashboard" method="post" enctype="multipart/form-data">
+                                            <input type="file" name="newimageforgallery" accept="image/*">
+                                            <input type="submit" name="submitnewimage" value="<?php uilang("Submit") ?>" class="submitbutton">
+                                        </form>
+                                    </div>
+                                    <div class="dbp dbp4">
                                         <h3><?php uilang("Profile") ?></h3>
                                         <form action="<?php echo $baseurl ?>?dashboard" method="post">
                                             <label><?php uilang("Name/Nickname") ?></label>
@@ -388,7 +500,7 @@
                                             <input name="updateprofile" type="submit" value="<?php uilang("Update") ?>" class="submitbutton">
                                         </form>
                                     </div>
-                                    <div class="dbp dbp4">
+                                    <div class="dbp dbp5">
                                         <h3><?php uilang("Messages") ?></h3>
                                         <?php
                                         $unreadcount = 0;
@@ -559,7 +671,7 @@
                                         }else{
                                             ?>
                                             <script>
-                                                $(".dbp4").append("<p><?php uilang("There is no message yet.") ?></p>")
+                                                $(".dbp5").append("<p><?php uilang("There is no message yet.") ?></p>")
                                             </script>
                                             <?php
                                         }
@@ -579,50 +691,57 @@
                                         $title = mysqli_real_escape_string($connection, $_POST["title"]);
                                         $price = mysqli_real_escape_string($connection, $_POST["price"]);
                                         $description = mysqli_real_escape_string($connection, $_POST["description"]);
+                                        $moreimages = mysqli_real_escape_string($connection, $_POST["moreimages"]);
+                                        
+                                        if($title != "" && $price != "" && $description != ""){
                                     
-                                        $maxsize = 2097152;
-                                        if(($_FILES['productimage']['size'] >= $maxsize)){
-                                            ?>
-                                            <p>Uploaded image is too big. Try to upload different image.</p>
-                                            <?php
-                                        }else if($_FILES["productimage"]["size"] == 0){
-                                            /*
-                                            ?>
-                                            <p>Uploaded image is file is invalid. Try to upload different image.</p>
-                                            <?php
-                                            */
+                                            $maxsize = 2097152;
+                                            if(($_FILES['productimage']['size'] >= $maxsize)){
+                                                ?>
+                                                <p>Uploaded image is too big. Try to upload different image.</p>
+                                                <?php
+                                            }else if($_FILES["productimage"]["size"] == 0){
+                                                /*
+                                                ?>
+                                                <p>Uploaded image is file is invalid. Try to upload different image.</p>
+                                                <?php
+                                                */
+                                            }else{
+                                            	if($_FILES['productimage']['error'] > 0) { 
+                                            	    ?>
+                                            	    <p>Error during uploading new picture. Try again later.</p>
+                                            	    <?php
+                                            	}
+                                            	$extsAllowed = array( 'jpg', 'jpeg', 'png' );
+                                            	$uploadedfile = $_FILES["productimage"]["name"];
+                                            	$extension = pathinfo($uploadedfile, PATHINFO_EXTENSION);
+                                            	if (in_array($extension, $extsAllowed) ) { 
+                                            	    $newppic = $productid;
+                                                	$name = "upload/" . $newppic .".". $extension;
+                                                	$result = move_uploaded_file($_FILES['productimage']['tmp_name'], $name);
+                                                	createThumbnail($name, "upload/" . $newppic ."-thumb." . $extension, 256);
+                                                	
+                                                	//success!
+                                                	mysqli_query($connection, "INSERT INTO $tableproducts (userid, productid, title, price, description, ext, moreimages) VALUES ('$userid', '$productid', '$title' ,'$price', '$description', '$extension', '$moreimages')");
+                                                	?>
+                                                	<p><?php uilang("Great! New product has been added") ?>.</p>
+                                                	<script>
+                                                    setTimeout(function(){
+                                                        location.href = "<?php echo $baseurl ?>?dashboard"
+                                                    }, 1000)
+                                                </script>
+                                                	<?php
+                                            	} else {
+                                            	    ?>
+                                            	    <p><?php uilang("Incomplete information") ?></p>
+                                            	    <?php
+                                            	}
+                                            }
                                         }else{
-                                        	if($_FILES['productimage']['error'] > 0) { 
-                                        	    ?>
-                                        	    <p>Error during uploading new picture. Try again later.</p>
-                                        	    <?php
-                                        	}
-                                        	$extsAllowed = array( 'jpg', 'jpeg', 'png' );
-                                        	$uploadedfile = $_FILES["productimage"]["name"];
-                                        	$extension = pathinfo($uploadedfile, PATHINFO_EXTENSION);
-                                        	if (in_array($extension, $extsAllowed) ) { 
-                                        	    $newppic = $productid;
-                                            	$name = "upload/" . $newppic .".". $extension;
-                                            	$result = move_uploaded_file($_FILES['productimage']['tmp_name'], $name);
-                                            	createThumbnail($name, "upload/" . $newppic ."-thumb." . $extension, 256);
-                                            	
-                                            	//success!
-                                            	mysqli_query($connection, "INSERT INTO $tableproducts (userid, productid, title, price, description, ext) VALUES ('$userid', '$productid', '$title' ,'$price', '$description', '$extension')");
-                                            	?>
-                                            	<p>Great! New product has been added.</p>
-                                            	<script>
-                                                setTimeout(function(){
-                                                    location.href = "<?php echo $baseurl ?>?dashboard"
-                                                }, 1000)
-                                            </script>
-                                            	<?php
-                                        	} else {
-                                        	    ?>
-                                        	    <p>Incomplete information. Please try again.</p>
-                                        	    <?php
-                                        	}
+                                            ?>
+                                            <p><?php uilang("Incomplete information") ?></p>
+                                            <?php
                                         }
-                                    
                                         
             
                                         ?>
@@ -681,11 +800,12 @@
                                             $newtitle = mysqli_real_escape_string($connection, $_POST["title"]);
                                             $newprice = mysqli_real_escape_string($connection, $_POST["price"]);
                                             $newdescription = mysqli_real_escape_string($connection, $_POST["description"]);
+                                            $moreimages = mysqli_real_escape_string($connection, $_POST["moreimages"]);
 
                                             if($newtitle != "" && $newprice != "" && $newdescription != ""){
                                                 
                                                 if($userid == mysqli_fetch_assoc(mysqli_query($connection, "SELECT * FROM $tableproducts WHERE productid='$productid' "))["userid"]){
-                                                    mysqli_query($connection, "UPDATE $tableproducts SET title = '$newtitle', price = '$newprice', description = '$newdescription' WHERE productid = '$productid' AND userid = '$userid'");
+                                                    mysqli_query($connection, "UPDATE $tableproducts SET title = '$newtitle', price = '$newprice', description = '$newdescription', moreimages = '$moreimages' WHERE productid = '$productid' AND userid = '$userid'");
                                                 
                                                     $maxsize = 2097152;
                                                     if(($_FILES['productimage']['size'] >= $maxsize)){
@@ -749,16 +869,58 @@
                                                 <input name="price" type="number" placeholder="<?php uilang("Price") ?>" value="<?php echo $row["price"] ?>">
                                                 <label><?php uilang("Description") ?></label>
                                                 <textarea name="description" placeholder="<?php uilang("Description") ?>"><?php echo $row["description"] ?></textarea>
-                                                <p>Current product photo (Click if you want to replace it):</p>
+                                                <label><?php uilang("Current product photo (Click if you want to replace it)") ?>:</label>
                                                 <img src="upload/<?php echo $productid ?>.<?php echo $row["ext"] ?>" width="100%" style="cursor: pointer; border-radius: 10px;" onclick="$('#productimageupdate').click()">
                                                 <input type="file" name="productimage" accept="image/*" id="productimageupdate" style="display: none;">
-                                                <input  name="updateproduct" type="submit" value="Update" class="submitbutton">
+                                                <label><?php uilang("Add more images from Gallery") ?>:</label>
+                                                <input name="moreimages" style="display: none;" class="moreimagesinput" value="<?php echo $row["moreimages"] ?>">
+                                                <div class="addmoreimgvisual"></div>
+                                                <div class="addmoreimgbutton" onclick="showGalPicker()"><i class="fa fa-image"></i> <?php uilang("Click to add more images from Gallery") ?></div>
+                                                <br><br>
+                                                <input name="updateproduct" type="submit" value="<?php uilang("Update") ?>" class="submitbutton">
                                             </form>
                                             
                                             <p><i class="fa fa-link"></i> <?php uilang("Click") ?> <a class="textlink" href="<?php echo $baseurl ?>?product=<?php echo $productid ?>"><?php uilang("here") ?></a> <?php uilang("to view this product") ?>.</p>
                                             <p style="color: red"><i class="fa fa-trash"></i> <?php uilang("Click") ?> <a class="textlink" href="<?php echo $baseurl ?>?dashboard&delete=<?php echo $productid ?>"><?php uilang("here") ?></a> <?php uilang("to delete it") ?>.</p>
                                             
-                                            
+                                            <script>
+                                                function moreimagesToVisual(){
+                                                    var tmpinpval = $(".moreimagesinput").eq(1).val()
+                                                    var tmparray = []
+                                                    if(tmpinpval.split(",").length > 0){
+                                                        tmparray = tmpinpval.split(",")
+                                                    }
+                                                    for(var i = 0; i < tmparray.length; i++){
+                                                        if(tmparray[i] != ""){
+                                                            var imgfile = tmparray[i];
+                                                            console.log("ukkkakakakka")
+                                                            $(".addmoreimgvisual").eq(1).append("<div class='addedfromgallery' style='background: url(upload/"+imgfile+") no-repeat center center; background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;'><div onclick=removeAddedGalimage2('" +imgfile+ "') style='padding: 20px; margin: 20px; background-color: white; border-radius: 10px; color: red; cursor: pointer; font-weight: bold; display: inline-block;'><i class='fa fa-times'></i> <?php uilang("Remove") ?></div></div>")
+                                                        }
+                                                    }
+                                                }
+                                                moreimagesToVisual()
+                                                
+                                                function removeAddedGalimage2(imgfile){
+                                                    for(var i = 0; i < $(".addedfromgallery").length; i++){
+                                                        if( $(".addedfromgallery").eq(i).html().indexOf(imgfile) > -1 )
+                                                            $(".addedfromgallery").eq(i).remove()
+                                                    }
+                                                    
+                                                    var tmpinpval = $(".moreimagesinput").eq(1).val()
+                                                    var tmparray = []
+                                                    if(tmpinpval.split(",").length > 0){
+                                                        tmparray = tmpinpval.split(",")
+                                                    }
+                                                    var tmptxt = ""
+                                                    for(var i = 0; i < tmparray.length; i++){
+                                                        if(tmparray[i] != "" && tmparray[i] != imgfile)
+                                                            tmptxt += tmparray[i] + ","
+                                                    }
+                                                    $(".moreimagesinput").eq(1).val(tmptxt)
+                                                    if($(".moreimagesinput").eq(1).val() == "")
+                                                        $(".addmoreimgvisual").eq(1).html("")
+                                                }
+                                            </script>
                                             
                                             <?php
                                             
@@ -807,7 +969,7 @@
                                     
                                     ?>
                                     
-                                    <div class="dbp dbp5">
+                                    <div class="dbp dbp6">
                                         <h3><?php uilang("Chats") ?></h3>
                                         <div id="chats"></div>
                                         <div id="chatsupdatecripts"></div>
@@ -823,7 +985,7 @@
                                 function dbpage(num){
                                     $(".dbp").hide()
                                     $(".dbp" + num).show()
-                                    if(num == 5){
+                                    if(num == 6){
                                         $("#chats").html("<div id='chatmessages'><p align='center' style='margin: 20px;'><?php uilang("Loading") ?>...</p></div><div id='chatconversations'><p><i class='fa fa-info'></i> <?php uilang("To start replying chat messages, click one of items on the left panel") ?>.</p></div>")
                                         onlineinterval = setInterval(function(){startonlinechat()},3000)
                                     }else{
@@ -838,6 +1000,10 @@
                                 if(isset($_POST["addnew"]) || isset($_POST["updateprofile"]) || isset($_GET["edit"]) || isset($_GET["delete"])){
                                     ?>
                                     dbpage(0)
+                                    <?php
+                                }else if(isset($_POST["submitnewimage"]) || isset($_GET["deletegalimage"])){
+                                    ?>
+                                    dbpage(3)
                                     <?php
                                 }
                                 ?>
@@ -912,15 +1078,31 @@
                         <div class="middlebox">
                             <div class="singleproductholder">
                                 <div class="singleproductrow sprleft">
-                                    <div class="bigproductimage">
+                                    <div class="bigproductimage" onclick="viewimage('<?php echo $row["productid"] ?>', '<?php echo $row["ext"] ?>', false)">
                                         <img src="upload/<?php echo $row["productid"] ?>.<?php echo $row["ext"] ?>" width="100%">
                                     </div>
+                                    <?php
+                                    include("adscriptvertical.php");
+                                    ?>
                                 </div>
+                                
                                 <div class="singleproductrow">
                                     <div class="sprright">
-                                        <h1><?php echo $row["title"] ?> <span style="font-size: 14px;"><?php uilang("Just for") ?></span> <span style="color: <?php echo $primarycolor ?>"><i class="fa fa-tag"></i><?php echo $currencysymbol . $row["price"] ?></span></h1>
+                                        <h1><?php echo $row["title"] ?> <span style="font-size: 14px;"><?php uilang("Just for") ?></span> <span style="color: <?php echo $primarycolor ?>"><i class="fa fa-tag"></i><?php echo $currencysymbol . number_format($row["price"]) ?></span></h1>
                                         <h4><span style="font-size: 12px;"><?php uilang("Added by") ?></span> <a class="textlink" href="<?php echo $baseurl ?>?user=<?php echo $sellerid ?>"><i class="fa fa-user"></i> <?php echo $sellerinfo["name"] ?></a> <span style="font-size: 12px;"><?php uilang("from") ?></span> <i class="fa fa-map-marker"></i> <?php echo $sellerinfo["address"] ?></h4>
                                         <p><?php echo $row["description"] ?></p>
+                                        
+                                        <?php
+                                        if($row["moreimages"] != ""){
+                                            ?>
+                                            <h3><?php uilang("More images") ?>:</h3>
+                                            <div class="singleproductgallery" style="margin-bottom: 20px"></div>
+                                            <script>
+                                                makeagallery('<?php echo $row["moreimages"] ?>')
+                                            </script>
+                                            <?php
+                                        }
+                                        ?>
                                         
                                         <?php
                                         
@@ -1012,7 +1194,7 @@
                                         <div class="productthumbnail">
                                             <div class="thumbnailimage" style="margin-bottom: 10px; background: url(upload/<?php echo $productrow["productid"] ?>-thumb.<?php echo $productrow["ext"] ?>) no-repeat center center; background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;">
                                                 <div style="display: inline-block;">
-                                                    <div class="pricetag"><i class="fa fa-tag"></i> <?php echo $currencysymbol . $productrow["price"] ?></div>
+                                                    <div class="pricetag"><i class="fa fa-tag"></i> <?php echo $currencysymbol . number_format($productrow["price"]) ?></div>
                                                 </div>
                                             </div>
                                             
@@ -1064,10 +1246,10 @@
                                     <i class="fa fa-search"></i>
                                 </div>
                                 <div class="sbitem">
-                                    <input name="search" placeholder="What are you looking for?" style="outline: none; border: none; background-color: inherit; margin: 0px;">
+                                    <input name="search" placeholder="<?php uilang("What are you looking for?") ?>" style="outline: none; border: none; background-color: inherit; margin: 0px;">
                                 </div>
                                 <div class="sbitem" style="width: 100px;">
-                                    <input type="submit" value="Find it!" style="background-color: <?php echo $primarycolor ?>; margin: 0px; color: white; border-radius: 20px; outline: none;">
+                                    <input type="submit" value="<?php uilang("Find it!") ?>" style="background-color: <?php echo $primarycolor ?>; margin: 0px; color: white; border-radius: 20px; outline: none;">
                                 </div>
                             </div>
                             
@@ -1086,7 +1268,7 @@
                                         
                                         ?>
                                         
-                                        <h3 align="center" style="margin: 30px;">Search results:</h3>
+                                        <h3 align="center" style="margin: 30px;"><?php uilang("Search results") ?>:</h3>
                                         <?php
                                         while($row = mysqli_fetch_assoc($result)){
                                             $uid = $row["userid"];
@@ -1097,7 +1279,7 @@
                                                 <div class="productthumbnail">
                                                     <div class="thumbnailimage" style="margin-bottom: 10px; background: url(upload/<?php echo $row["productid"] ?>-thumb.<?php echo $row["ext"] ?>) no-repeat center center; background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;">
                                                         <div style="display: inline-block;">
-                                                            <div class="pricetag"><i class="fa fa-tag"></i> <?php echo $currencysymbol . $row["price"] ?></div>
+                                                            <div class="pricetag"><i class="fa fa-tag"></i> <?php echo $currencysymbol . number_format($row["price"]) ?></div>
                                                         </div>
                                                     </div>
     
@@ -1113,14 +1295,14 @@
                                         }
                                     }else{
                                         ?>
-                                        <h3 align="center" style="margin: 30px;">Search results:</h3>
-                                        <p align="center">Nothing found.</p>
+                                        <h3 align="center" style="margin: 30px;"><?php uilang("Search results") ?>:</h3>
+                                        <p align="center"><?php uilang("Nothing found") ?>.</p>
                                         <?php
                                     }
                                 }else{
                                     ?>
-                                    <h3 align="center" style="margin: 30px;">Search results:</h3>
-                                    <p align="center">Nothing found.</p>
+                                    <h3 align="center" style="margin: 30px;"><?php uilang("Search results") ?>:</h3>
+                                    <p align="center"><?php uilang("Nothing found") ?>.</p>
                                     <?php
                                 }
                             }
@@ -1154,7 +1336,7 @@
                                     <div class="productthumbnail">
                                         <div class="thumbnailimage" style="margin-bottom: 10px; background: url(upload/<?php echo $row["productid"] ?>-thumb.<?php echo $row["ext"] ?>) no-repeat center center; background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;">
                                             <div style="display: inline-block;">
-                                                <div class="pricetag"><i class="fa fa-tag"></i> <?php echo $currencysymbol . $row["price"] ?></div>
+                                                <div class="pricetag"><i class="fa fa-tag"></i> <?php echo $currencysymbol . number_format($row["price"]) ?></div>
                                             </div>
                                         </div>
                                         <h3 style="margin: 0px; display: block;"><?php echo $row["title"] ?></h3>
@@ -1203,6 +1385,8 @@
             </div>
             
         </div>
+        <div id="galpicker"></div>
+        <div id="imageviewer"></div>
         <div id="buyerchatscript"></div>
         <script>
         
@@ -1274,10 +1458,75 @@
                 
             }
             
+            function viewimage(imageid, ext, delbutton){
+                var dbtn = "";
+                if(delbutton)
+                    dbtn = "<div style='padding: 20px;'><a href='?dashboard&deletegalimage="+imageid+"&ext="+ext+"'><i class='fa fa-trash'></i> <?php uilang("Delete this image") ?></a></div>";
+                $("#imageviewer").html("<div onclick='hideImageviewer()' style='text-align: center'><img src='upload/" + imageid + "." + ext + "' style='width: 100%; max-width: 720px;'>" + dbtn + "</div>").fadeIn()
+            }
+            
+            function hideImageviewer(){
+                $("#imageviewer").fadeOut()
+            }
+            
+            function showGalPicker(){
+                $("#galpicker").html( $("#usergallery").html())
+                var galitemslength = $("#galpicker").find(".productthumbnail").length
+                for(var i = 0; i < galitemslength; i++){
+                    $("#galpicker").find(".productthumbnail").eq(i).attr({ "onclick" : "addToGalPickerInput('"+$("#galpicker").find(".productthumbnail").eq(i).find("i").eq(0).html()+"')" })
+                }
+                if(galitemslength > 0){
+                    $("#galpicker").append( "<div><button style='margin-top: 30px; max-width: 200px; ' onclick=\"$('#galpicker').fadeOut()\"><?php uilang("Close") ?></button></div>" ).fadeIn();
+                }else{
+                    $("#galpicker").html( "<h2>Nothing found!</h2><div>You don't have any image in your Gallery.</div><div><button style='max-width: 200px; margin-top: 30px;' onclick=\"$('#galpicker').fadeOut()\"><?php uilang("Close") ?></button></div>" ).fadeIn();
+                }
+            }
+            
+            function addToGalPickerInput(imgfile){
+                var tmpinpval = $(".moreimagesinput").val()
+                var tmparray = []
+                if(tmpinpval.split(",").length > 1){
+                    tmparray = tmpinpval.split(",")
+                }
+                var tmptxt = ""
+                for(var i = 0; i < tmparray.length; i++){
+                    if(tmparray[i] != "")
+                        tmptxt += tmparray[i] + ","
+                    if(tmparray[i] == imgfile){
+                        alert("<?php uilang("This image is already used") ?>.")
+                        return
+                    }
+                }
+                $(".moreimagesinput").val(tmptxt + imgfile + ",")
+                $(".addmoreimgvisual").append("<div class='addedfromgallery' style='background: url(upload/"+imgfile+") no-repeat center center; background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;'><div onclick=removeAddedGalimage('" +imgfile+ "') style='padding: 20px; margin: 20px; background-color: white; border-radius: 10px; color: red; cursor: pointer; font-weight: bold; display: inline-block;'><i class='fa fa-times'></i> <?php uilang("Remove") ?></div></div>")
+                $("#galpicker").fadeOut()
+            }
+            
+            function removeAddedGalimage(imgfile){
+                for(var i = 0; i < $(".addedfromgallery").length; i++){
+                    if( $(".addedfromgallery").eq(i).html().indexOf(imgfile) > -1 )
+                        $(".addedfromgallery").eq(i).remove()
+                }
+                
+                var tmpinpval = $(".moreimagesinput").val()
+                var tmparray = []
+                if(tmpinpval.split(",").length > 0){
+                    tmparray = tmpinpval.split(",")
+                }
+                var tmptxt = ""
+                for(var i = 0; i < tmparray.length; i++){
+                    if(tmparray[i] != "" && tmparray[i] != imgfile)
+                        tmptxt += tmparray[i] + ","
+                }
+                $(".moreimagesinput").val(tmptxt)
+                if($(".moreimagesinput").val() == "")
+                    $(".addmoreimgvisual").html("")
+            }
+            
+            
+            
         </script>
         
-        <?php 
-            echo uilang("Messaging", 0);
-        ?>
+        
     </body>
 </html>

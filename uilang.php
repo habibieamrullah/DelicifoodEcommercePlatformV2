@@ -23,9 +23,10 @@
         tt("Price", "Harga");
         tt("Description", "Keterangan");
         tt("Submit", "Tambahkan");
-        tt("Choose your product photo:", "Pilih gambar produk:");
+        tt("Choose your primary product photo:", "Pilih gambar utama produk:");
         tt("Products", "Produk");
         tt("Click to edit one of your published products.", "Klik pada gambar untuk mengubah data produk.");
+        tt("Current product photo (Click if you want to replace it)", "Foto produk saat ini (Klik jika Anda ingin menggantinya)");
         tt("You don't have any product yet.", "Anda belum menambahkan produk.");
         tt("Profile", "Profil");
         tt("Are you willing to be contacted via WhatsApp chat?", "Apakah Anda bersedia dihubungi via WhatsApp?");
@@ -74,6 +75,27 @@
         tt("Click", "Klik");
         tt("to delete it", "untuk menghapusnya");
         tt("Product has been successfully deleted", "Produk berhasil dihapus");
+        tt("Gallery", "Galeri");
+        tt("Great! New product has been added", "Produk baru berhasil ditambahkan");
+        tt("You did not add any image yet", "Anda belum menambahkan gambar apapun");
+        tt("New image has been added", "Gambar baru berhasil ditambahkan");
+        tt("Add new Image", "Tambahkan gambar baru");
+        tt("Choose any image file and click Sumbit to upload", "Pilih gambar yang Anda inginkan lalu klik Tambahkan");
+        tt("What are you looking for?", "Apa yang Anda cari?");
+        tt("Find it!", "Temukan!");
+        tt("Search results", "Hasil pencarian");
+        tt("Nothing found", "Tidak ditemukan apapun");
+        tt("Delete this image", "Hapus gambar ini");
+        tt("You have", "Anda punya");
+        tt("images in your Gallery. You can upload up to", "gambar di Galeri. Anda bisa mengunggah hingga");
+        tt("images to this Gallery", "gambar ke Galeri ini");
+        tt("Image removed", "Gambar telah dihapus");
+        tt("Add more images from Gallery", "Tambah gambar lainnya dari Galeri");
+        tt("Click to add more images from Gallery", "Klik untuk menambahkan gambar lain dari Galeri");
+        tt("Close", "Tutup");
+        tt("Remove", "Singkirkan");
+        tt("This image is already used", "Gambar ini sudah dipakai");
+        tt("More images", "Gambar lainnya");
     }
     
     $rawword;

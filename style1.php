@@ -23,7 +23,7 @@ h1, h2, h3, h4, h5, p{
 }
 
 p{
-    font-size: 20px;
+    font-size: 18px;
     margin-bottom: 15px;
 }
 
@@ -345,6 +345,7 @@ button, .submitbutton{
     -webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.15);
     -moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.15);
     box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.15);
+    cursor: pointer;
 }
 
 #searchbox{
@@ -372,6 +373,9 @@ button, .submitbutton{
 
 label{
     font-weight: bold;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    display: block;
 }
 
 .messaging{
@@ -493,4 +497,70 @@ tr:hover{
 #currentchatconversation{
     max-height: 300px;
     overflow: auto;
+}
+
+.alert{
+    border-radius: 5px;
+    border: 1px dashed <?php echo $primarycolor ?>;
+    color: <?php echo $primarycolor ?>;
+    background-color: white;
+    padding: 10px;
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+#imageviewer{
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding-top: 120px;
+    padding-bottom: 50px;
+    background-color: rgba(0, 0, 0, .5);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    overflow: auto;
+    color: white;
+}
+
+#galpicker{
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 50px;
+    padding-top: 120px;
+    background-color: rgba(0, 0, 0, .5);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    overflow: auto;
+    color: white;
+    text-align: center;
+}
+
+.addmoreimgbutton{
+    padding: 50px;
+    border: 1px dashed <?php echo $primarycolor ?>;
+    border-radius: 10px;
+    text-align: center;
+    color: <?php echo $primarycolor ?>;
+    cursor: pointer;
+}
+
+.addmoreimgbutton:hover{
+    background-color: <?php echo $primarycolor ?>;
+    color: white;
+}
+
+.addedfromgallery{
+    width: 100%;
+    border-radius: 10px;
+    height: 100px;
+    margin-bottom: 10px;
+    border: 1px solid <?php echo $primarycolor ?>;
 }

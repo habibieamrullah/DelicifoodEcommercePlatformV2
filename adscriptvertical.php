@@ -1,0 +1,1 @@
+<!-- your vertical banner ad script -->
