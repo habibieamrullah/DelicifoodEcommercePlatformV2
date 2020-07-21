@@ -7,6 +7,7 @@ $websitetags = "ecommerce, platform, php, source code";
 $baseurl = "https://localhost/delicifood/index.php";
 $currencysymbol = "$";
 $maxgalleryimg = 100; //Maximum amount of images a user can add to the image gallery.
+$maxpaginationresult = 12;
 
 //Site UI language: en (English), id (Bahasa Indonesia)
 $defaultlang = "en";

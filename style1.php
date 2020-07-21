@@ -113,7 +113,10 @@ input, button, textarea, select{
 }
 
 textarea{
-    height: 100px;
+    height: 200px;
+    font-family: 'Dosis', sans-serif;
+    font-weight: bold;
+    font-size: 18px;
 }
 
 button, .submitbutton{
@@ -128,9 +131,10 @@ button, .submitbutton{
 }
 
 .chatbutton{
-    display: inline-block;
+    display: block;
     border-radius: 10px;
     padding: 20px;
+    margin: 5px;
     color: white;
     font-size: 20px;
     text-align: center;
@@ -140,6 +144,7 @@ button, .submitbutton{
     cursor: pointer;
     font-weight: bold;
     color: <?php echo $primarycolor ?>;
+    transition: background-color 0.25s;
 }
 
 .chatbutton:hover{
@@ -207,6 +212,7 @@ button, .submitbutton{
     padding: 20px;
     cursor: pointer;
     text-align: right;
+    transition: background-color 0.25s;
 }
 
 .mobilevisible{
@@ -328,6 +334,10 @@ button, .submitbutton{
     
     .dashboardleftbutton{
         display: block;
+    }
+    
+    .chatbutton{
+        display: inline-block;
     }
 }
 
@@ -517,13 +527,13 @@ tr:hover{
     left: 0;
     right: 0;
     bottom: 0;
-    padding-top: 120px;
-    padding-bottom: 50px;
+    padding: 50px;
     background-color: rgba(0, 0, 0, .5);
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
     overflow: auto;
     color: white;
+    z-index: 313;
 }
 
 #galpicker{
@@ -563,4 +573,25 @@ tr:hover{
     height: 100px;
     margin-bottom: 10px;
     border: 1px solid <?php echo $primarycolor ?>;
+}
+
+.pagenumber{
+    display: inline-block;
+    background-color: white;
+    border: 1px solid <?php echo $primarycolor ?>;
+    padding: 10px;
+    margin: 3px;
+    cursor: pointer;
+    transition: background-color 0.25s;
+}
+
+.pagenumber:hover{
+    background-color: <?php echo $primarycolor ?>;
+    color: white;
+}
+
+hr{
+    border: 1px dashed <?php echo $primarycolor ?>;
+    margin-top: 30px;
+    margin-bottom: 30px;
 }

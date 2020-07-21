@@ -85,6 +85,7 @@
         <link rel="stylesheet" type="text/css" href="slick/slick-theme.css"/>
         <script type="text/javascript" src="slick/slick.min.js"></script>
         
+        <link rel="stylesheet" type="text/css" href="sharingbuttons.css"/>
         
         <script>
             var onlineinterval
@@ -108,7 +109,7 @@
                 for(var i = 0; i < tmp.length; i++){
                     if(tmp[i] != ""){
                         //$(".singleproductgallery").append("<div style='display: inline-block; width: 100px;'><img src='upload/"+tmp[i].split('.')[0] + "-thumb." + tmp[i].split('.')[1] +"' width='100px;'></div>")
-                        $(".singleproductgallery").append("<div class='productthumbnail' style='width: 100px;' onclick=\"viewimage('"+tmp[i].split('.')[0]+"','" + tmp[i].split('.')[1] +"', false)\"><div style='width: 100px; height: 100px; background: url(upload/" + tmp[i].split('.')[0] + "-thumb." + tmp[i].split('.')[1] + ") no-repeat center center; background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;'></div></div>")
+                        $(".singleproductgallery").append("<div class='productthumbnail' style='width: 100px; display: inline-block;' onclick=\"viewimage('"+tmp[i].split('.')[0]+"','" + tmp[i].split('.')[1] +"', false)\"><div style='width: 100px; height: 100px; background: url(upload/" + tmp[i].split('.')[0] + "-thumb." + tmp[i].split('.')[1] + ") no-repeat center center; background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;'></div></div>")
                         
                     }
                 }
@@ -229,7 +230,7 @@
                                     <p><?php uilang("This email address is already registered. Try to use another email."); ?></p>
                                     <?php
                                 }else{
-                                    mysqli_query($connection, "INSERT INTO $tableusers (datereg, email, password, name, phone, address, userid, isonline) VALUES ('$datereg', '$email', '$password', '$name', '$phone', '$address', '$userid', 0)");
+                                    mysqli_query($connection, "INSERT INTO $tableusers (datereg, email, password, name, phone, address, userid, isonline, waenabled) VALUES ('$datereg', '$email', '$password', '$name', '$phone', '$address', '$userid', 0, 1)");
                                     ?>
                                     <p><?php uilang("Thank you for registering!"); ?></p>
                                     <script>
@@ -333,7 +334,7 @@
                                             <label><?php uilang("Title") ?></label>
                                             <input name="title" placeholder="<?php uilang("Title"); ?>">
                                             <label><?php uilang("Price") ?></label>
-                                            <input name="price" type="number" placeholder="<?php uilang("Price"); ?>">
+                                            <input name="price" type="number" placeholder="<?php uilang("Price"); ?>" value="0">
                                             <label><?php uilang("Description") ?></label>
                                             <textarea name="description" placeholder="<?php uilang("Description"); ?>"></textarea>
                                             <label><?php uilang("Choose your primary product photo:"); ?></label>
@@ -362,9 +363,16 @@
                                                     
                                                     <div class="productthumbnail">
                                                         <div class="thumbnailimage" style="margin-bottom: 10px; background: url(upload/<?php echo $productrow["productid"] ?>-thumb.<?php echo $productrow["ext"] ?>) no-repeat center center; background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;">
-                                                            <div style="display: inline-block;">
-                                                                <div class="pricetag"><i class="fa fa-tag"></i> <?php echo $currencysymbol . number_format($productrow["price"]) ?></div>
-                                                            </div>
+                                                            <?php 
+                                                            if($productrow["price"] != 0){
+                                                                ?>
+                                                                <div style="display: inline-block;">
+                                                                    <div class="pricetag"><i class="fa fa-tag"></i> <?php echo $currencysymbol . number_format($productrow["price"]) ?></div>
+                                                                </div>
+                                                                <?php
+                                                            } 
+                                                            ?>
+                                                            
                                                         </div>
                                                         
                                                         <h3 style="margin: 0px;"><?php echo $productrow["title"] ?></h3>
@@ -390,30 +398,37 @@
                                         
                                         <?php
                                         if(isset($_POST["submitnewimage"])){
-                                            $maxsize = 2097152;
-                                            if(($_FILES['newimageforgallery']['size'] >= $maxsize)){
-                                                echo "<div class='alert'>Your image is too large. Try different image.</div>";
-                                            }else if($_FILES["newimageforgallery"]["size"] == 0){
-                                                //
+                                            
+                                            $sql = "SELECT * FROM $tablegallery WHERE userid = '$userid' ORDER BY id DESC";
+                                            $result = mysqli_query($connection, $sql);
+                                            if(mysqli_num_rows($result) < 100){
+                                                $maxsize = 2097152;
+                                                if(($_FILES['newimageforgallery']['size'] >= $maxsize)){
+                                                    echo "<div class='alert'>Your image is too large. Try different image.</div>";
+                                                }else if($_FILES["newimageforgallery"]["size"] == 0){
+                                                    //
+                                                }else{
+                                                	if($_FILES['newimageforgallery']['error'] > 0) { echo "<div class='alert'>Error during uploading new picture, try again</div>"; }
+                                                	$extsAllowed = array( 'jpg', 'jpeg', 'png' );
+                                                	$uploadedfile = $_FILES["newimageforgallery"]["name"];
+                                                	$extension = pathinfo($uploadedfile, PATHINFO_EXTENSION);
+                                                	if (in_array($extension, $extsAllowed) ) { 
+                                                	    $newppic = substr(str_shuffle(str_repeat("0123456789abcdefghijklmnopqrstuvwxyz", 5)), 0, 10);
+                                                    	$name = "upload/" . $newppic .".". $extension;
+                                                    	$result = move_uploaded_file($_FILES['newimageforgallery']['tmp_name'], $name);
+                                                    	?>
+                                                    	<div class="alert"><?php uilang("New image has been added") ?></div>
+                                                    	<?php
+                                                    	mysqli_query($connection, "INSERT INTO $tablegallery (userid, imagefile, ext) VALUES ('$userid', '$newppic', '$extension')");
+                                                    	createThumbnail($name, "upload/" . $newppic ."-thumb." . $extension, 256);
+                                                    	
+                                                	} else { echo "<div class='alert'>Image file is not valid. Please try again.</div>"; }
+                                                }
                                             }else{
-                                            	if($_FILES['newimageforgallery']['error'] > 0) { echo "<div class='alert'>Error during uploading new picture, try again</div>"; }
-                                            	$extsAllowed = array( 'jpg', 'jpeg', 'png' );
-                                            	$uploadedfile = $_FILES["newimageforgallery"]["name"];
-                                            	$extension = pathinfo($uploadedfile, PATHINFO_EXTENSION);
-                                            	if (in_array($extension, $extsAllowed) ) { 
-                                            	    $newppic = substr(str_shuffle(str_repeat("0123456789abcdefghijklmnopqrstuvwxyz", 5)), 0, 10);
-                                                	$name = "upload/" . $newppic .".". $extension;
-                                                	$result = move_uploaded_file($_FILES['newimageforgallery']['tmp_name'], $name);
-                                                	?>
-                                                	<div class="alert"><?php uilang("New image has been added") ?></div>
-                                                	<?php
-                                                	mysqli_query($connection, "INSERT INTO $tablegallery (userid, imagefile, ext) VALUES ('$userid', '$newppic', '$extension')");
-                                                	createThumbnail($name, "upload/" . $newppic ."-thumb." . $extension, 256);
-                                                	
-                                            	} else { echo "<div class='alert'>Image file is not valid. Please try again.</div>"; }
+                                                ?>
+                                                <div class='alert'><?php uilang("You can not upload any more image") ?>.</div>
+                                                <?php
                                             }
-                                            ?>
-                                            <?php
                                         }
                                         
                                         if(isset($_GET["deletegalimage"])){
@@ -440,11 +455,13 @@
                                         
                                         <h3><?php uilang("Gallery") ?></h3>
                                         <?php
+                                        $totalgalimages = 0;
                                         $sql = "SELECT * FROM $tablegallery WHERE userid = '$userid' ORDER BY id DESC";
                                         $result = mysqli_query($connection, $sql);
                                         if(mysqli_num_rows($result) > 0){
+                                            $totalgalimages = mysqli_num_rows($result);
                                             ?>
-                                            <p><?php uilang("You have") ?> <?php echo mysqli_num_rows($result) ?> <?php uilang("images in your Gallery. You can upload up to") ?> <?php echo $maxgalleryimg ?> <?php uilang("images to this Gallery") ?>.</p>
+                                            <p><?php uilang("You have") ?> <?php echo $totalgalimages ?> <?php uilang("images in your Gallery. You can upload up to") ?> <?php echo $maxgalleryimg ?> <?php uilang("images to this Gallery") ?>.</p>
                                             <div id="usergallery">
                                             <?php
                                             while($row = mysqli_fetch_assoc($result)){
@@ -462,16 +479,23 @@
                                             <p><?php uilang("You did not add any image yet") ?></p>
                                             <?php
                                         }
+                                        
+                                        if($totalgalimages < $maxgalleryimg){
+                                            ?>
+                                            <h3><?php uilang("Add new Image") ?></h3>
+                                            <p><?php uilang("Choose any image file and click Sumbit to upload") ?>.</p>
+                                            <form action="<?php echo $baseurl ?>?dashboard" method="post" enctype="multipart/form-data">
+                                                <input type="file" name="newimageforgallery" accept="image/*">
+                                                <input type="submit" name="submitnewimage" value="<?php uilang("Submit") ?>" class="submitbutton">
+                                            </form>
+                                            <?php
+                                        }
                                         ?>
-                                        <h3><?php uilang("Add new Image") ?></h3>
-                                        <p><?php uilang("Choose any image file and click Sumbit to upload") ?>.</p>
-                                        <form action="<?php echo $baseurl ?>?dashboard" method="post" enctype="multipart/form-data">
-                                            <input type="file" name="newimageforgallery" accept="image/*">
-                                            <input type="submit" name="submitnewimage" value="<?php uilang("Submit") ?>" class="submitbutton">
-                                        </form>
+
                                     </div>
                                     <div class="dbp dbp4">
                                         <h3><?php uilang("Profile") ?></h3>
+                                        
                                         <form action="<?php echo $baseurl ?>?dashboard" method="post">
                                             <label><?php uilang("Name/Nickname") ?></label>
                                             <input name="name" type="text" placeholder="<?php uilang("Name/Nickname") ?>" value="<?php echo $name ?>">
@@ -498,6 +522,35 @@
                                                 ?>
                                             </select>
                                             <input name="updateprofile" type="submit" value="<?php uilang("Update") ?>" class="submitbutton">
+                                        </form>
+                                        <hr>
+                                        <h3><?php uilang("Change password") ?></h3>
+                                        <?php
+                                        if(isset($_POST["newpassword"])){
+                                            $oldpassword = mysqli_real_escape_string($connection, $_POST["oldpassword"]);
+                                            $newpassword = mysqli_real_escape_string($connection, $_POST["newpassword"]);
+                                            
+                                            if($oldpassword != "" && $newpassword != ""){
+                                                $sql = "SELECT * FROM $tableusers WHERE userid = '$userid' AND password = '$oldpassword'";
+                                                if(mysqli_num_rows(mysqli_query($connection, $sql)) > 0){
+                                                    mysqli_query($connection, "UPDATE $tableusers SET password = '$newpassword' WHERE userid='$userid'");
+                                                    ?>
+                                                    <div class='alert'><?php uilang("Your password has been updated") ?>.</div>
+                                                    <?php
+                                                }else{
+                                                    ?>
+                                                    <div class='alert'><?php uilang("Incorrect old password") ?>.</div>
+                                                    <?php
+                                                }
+                                            }
+                                        }
+                                        ?>
+                                        <form action="<?php echo $baseurl ?>?dashboard" method="post">
+                                            <label><?php uilang("Old password") ?></label>
+                                            <input type="password" placeholder="<?php uilang("Old password") ?>" name="oldpassword">
+                                            <label><?php uilang("New password") ?></label>
+                                            <input type="password" placeholder="<?php uilang("New password") ?>" name="newpassword">
+                                            <input type="submit" value="<?php uilang("Update") ?>" class="submitbutton">
                                         </form>
                                     </div>
                                     <div class="dbp dbp5">
@@ -1005,6 +1058,10 @@
                                     ?>
                                     dbpage(3)
                                     <?php
+                                }else if(isset($_POST["newpassword"])){
+                                    ?>
+                                    dbpage(4)
+                                    <?php
                                 }
                                 ?>
                                 
@@ -1088,9 +1145,17 @@
                                 
                                 <div class="singleproductrow">
                                     <div class="sprright">
-                                        <h1><?php echo $row["title"] ?> <span style="font-size: 14px;"><?php uilang("Just for") ?></span> <span style="color: <?php echo $primarycolor ?>"><i class="fa fa-tag"></i><?php echo $currencysymbol . number_format($row["price"]) ?></span></h1>
+                                        <h1><?php echo $row["title"] ?> 
+                                            <?php
+                                            if($row["price"] != 0){
+                                                ?>
+                                                <span style="font-size: 14px;"><?php uilang("Just for") ?></span> <span style="color: <?php echo $primarycolor ?>"><i class="fa fa-tag"></i><?php echo $currencysymbol . number_format($row["price"]) ?></span>
+                                                <?php
+                                            }
+                                            ?>
+                                        </h1>
                                         <h4><span style="font-size: 12px;"><?php uilang("Added by") ?></span> <a class="textlink" href="<?php echo $baseurl ?>?user=<?php echo $sellerid ?>"><i class="fa fa-user"></i> <?php echo $sellerinfo["name"] ?></a> <span style="font-size: 12px;"><?php uilang("from") ?></span> <i class="fa fa-map-marker"></i> <?php echo $sellerinfo["address"] ?></h4>
-                                        <p><?php echo $row["description"] ?></p>
+                                        <p><?php echo nl2br($row["description"]) ?></p>
                                         
                                         <?php
                                         if($row["moreimages"] != ""){
@@ -1102,52 +1167,60 @@
                                             </script>
                                             <?php
                                         }
+                                        
                                         ?>
                                         
-                                        <?php
-                                        
-                                        //if($_SESSION["userid"] != $sellerid){
-                                            if(isset($_GET["chat"])){
-                                                ?>
-                                                <div class="messaging">
-                                                    <h3><?php uilang("Messaging") ?></h3>
-                                                    <p style="font-size: 12px;"><?php uilang("You are sending a message to") ?> <a class="textlink" href="<?php echo $baseurl ?>?user=<?php echo $sellerid ?>"><i class="fa fa-user"></i> <?php echo $sellerinfo["name"] ?></a>.</p>
-                                                    <div id="currentchatconversation"></div>
-                                                    <div id="messaging"></div>
-                                                    <script>
-                                                        <?php
-                                                        include("messaging.php");
-                                                        ?>
-                                                    </script>
-                                                </div>
-                                                <?php
-                                            }else{
-                                                
-                                                if($sellerinfo["waenabled"] == 1){
+                                        <div>
+                                            <?php
+                                            
+                                            //if($_SESSION["userid"] != $sellerid){
+                                                if(isset($_GET["chat"])){
                                                     ?>
-                                                    <a href="https://wa.me/<?php echo $sellerinfo["phone"] ?>?text=<?php uilang("Hi, I came across this link")?> <?php echo $baseurl . "?product=" . "$productid" ?> <?php uilang("and I want to ask some questions") ?>..."><div class="chatbutton" style="margin-right: 20px;"><i class="fa fa-whatsapp"></i> <?php uilang("Chat on WhatsApp") ?></div></a>
+                                                    <div class="messaging">
+                                                        <h3><?php uilang("Messaging") ?></h3>
+                                                        <p style="font-size: 12px;"><?php uilang("You are sending a message to") ?> <a class="textlink" href="<?php echo $baseurl ?>?user=<?php echo $sellerid ?>"><i class="fa fa-user"></i> <?php echo $sellerinfo["name"] ?></a>.</p>
+                                                        <div id="currentchatconversation"></div>
+                                                        <div id="messaging"></div>
+                                                        <script>
+                                                            <?php
+                                                            include("messaging.php");
+                                                            ?>
+                                                        </script>
+                                                    </div>
+                                                    <?php
+                                                }else{
+                                                    
+                                                    if($sellerinfo["waenabled"] == 1){
+                                                        ?>
+                                                        <a href="https://wa.me/<?php echo $sellerinfo["phone"] ?>?text=<?php uilang("Hi, I came across this link")?> <?php echo $baseurl . "?product=" . "$productid" ?> <?php uilang("and I want to ask some questions") ?>..."><div class="chatbutton"><i class="fa fa-whatsapp"></i> <?php uilang("Chat on WhatsApp") ?></div></a>
+                                                        <?php
+                                                    }
+                                                    
+                                                    ?>
+                                                    <a href="<?php echo $baseurl ?>?product=<?php echo $productid ?>&chat=<?php echo $sellerid ?>"><div class="chatbutton" id="onlinechatbutton"><i class="fa fa-envelope"></i> <?php uilang("Send Message") ?></div></a>
+                                                    
+                                                    <script>
+                                                        $.post("messagingsystem.php", { "isselleronline" : "<?php echo $sellerid ?>" }, function(data){
+                                                            if(data != "0"){
+                                                                var d = new Date()
+                                                                d = d.getTime()
+                                                                var lastonline = parseInt(data)
+                                                                if(d - lastonline < 10000)
+                                                                    $("#onlinechatbutton").html("<i class='fa fa-commenting'></i> <?php uilang("Chat Now") ?>")
+                                                            }
+                                                        } )
+                                                    </script>
                                                     <?php
                                                 }
-                                                
-                                                ?>
-                                                <a href="<?php echo $baseurl ?>?product=<?php echo $productid ?>&chat=<?php echo $sellerid ?>"><div class="chatbutton" id="onlinechatbutton"><i class="fa fa-envelope"></i> <?php uilang("Send Message") ?></div></a>
-                                                
-                                                <script>
-                                                    $.post("messagingsystem.php", { "isselleronline" : "<?php echo $sellerid ?>" }, function(data){
-                                                        if(data != "0"){
-                                                            var d = new Date()
-                                                            d = d.getTime()
-                                                            var lastonline = parseInt(data)
-                                                            if(d - lastonline < 10000)
-                                                                $("#onlinechatbutton").html("<i class='fa fa-commenting'></i> <?php uilang("Chat Now") ?>")
-                                                        }
-                                                    } )
-                                                </script>
-                                                <?php
-                                            }
-                                        //}
-                                        
-                                        ?>
+                                            //}
+                                            
+                                            ?>
+                                        </div>
+                                        <div style="margin-bottom: 20px; font-size: 12px;">
+                                            <?php
+                                            showSharer($baseurl . "?product=" . $productid , $row["title"] . " - " . $websitename);
+                                            ?>
+                                        </div>
                                         <div style="width: 100%; overflow: auto; box-sizing: border-box;">
                                             <br><br><br>
                                             <div id="fb-root"></div>
@@ -1193,9 +1266,15 @@
                                     <a href="<?php echo $baseurl ?>?product=<?php echo $productrow["productid"] ?>">
                                         <div class="productthumbnail">
                                             <div class="thumbnailimage" style="margin-bottom: 10px; background: url(upload/<?php echo $productrow["productid"] ?>-thumb.<?php echo $productrow["ext"] ?>) no-repeat center center; background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;">
-                                                <div style="display: inline-block;">
-                                                    <div class="pricetag"><i class="fa fa-tag"></i> <?php echo $currencysymbol . number_format($productrow["price"]) ?></div>
-                                                </div>
+                                                <?php
+                                                if($productrow["price"] != 0){
+                                                    ?>
+                                                    <div style="display: inline-block;">
+                                                        <div class="pricetag"><i class="fa fa-tag"></i> <?php echo $currencysymbol . number_format($productrow["price"]) ?></div>
+                                                    </div>
+                                                    <?php
+                                                }
+                                                ?>
                                             </div>
                                             
                                             
@@ -1278,9 +1357,15 @@
                                             <a href="<?php echo $baseurl ?>?product=<?php echo $row["productid"] ?>">
                                                 <div class="productthumbnail">
                                                     <div class="thumbnailimage" style="margin-bottom: 10px; background: url(upload/<?php echo $row["productid"] ?>-thumb.<?php echo $row["ext"] ?>) no-repeat center center; background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;">
-                                                        <div style="display: inline-block;">
-                                                            <div class="pricetag"><i class="fa fa-tag"></i> <?php echo $currencysymbol . number_format($row["price"]) ?></div>
-                                                        </div>
+                                                        <?php 
+                                                        if($row["price"] != 0){
+                                                            ?>
+                                                            <div style="display: inline-block;">
+                                                                <div class="pricetag"><i class="fa fa-tag"></i> <?php echo $currencysymbol . number_format($row["price"]) ?></div>
+                                                            </div>
+                                                            <?php
+                                                        }
+                                                        ?>
                                                     </div>
     
                                                     <h3 style="margin: 0px;"><?php echo $row["title"] ?></h3>
@@ -1311,33 +1396,45 @@
                         </form>
                     </div>
                     <?php
-                }else{
+                }else if(isset($_GET["page"])){
                     
-                    //include("adscript.php");
+                    include("adscript.php");
                     
                     ?>
                     <div style="text-align: center;">
-                        
-                        
-                            
                         <?php
+                        $currentpagenumber = mysqli_real_escape_string($connection, $_GET["page"]) - 1;
+                        $nextpage = $currentpagenumber + 2;
+                        $prevpage = $currentpagenumber;
+                        $offset = $currentpagenumber * $maxpaginationresult;
                         
-                        $sql = "SELECT * FROM $tableproducts ORDER BY id DESC";
+                        $totalresult = 0;
+                        $tmpsql = "SELECT * FROM $tableproducts ORDER BY id DESC";
+                        $totalresult = mysqli_num_rows(mysqli_query($connection, $tmpsql));
+                        
+                        $sql = "SELECT * FROM $tableproducts ORDER BY id DESC LIMIT $offset, $maxpaginationresult";
                         $result = mysqli_query($connection, $sql);
                         if(mysqli_num_rows($result) > 0){
+                            
+                            
                             while($row = mysqli_fetch_assoc($result)){
+                                
                                 $uid = $row["userid"];
-                                
-                                
                                 $sellername = mysqli_fetch_assoc(mysqli_query($connection, "SELECT * FROM $tableusers WHERE userid = '$uid'"))["name"];
                                 
                                 ?>
                                 <a href="<?php echo $baseurl ?>?product=<?php echo $row["productid"] ?>">
                                     <div class="productthumbnail">
                                         <div class="thumbnailimage" style="margin-bottom: 10px; background: url(upload/<?php echo $row["productid"] ?>-thumb.<?php echo $row["ext"] ?>) no-repeat center center; background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;">
-                                            <div style="display: inline-block;">
-                                                <div class="pricetag"><i class="fa fa-tag"></i> <?php echo $currencysymbol . number_format($row["price"]) ?></div>
-                                            </div>
+                                            <?php
+                                            if($row["price"] != 0){
+                                                ?>
+                                                <div style="display: inline-block;">
+                                                    <div class="pricetag"><i class="fa fa-tag"></i> <?php echo $currencysymbol . number_format($row["price"]) ?></div>
+                                                </div>
+                                                <?php
+                                            }
+                                            ?>
                                         </div>
                                         <h3 style="margin: 0px; display: block;"><?php echo $row["title"] ?></h3>
                                         <h5 style="margin: 0px;"><i class="fa fa-user"></i> <?php echo $sellername ?></h5>
@@ -1348,12 +1445,112 @@
                                 </a>
                                 <?php
                             }
-                        }else{
-                            ?>
-                            <p align="center"><?php uilang("Coming soon!") ?></p>
-                            <?php
+                            
                         }
                         ?>
+                        <div style='margin: 50px;'>
+                            <?php
+                            
+                            
+                            $pages = ceil($totalresult/$maxpaginationresult);
+                            
+                            if($currentpagenumber > 0){
+                                ?>
+                                <a href='?page=<?php echo $prevpage ?>'><div class='pagenumber'><i class="fa fa-arrow-left"></i></div></a>
+                                <?php
+                            }
+                            
+                            
+                            for ($x = 0; $x < $pages; $x++) {
+                                $currentnumber = $x + 1;
+                                if($currentpagenumber+1 == $currentnumber){
+                                    ?>
+                                    <a href='?page=<?php echo $currentnumber ?>'><div class='pagenumber' style='color: white; background-color: <?php echo $primarycolor ?>'><?php echo $currentnumber ?></div></a>
+                                    <?php
+                                }else
+                                    echo "<a href='?page=" . $currentnumber . "'><div class='pagenumber'>$currentnumber</div></a>";
+                            }
+                            
+                            if($currentpagenumber < $pages-1){
+                                ?>
+                                <a href='?page=<?php echo $nextpage ?>'><div class='pagenumber'><i class="fa fa-arrow-right"></i></div></a>
+                                <?php
+                            }
+                            ?>
+                        </div>
+                    </div>
+                    <?php
+                }else{
+                    
+                    //include("adscript.php");
+                    
+                    ?>
+                    <div style="text-align: center;">
+                        
+                        <div>
+                            <?php
+                            
+                            $totalresult = 0;
+                            $tmpsql = "SELECT * FROM $tableproducts ORDER BY id DESC";
+                            $totalresult = mysqli_num_rows(mysqli_query($connection, $tmpsql));
+                            
+                            $sql = "SELECT * FROM $tableproducts ORDER BY id DESC LIMIT 0, $maxpaginationresult";
+                            $result = mysqli_query($connection, $sql);
+                            if(mysqli_num_rows($result) > 0){
+                                
+                                while($row = mysqli_fetch_assoc($result)){
+                                    $uid = $row["userid"];
+                                    
+                                    
+                                    $sellername = mysqli_fetch_assoc(mysqli_query($connection, "SELECT * FROM $tableusers WHERE userid = '$uid'"))["name"];
+                                    
+                                    ?>
+                                    <a href="<?php echo $baseurl ?>?product=<?php echo $row["productid"] ?>">
+                                        <div class="productthumbnail">
+                                            <div class="thumbnailimage" style="margin-bottom: 10px; background: url(upload/<?php echo $row["productid"] ?>-thumb.<?php echo $row["ext"] ?>) no-repeat center center; background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;">
+                                                <?php
+                                                if($row["price"] != 0){
+                                                    ?>
+                                                    <div style="display: inline-block;">
+                                                        <div class="pricetag"><i class="fa fa-tag"></i> <?php echo $currencysymbol . number_format($row["price"]) ?></div>
+                                                    </div>
+                                                    <?php
+                                                }
+                                                ?>
+                                            </div>
+                                            <h3 style="margin: 0px; display: block;"><?php echo $row["title"] ?></h3>
+                                            <h5 style="margin: 0px;"><i class="fa fa-user"></i> <?php echo $sellername ?></h5>
+                                            <div class="shorttext">
+                                                <?php echo $row["description"] ?>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    <?php
+                                }
+                            }else{
+                                ?>
+                                <p align="center"><?php uilang("Coming soon!") ?></p>
+                                <?php
+                            }
+                            
+                            ?>
+                        </div>
+                        <div style="margin: 50px;">
+                            <?php
+                            
+                            $pages = ceil($totalresult/$maxpaginationresult);
+                            
+                            for ($x = 0; $x < $pages; $x++) {
+                                $currentnumber = $x + 1;
+                                if($currentnumber == 1)
+                                    echo "<a href='?page=" . $currentnumber . "'><div class='pagenumber' style='color: white; background-color: ".$primarycolor."'>$currentnumber</div></a>";
+                                else
+                                    echo "<a href='?page=" . $currentnumber . "'><div class='pagenumber'>$currentnumber</div></a>";
+                            }
+                            
+                            ?>
+                            <a href='?page=2'><div class='pagenumber'><i class="fa fa-arrow-right"></i></div></a>
+                        </div>
                     </div>
                     <?php
                 }
@@ -1462,6 +1659,8 @@
                 var dbtn = "";
                 if(delbutton)
                     dbtn = "<div style='padding: 20px;'><a href='?dashboard&deletegalimage="+imageid+"&ext="+ext+"'><i class='fa fa-trash'></i> <?php uilang("Delete this image") ?></a></div>";
+                else
+                    dbtn = "<div style='padding: 20px;'><a onclick='$(\"#imageviewer\").fadeOut()'><i class='fa fa-times'></i> <?php uilang("Close") ?></a></div>"
                 $("#imageviewer").html("<div onclick='hideImageviewer()' style='text-align: center'><img src='upload/" + imageid + "." + ext + "' style='width: 100%; max-width: 720px;'>" + dbtn + "</div>").fadeIn()
             }
             

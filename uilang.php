@@ -96,6 +96,14 @@
         tt("Remove", "Singkirkan");
         tt("This image is already used", "Gambar ini sudah dipakai");
         tt("More images", "Gambar lainnya");
+        tt("You can not upload any more image", "Anda tidak bisa menambahkan gambar lainnya");
+        tt("Next page", "Halaman berikutnya");
+        tt("Previous page", "Halaman Sebelumnya");
+        tt("Change password", "Ganti password");
+        tt("Old password", "Password lama");
+        tt("New password", "Password baru");
+        tt("Your password has been updated", "Password berhasil diperbarui");
+        tt("Incorrect old password", "Password lama salah");
     }
     
     $rawword;
