@@ -612,8 +612,7 @@
                                                   width="100%"
                                                   height="450"
                                                   frameborder="0" style="border:0"
-                                                  src="https://www.google.com/maps/embed/v1/place?key=AIzaSyAAnjB2ufKlYxNmCRoS784oynVH47T5uZA
-                                                    &q=<?php echo $mapq ?>" allowfullscreen>
+                                                  src="https://www.google.com/maps/embed/v1/place?key=<?php echo $gmapapi ?>&q=<?php echo $mapq ?>" allowfullscreen>
                                                 </iframe>
                                             </div>
                                             <div id="advancedmap">
@@ -654,7 +653,7 @@
                                             }
                                             $("#advancedmap").hide()
                                         </script>
-                                        <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAAnjB2ufKlYxNmCRoS784oynVH47T5uZA&callback=initMap"></script>
+                                        <script async defer src="https://maps.googleapis.com/maps/api/js?key=<?php echo $gmapapi ?>&callback=initMap"></script>
                                         
                                         <hr>
                                         <h3><?php uilang("Change password") ?></h3>
@@ -1353,8 +1352,7 @@
                                           width="100%"
                                           height="450"
                                           frameborder="0" style="border:0"
-                                          src="https://www.google.com/maps/embed/v1/place?key=AIzaSyAAnjB2ufKlYxNmCRoS784oynVH47T5uZA
-                                            &q=<?php echo $mapq ?>" allowfullscreen>
+                                          src="https://www.google.com/maps/embed/v1/place?key=<?php echo $gmapapi ?>&q=<?php echo $mapq ?>" allowfullscreen>
                                         </iframe>
                                         
                                         <div>

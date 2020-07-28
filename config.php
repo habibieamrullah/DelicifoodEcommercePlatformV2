@@ -17,6 +17,9 @@ $primarycolor = "#9503f1";
 $primarycolordarker = "#7e00ce";
 $bodybg = "#cbcbcb";
 
+//Google Map API Key
+$gmapapi = "xxxxxx";
+
 //Mailing settings
 $emailhost = "mail.somedomain.com";
 $emailusername = "username@somedomain.com"; // Change it to yours
