@@ -13,13 +13,11 @@ Features:
 - Seller page view for each seller to showcase all products added by that seller in one page
 - Integrated with Facebook comment plugin
 - WhatsApp chat call to action button integration
-
-Watch the step by step tutorial in this video: coming soon...
-
-What's new in this version?
 - Internal messaging system with email notification
 - Built in chat
 - An option to disable and disable WhatsApp chat button
 - Now has two languages: English and Bahasa Indonesia
+- Pagination system
+- Social media sharing buttons
 
 Previous version: https://github.com/habibieamrullah/DelicifoodEcommercePlatform
