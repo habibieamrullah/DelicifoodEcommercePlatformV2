@@ -15,11 +15,11 @@
         tt("You did not fill all the fields. Please try again.", "Semua harus diisi.");
         tt("Name/Nickname", "Nama/Panggilan");
         tt("Phone Number", "Nomor HP");
-        tt("*Include your country code before your phone number like this: 6590611234", "*Masukkan nomor HP dengan kode negara seperti ini misalnya: 6290611234");
+        tt("*Include your country code before your phone number like this: 6590611234", "*Masukkan nomor HP dengan kode negara seperti ini misalnya: 6287880334334");
         tt("Address", "Alamat");
         tt("Good bye!", "Sampai jumpa!");
         tt("Add", "Tambah");
-        tt("Title", "Judul");
+        tt("Title", "Nama Produk");
         tt("Price", "Harga");
         tt("Description", "Keterangan");
         tt("Submit", "Tambahkan");
@@ -29,6 +29,7 @@
         tt("Current product photo (Click if you want to replace it)", "Foto produk saat ini (Klik jika Anda ingin menggantinya)");
         tt("You don't have any product yet.", "Anda belum menambahkan produk.");
         tt("Profile", "Profil");
+        tt("Your profile has been updated", "Profil Anda berhasil diperbarui");
         tt("Are you willing to be contacted via WhatsApp chat?", "Apakah Anda bersedia dihubungi via WhatsApp?");
         tt("This option will enable WhatsApp chat button on your products.", "Jika Anda pilih Ya maka akan muncul tombol chat via WhatsApp pada produk Anda.");
         tt("Update", "Perbarui");
@@ -81,7 +82,7 @@
         tt("New image has been added", "Gambar baru berhasil ditambahkan");
         tt("Add new Image", "Tambahkan gambar baru");
         tt("Choose any image file and click Sumbit to upload", "Pilih gambar yang Anda inginkan lalu klik Tambahkan");
-        tt("What are you looking for?", "Apa yang Anda cari?");
+        tt("What are you looking for?", "Cari apa?");
         tt("Find it!", "Temukan!");
         tt("Search results", "Hasil pencarian");
         tt("Nothing found", "Tidak ditemukan apapun");
@@ -104,6 +105,21 @@
         tt("New password", "Password baru");
         tt("Your password has been updated", "Password berhasil diperbarui");
         tt("Incorrect old password", "Password lama salah");
+        tt("Approximate location", "Lokasi perkiraan penjual");
+        tt("You may lke these", "Anda mungkin tertarik");
+        tt("Most popular", "Paling populer");
+        tt("Recently added", "Baru ditambahkan");
+        tt("Your approximate location", "Lokasi perkiraan Anda");
+        tt("Your coordinates on map (leave it empty if not needed)", "Koordinat lokasi Anda di peta (kosongkan jika tidak perlu)");
+        tt("Other", "Lainnya");
+        tt("Category", "Kategori");
+        tt("Browse by category", "Jelajah berdasarkan kategori");
+        tt("Products in category", "Produk dalam kategori");
+        tt("Click on map to specify the coordinates", "Klik pada peta untuk tentukan koordinat");
+        tt("Click here to specify your detailed location on map", "Atau klik di sini untuk tentukan titik lokasi");
+        tt("Open Map", "Buka Peta");
+        tt("Recent Products by Category", "Terbaru dalam Kategori");
+        tt("Show more...", "Lebih banyak...");
     }
     
     $rawword;

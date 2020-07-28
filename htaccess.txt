@@ -1,0 +1,6 @@
+#prettyurl
+#https://www.generateit.net/mod-rewrite/
+RewriteRule ^product/([^/]*)$ /?product=$1 [L]
+RewriteRule ^page/([^/]*)$ /?page=$1 [L]
+RewriteRule ^page/([^/]*)/category/([^/]*)$ /?page=$1&category=$2 [L]
+RewriteRule ^user/([^/]*)$ /?user=$1 [L]

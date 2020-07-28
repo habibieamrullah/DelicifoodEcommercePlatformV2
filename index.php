@@ -4,6 +4,8 @@
     include("uilang.php");
     include("functions.php");
     include("mailing.php");
+
+    
 ?>
 
 
@@ -23,8 +25,22 @@
                 ?>
                 <title><?php echo $row["title"] ?> - <?php echo $websitename ?></title>
                 <meta name="description" content="<?php echo shorten_text($row["description"], 180, '', true) ?>">
+                
+                <meta property="og:title" content="<?php echo $row["title"] ?> - <?php echo $websitename ?>" />
+                <meta property="og:image:url" content="<?php echo $baseurl ?>upload/<?php echo $row["productid"] ?>-thumb.<?php echo $row["ext"] ?>" />
+                <meta property="og:description" content="description" content="<?php echo shorten_text($row["description"], 180, '', true) ?>" />
                 <?php
             }
+        }else if(isset($_GET["category"])){
+            $category = mysqli_real_escape_string($connection, $_GET["category"]);
+            ?>
+            <title><?php echo $category; ?> - <?php echo $websitename ?></title>
+            <meta name="description" content="<?php echo $websitetitle ?> - <?php uilang("Products in category"); echo " " . $category . $websitename; ?>">
+            
+            <meta property="og:title" content="<?php echo $category; ?> - <?php echo $websitename ?>" />
+            <meta property="og:image:url" content="<?php echo $baseurl ?>images/logo.png" />
+            <meta property="og:description" content="description" content="<?php echo $websitetitle ?> - <?php uilang("Products in category"); echo " " . $category . $websitename; ?>" />
+            <?php
         }else if(isset($_GET["user"])){
             
             $userid = mysqli_real_escape_string($connection, $_GET["user"]);
@@ -35,24 +51,53 @@
                 $row = mysqli_fetch_assoc($result);
                 ?>
                 <title><?php echo $row["name"] ?> - <?php echo $websitename ?></title>
-                <meta name="description" content="<?php echo $websitetitle ?>">
+                <meta name="description" content="<?php echo $websitetitle ?> - <?php echo $row["name"] ?> - <?php echo $websitename ?>">
+                
+                <meta property="og:title" content="<?php echo $row["name"] ?> - <?php echo $websitename ?>" />
+                <meta property="og:image:url" content="<?php echo $baseurl ?>images/logo.png" />
+                <meta property="og:description" content="description" content="<?php echo $websitetitle ?> - <?php echo $row["name"] ?> - <?php echo $websitename ?>" />
                 <?php
             }
         }else if(isset($_GET["about"])){
             ?>
             <title><?php uilang("About"); echo " " . $websitename; ?></title>
-            <meta name="description" content="<?php echo $websitetitle ?>">
+            <meta name="description" content="<?php echo $websitetitle ?> - <?php uilang("About"); echo " " . $websitename; ?>">
+            
+            <meta property="og:title" content="<?php uilang("About"); echo " " . $websitename; ?>" />
+            <meta property="og:image:url" content="<?php echo $baseurl ?>images/logo.png" />
+            <meta property="og:description" content="description" content="<?php echo $websitetitle ?> - <?php uilang("About"); echo " " . $websitename; ?>" />
+
             <?php
+        }else if(isset($_GET["search"])){
+            $sstring = mysqli_real_escape_string($connection, $_GET["search"]);
+            if($sstring != ""){
+                ?>
+                <title><?php $sstring . " - " . uilang("Search results"); echo " " . $websitename; ?></title>
+                <meta name="description" content="<?php echo $websitetitle ?> - <?php $sstring . " - " . uilang("Search results"); echo " " . $websitename; ?>"> 
+                
+                <meta property="og:title" content="<?php $sstring . " - " . uilang("Search results"); echo " " . $websitename; ?>" />
+                <meta property="og:image:url" content="<?php echo $baseurl ?>images/logo.png" />
+                <meta property="og:description" content="<?php echo $websitetitle ?> - <?php $sstring . " - " . uilang("Search results"); echo " " . $websitename; ?>" />
+                <?php
+            }
         }else{
             
             ?>
             <title><?php echo $websitename ?> - <?php echo $websitetitle ?></title>
             <meta name="description" content="<?php echo $websitetitle ?>">
+            
+            <meta property="og:title" content="<?php echo $websitename ?> - <?php echo $websitetitle ?>" />
+            <meta property="og:image:url" content="<?php echo $baseurl ?>images/logo.png" />
+            <meta property="og:description" content="<?php echo $websitetitle ?>" />
             <?php
             
         }
         
         ?>
+        
+        
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="<?php echo $baseurl ?>" />
         
         <meta name="keywords" content="<?php echo $websitetags ?>">
         
@@ -62,30 +107,24 @@
         <meta http-equiv="x-ua-compatible" content="ie=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
         
-        <scriptsrc="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-        
-        <link rel="stylesheet" type="text/css" href="assets/css/font-awesome.css">
+        <link rel="stylesheet" type="text/css" href="<?php echo $baseurl ?>assets/css/font-awesome.css">
         <script
           src="https://code.jquery.com/jquery-3.4.1.min.js"
           integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
           crossorigin="anonymous"></script>
         <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@300&display=swap" rel="stylesheet">
         
-        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-		<link rel="icon" href="favicon.ico" type="image/x-icon">
+        <link rel="shortcut icon" href="<?php echo $baseurl ?>favicon.ico" type="image/x-icon">
+		<link rel="icon" href="<?php echo $baseurl ?>favicon.ico" type="image/x-icon">
         
         
-        <style>
-            <?php
-            include("style1.php");
-            ?>
-        </style>
         
-        <link rel="stylesheet" type="text/css" href="slick/slick.css"/>
-        <link rel="stylesheet" type="text/css" href="slick/slick-theme.css"/>
-        <script type="text/javascript" src="slick/slick.min.js"></script>
         
-        <link rel="stylesheet" type="text/css" href="sharingbuttons.css"/>
+        <link rel="stylesheet" type="text/css" href="<?php echo $baseurl ?>slick/slick.css"/>
+        <link rel="stylesheet" type="text/css" href="<?php echo $baseurl ?>slick/slick-theme.css"/>
+        <script type="text/javascript" src="<?php echo $baseurl ?>slick/slick.min.js"></script>
+        
+        <link rel="stylesheet" type="text/css" href="<?php echo $baseurl ?>sharingbuttons.css"/>
         
         <script>
             var onlineinterval
@@ -108,20 +147,27 @@
                 var tmp = galdata.split(",")
                 for(var i = 0; i < tmp.length; i++){
                     if(tmp[i] != ""){
-                        //$(".singleproductgallery").append("<div style='display: inline-block; width: 100px;'><img src='upload/"+tmp[i].split('.')[0] + "-thumb." + tmp[i].split('.')[1] +"' width='100px;'></div>")
-                        $(".singleproductgallery").append("<div class='productthumbnail' style='width: 100px; display: inline-block;' onclick=\"viewimage('"+tmp[i].split('.')[0]+"','" + tmp[i].split('.')[1] +"', false)\"><div style='width: 100px; height: 100px; background: url(upload/" + tmp[i].split('.')[0] + "-thumb." + tmp[i].split('.')[1] + ") no-repeat center center; background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;'></div></div>")
+                        //$(".singleproductgallery").append("<div style='display: inline-block; width: 100px;'><img src='<?php echo $baseurl ?>upload/"+tmp[i].split('.')[0] + "-thumb." + tmp[i].split('.')[1] +"' width='100px;'></div>")
+                        $(".singleproductgallery").append("<div class='productthumbnail' style='width: 100px; display: inline-block;' onclick=\"viewimage('"+tmp[i].split('.')[0]+"','" + tmp[i].split('.')[1] +"', false)\"><div style='width: 100px; height: 100px; background: url(<?php echo $baseurl ?>upload/" + tmp[i].split('.')[0] + "-thumb." + tmp[i].split('.')[1] + ") no-repeat center center; background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;'></div></div>")
                         
                     }
                 }
                 
             }
             
-            $(document).ready(function(){
-
-            })
+            
         </script>
         
         <?php include("adscriptheader.php"); ?>
+        
+        <style>
+            <?php
+            include("style1.php");
+            ?>
+            
+            
+        </style>
+        
     </head>
     <body>
         
@@ -132,7 +178,7 @@
         
         <div id="appbar">
             <div style="display: inline-block;">
-                <a href="<?php echo $baseurl ?>"><img src="images/weblogo.png" width="200px"></a>
+                <a href="<?php echo $baseurl ?>"><img src="<?php echo $baseurl ?>images/weblogo.png" width="200px"></a>
             </div>
             <div id="mobilebutton" class="mobilevisible" onclick="toggleDrawer()"><i class="fa fa-bars"></i></div>
             <div id="appbarmenu">
@@ -159,11 +205,23 @@
         <div id="mainbanner">
             <h2><?php echo $websitename ?></h2><h4><?php echo $websitetitle ?></h4>
         </div>
+        <div id="categorybar">
+            <div style="margin: 0 auto; text-align: center;">
+                <div class="xplore"><?php uilang("Browse by category") ?>: </div>
+                <?php
+                $sql = "SELECT * FROM $tablecategories ORDER BY category ASC";
+                $result = mysqli_query($connection, $sql);
+                while($row = mysqli_fetch_assoc($result)){
+                    ?>
+                    <a href="<?php echo $baseurl ?>page/1/category/<?php echo urlencode($row["category"]) ?>"><div class="highlight"><i class="fa <?php echo $row["faicon"] ?>"></i> <?php echo $row["category"] ?></div></a>
+                    <?php
+                }
+                ?>
+            </div>
+        </div>
         <div class="middle">
             
-            
             <?php
-            
             
                 if(isset($_GET["login"])){
                     ?>
@@ -180,7 +238,7 @@
                                 $_SESSION["password"] = $password;
                                 $_SESSION["userid"] = mysqli_fetch_assoc($result)["userid"];
                                 ?>
-                                <p><?php uilang("Welcome"); ?>!</p>
+                                <div class='alert'><?php uilang("Welcome"); ?>!</div>
                                 <script>
                                     setTimeout(function(){
                                         location.href = "<?php echo $baseurl ?>?dashboard"
@@ -189,7 +247,7 @@
                                 <?php
                             }else{
                                 ?>
-                                <p><?php uilang("Incorrect email and/or password!"); ?></p>
+                                <div class='alert'><?php uilang("Incorrect email and/or password!"); ?></div>
                                 <?php
                             }
                         }else{
@@ -219,6 +277,8 @@
                             $email = mysqli_real_escape_string($connection, $_POST["email"]);
                             $password = mysqli_real_escape_string($connection, $_POST["password"]);
                             $name = mysqli_real_escape_string($connection, $_POST["name"]);
+                            if(strlen($name) < 3)
+                                $name = explode("@", $email);
                             $phone = mysqli_real_escape_string($connection, $_POST["phone"]);
                             $address = mysqli_real_escape_string($connection, $_POST["address"]);
                             $userid = getRandomNumbers();
@@ -227,12 +287,12 @@
                                 
                                 if(mysqli_num_rows(mysqli_query($connection, "SELECT * FROM $tableusers WHERE email = '$email'")) > 0){
                                     ?>
-                                    <p><?php uilang("This email address is already registered. Try to use another email."); ?></p>
+                                    <div class='alert'><?php uilang("This email address is already registered. Try to use another email."); ?></div>
                                     <?php
                                 }else{
                                     mysqli_query($connection, "INSERT INTO $tableusers (datereg, email, password, name, phone, address, userid, isonline, waenabled) VALUES ('$datereg', '$email', '$password', '$name', '$phone', '$address', '$userid', 0, 1)");
                                     ?>
-                                    <p><?php uilang("Thank you for registering!"); ?></p>
+                                    <div class='alert'><?php uilang("Thank you for registering!"); ?></div>
                                     <script>
                                         setTimeout(function(){
                                             location.href = "<?php echo $baseurl ?>?dashboard"
@@ -245,7 +305,7 @@
                                 }
                             }else{
                                 ?>
-                                <p><p><?php uilang("You did not fill all the fields. Please try again."); ?></p></p>
+                                <div class='alert'><?php uilang("You did not fill all the fields. Please try again."); ?></div>
                                 <?php
                             }
 
@@ -261,7 +321,7 @@
                                 <input name="name" type="text" placeholder="Your name or nickname">
                                 <label><?php uilang("Phone Number"); ?></label>
                                 <p><?php uilang("*Include your country code before your phone number like this: 6590611234"); ?></p>
-                                <input name="phone" type="number" placeholder="<?php uilang("Phone Number"); ?>">
+                                <input name="phone" type="number" placeholder="<?php uilang("Phone Number"); ?>" value="62">
                                 <label><?php uilang("Address"); ?></label>
                                 <input name="address" type="text" placeholder="<?php uilang("Address"); ?>">
                                 <input name="register" type="submit" value="<?php uilang("Register"); ?>" class="submitbutton">
@@ -275,7 +335,7 @@
                     <?php
                 }else if(isset($_GET["logout"])){
                     ?>
-                    <p align="center"><?php uilang("Good bye!"); ?></p>
+                    <div class='alert'><?php uilang("Good bye!"); ?></div>
                     <script>
                         setTimeout(function(){
                             location.href = "<?php echo $baseurl ?>"
@@ -312,6 +372,7 @@
                                 $phone = $row["phone"];
                                 $address = $row["address"];
                                 $waenabled = $row["waenabled"];
+                                $latlng = $row["latlng"];
                             }
                             ?>
                             
@@ -321,7 +382,7 @@
                                 
                                 <div class="dashboardcell dbcleft">
                                     <div class="dashboardleftbutton" onclick="dbpage(1)"><i class="fa fa-plus" style="width: 20px;"></i> <?php uilang("Add") ?></div>
-                                    <div class="dashboardleftbutton" onclick="dbpage(2)"><i class="fa fa-cutlery" style="width: 20px;"></i> <?php uilang("Products") ?></div>
+                                    <div class="dashboardleftbutton" onclick="dbpage(2)"><i class="fa fa-cubes" style="width: 20px;"></i> <?php uilang("Products") ?></div>
                                     <div class="dashboardleftbutton" onclick="dbpage(3)"><i class="fa fa-image" style="width: 20px;"></i> <?php uilang("Gallery") ?></div>
                                     <div class="dashboardleftbutton" onclick="dbpage(4)"><i class="fa fa-user" style="width: 20px;"></i> <?php uilang("Profile") ?></div>
                                     <div class="dashboardleftbutton" onclick="dbpage(5)"><i class="fa fa-envelope" style="width: 20px;"></i> <?php uilang("Messages") ?> <span id="messagescount"></span></div>
@@ -337,6 +398,21 @@
                                             <input name="price" type="number" placeholder="<?php uilang("Price"); ?>" value="0">
                                             <label><?php uilang("Description") ?></label>
                                             <textarea name="description" placeholder="<?php uilang("Description"); ?>"></textarea>
+                                            <label><?php uilang("Category") ?></label>
+                                            <select name="catid">
+                                                <?php
+                                                $catsql = "SELECT * FROM $tablecategories ORDER BY category ASC";
+                                                $catresult = mysqli_query($connection, $catsql);
+                                                if(mysqli_num_rows($catresult) > 0){
+                                                    while($catrow = mysqli_fetch_assoc($catresult)){
+                                                        ?>
+                                                        <option value="<?php echo $catrow["id"] ?>"><?php echo $catrow["category"] ?></option>
+                                                        <?php
+                                                    }
+                                                }
+                                                ?>
+                                                <option value="0" selected="selected"><?php echo uilang("Other") ?></option>
+                                            </select>
                                             <label><?php uilang("Choose your primary product photo:"); ?></label>
                                             <input type="file" name="productimage" accept="image/*">
                                             <label><?php uilang("Add more images from Gallery") ?>:</label>
@@ -362,7 +438,7 @@
                                                 <a href="<?php echo $baseurl ?>?dashboard&edit=<?php echo $productrow["productid"] ?>">
                                                     
                                                     <div class="productthumbnail">
-                                                        <div class="thumbnailimage" style="margin-bottom: 10px; background: url(upload/<?php echo $productrow["productid"] ?>-thumb.<?php echo $productrow["ext"] ?>) no-repeat center center; background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;">
+                                                        <div class="thumbnailimage" style="margin-bottom: 10px; background: url(<?php echo $baseurl ?>upload/<?php echo $productrow["productid"] ?>-thumb.<?php echo $productrow["ext"] ?>) no-repeat center center; background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;">
                                                             <?php 
                                                             if($productrow["price"] != 0){
                                                                 ?>
@@ -437,10 +513,10 @@
                                             $sql = "SELECT * FROM $tablegallery WHERE imagefile = '$imagefile' AND userid = '$userid'";
                                             if(mysqli_num_rows(mysqli_query($connection, $sql)) > 0){
                                                 mysqli_query($connection, "DELETE FROM $tablegallery WHERE imagefile = '$imagefile'");
-                                                if(file_exists("upload/" . $imagefile . "." . $imageext))
-                                                    unlink("upload/" . $imagefile . "." . $imageext);
-                                                if(file_exists("upload/" . $imagefile . "-thumb" . "." . $imageext))
-                                                    unlink("upload/" . $imagefile . "-thumb" . "." . $imageext);
+                                                if(file_exists($baseurl . "upload/" . $imagefile . "." . $imageext))
+                                                    unlink($baseurl . "upload/" . $imagefile . "." . $imageext);
+                                                if(file_exists($baseurl . "upload/" . $imagefile . "-thumb" . "." . $imageext))
+                                                    unlink($baseurl . "upload/" . $imagefile . "-thumb" . "." . $imageext);
                                                 ?>
                                                 <div class="alert"><?php uilang("Image removed") ?>.</div>
                                                 <?php
@@ -462,16 +538,18 @@
                                             $totalgalimages = mysqli_num_rows($result);
                                             ?>
                                             <p><?php uilang("You have") ?> <?php echo $totalgalimages ?> <?php uilang("images in your Gallery. You can upload up to") ?> <?php echo $maxgalleryimg ?> <?php uilang("images to this Gallery") ?>.</p>
-                                            <div id="usergallery">
-                                            <?php
-                                            while($row = mysqli_fetch_assoc($result)){
-                                                ?>
-                                                <div class="productthumbnail" style="width: 100px;" onclick="viewimage('<?php echo $row["imagefile"] ?>', '<?php echo $row["ext"] ?>', true)">
-                                                    <div style="width: 100px; height: 100px; background: url(upload/<?php echo $row["imagefile"] . "-thumb." . $row["ext"] ?>) no-repeat center center; background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;"><i style="display: none"><?php echo $row["imagefile"] . "." . $row["ext"] ?></i></div>
-                                                </div>
+                                            <div style="max-height: 300px; overflow: auto;">
+                                                <div id="usergallery">
                                                 <?php
-                                            }
-                                            ?>
+                                                while($row = mysqli_fetch_assoc($result)){
+                                                    ?>
+                                                    <div class="productthumbnail" style="width: 100px; display: inline-block;" onclick="viewimage('<?php echo $row["imagefile"] ?>', '<?php echo $row["ext"] ?>', true)">
+                                                        <div style="width: 100px; height: 100px; background: url(<?php echo $baseurl ?>upload/<?php echo $row["imagefile"] . "-thumb." . $row["ext"] ?>) no-repeat center center; background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;"><i style="display: none"><?php echo $row["imagefile"] . "." . $row["ext"] ?></i></div>
+                                                    </div>
+                                                    <?php
+                                                }
+                                                ?>
+                                                </div>
                                             </div>
                                             <?php
                                         }else{
@@ -521,8 +599,63 @@
                                                 }
                                                 ?>
                                             </select>
+                                            
+                                            
+                                            <?php
+                                            $mapq = str_replace(" ", "+", $address);
+                                            if($latlng != "")
+                                                $mapq = $latlng;
+                                            ?>
+                                            <label><?php uilang("Your approximate location") ?></label>
+                                            <div id="defaultmap">
+                                                <iframe
+                                                  width="100%"
+                                                  height="450"
+                                                  frameborder="0" style="border:0"
+                                                  src="https://www.google.com/maps/embed/v1/place?key=AIzaSyAAnjB2ufKlYxNmCRoS784oynVH47T5uZA
+                                                    &q=<?php echo $mapq ?>" allowfullscreen>
+                                                </iframe>
+                                            </div>
+                                            <div id="advancedmap">
+                                                <label><?php uilang("Click on map to specify the coordinates") ?>.</label>
+                                                <div id="map" style="width: 100%; height: 460px;"></div>
+                                                    <label><?php uilang("Your coordinates on map (leave it empty if not needed)") ?></label>
+                                                    <input name="latlng" placeholder="Coordinates" id="latlng" value="<?php echo $latlng ?>">
+                                                </div>
+                                                <p style="cursor: pointer" class="textlink" onclick="showadvancedmap()"><u><i class="fa fa-map-marker"></i> <?php uilang("Click here to specify your detailed location on map") ?>.</u></p>
+                                            
                                             <input name="updateprofile" type="submit" value="<?php uilang("Update") ?>" class="submitbutton">
                                         </form>
+                                        
+                                        <script>
+                                            function initMap() {
+                                                var myLatlng = {lat: -6.21462 , lng: 106.84513};
+                                                
+                                                var map = new google.maps.Map(document.getElementById('map'), {zoom: 7, center: myLatlng});
+                                                
+                                                // Create the initial InfoWindow.
+                                                var infoWindow = new google.maps.InfoWindow({content: 'Klik untuk tentukan lokasi di peta', position: myLatlng});
+                                                infoWindow.open(map);
+                                            
+                                                // Configure the click listener.
+                                                map.addListener('click', function(mapsMouseEvent) {// Close the current InfoWindow.
+                                                    infoWindow.close();
+                                                    // Create a new InfoWindow.
+                                                    infoWindow = new google.maps.InfoWindow({position: mapsMouseEvent.latLng});
+                                                    infoWindow.setContent("Saya di sini!");
+                                                    var definedlatlng = mapsMouseEvent.latLng.toString()
+                                                    $("#latlng").val(definedlatlng.replace(" ", "").replace("(", "").replace(")", ""))
+                                                    infoWindow.open(map);
+                                                });
+                                            }
+                                            function showadvancedmap(){
+                                                $("#defaultmap").hide()
+                                                $("#advancedmap").show()
+                                            }
+                                            $("#advancedmap").hide()
+                                        </script>
+                                        <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAAnjB2ufKlYxNmCRoS784oynVH47T5uZA&callback=initMap"></script>
+                                        
                                         <hr>
                                         <h3><?php uilang("Change password") ?></h3>
                                         <?php
@@ -540,6 +673,9 @@
                                                 }else{
                                                     ?>
                                                     <div class='alert'><?php uilang("Incorrect old password") ?>.</div>
+                                                    <script>
+                                                        alert("<?php uilang("Incorrect old password") ?>.")
+                                                    </script>
                                                     <?php
                                                 }
                                             }
@@ -573,7 +709,7 @@
                                                 <script>
                                                     setTimeout(function(){
                                                         $("#messagestable").hide()
-                                                        $("#messagecontent").show().html("<div><div onclick='backToMessages()' class='textlink'><i class='fa fa-arrow-left'></i> <?php uilang("Back") ?></div><div style='padding: 20px; font-size: 12px;'><p style='font-size: 12px;'><?php uilang("Message ID") ?>: <? echo $row["messageid"] ?></p><p><b><?php uilang("Sender") ?>:</b> <?php echo $row["senderemail"] ?><br><b><?php uilang("Date") ?>:</b> <?php echo $mrow["timestamp"] ?><br><b><?php uilang("Product ID") ?>:</b> <a class='textlink' href='<?php echo $baseurl ?>?product=<?php echo $row["productid"] ?>'><?php echo $row["productid"] ?></a></p><div align='right'><div class='msg'><div class='msgtimestamp'><?php echo $mrow["timestamp"] ?></div><div class='msgbody'><?php echo $mrow["content"] ?></div></div></div></div><div id='replies'></div><textarea id='offlinereplyinput' style='margin-bottom: 0px; margin-top: 20px;'></textarea><p style='font-size: 12px;'>*<?php uilang("Your reply message will be mailed to") ?>: <?php echo $row["senderemail"] ?></p><button class='submitbutton' onclick='offlinereply()'><?php uilang("Send Message") ?></button></div>")
+                                                        $("#messagecontent").show().html("<div><div onclick='backToMessages()' class='textlink'><i class='fa fa-arrow-left'></i> <?php uilang("Back") ?></div><div style='padding: 20px; font-size: 12px;'><p style='font-size: 12px;'><?php uilang("Message ID") ?>: <? echo $row["messageid"] ?></p><p><b><?php uilang("Sender") ?>:</b> <?php echo $row["senderemail"] ?><br><b><?php uilang("Date") ?>:</b> <?php echo $mrow["timestamp"] ?><br><b><?php uilang("Product ID") ?>:</b> <a class='textlink' href='<?php echo $baseurl ?>product/<?php echo $row["productid"] ?>'><?php echo $row["productid"] ?></a></p><div align='right'><div class='msg'><div class='msgtimestamp'><?php echo $mrow["timestamp"] ?></div><div class='msgbody'><?php echo $mrow["content"] ?></div></div></div></div><div id='replies'></div><textarea id='offlinereplyinput' style='margin-bottom: 0px; margin-top: 20px;'></textarea><p style='font-size: 12px;'>*<?php uilang("Your reply message will be mailed to") ?>: <?php echo $row["senderemail"] ?></p><button class='submitbutton' onclick='offlinereply()'><?php uilang("Send Message") ?></button></div>")
                                                     }, 500)
                                                     
                                                     
@@ -741,17 +877,18 @@
                                         <?php
                                         
                                         $productid = getRandomNumbers();
-                                        $title = mysqli_real_escape_string($connection, $_POST["title"]);
+                                        $title = ucfirst(mysqli_real_escape_string($connection, $_POST["title"]));
                                         $price = mysqli_real_escape_string($connection, $_POST["price"]);
                                         $description = mysqli_real_escape_string($connection, $_POST["description"]);
                                         $moreimages = mysqli_real_escape_string($connection, $_POST["moreimages"]);
+                                        $catid = mysqli_real_escape_string($connection, $_POST["catid"]);
                                         
                                         if($title != "" && $price != "" && $description != ""){
                                     
                                             $maxsize = 2097152;
                                             if(($_FILES['productimage']['size'] >= $maxsize)){
                                                 ?>
-                                                <p>Uploaded image is too big. Try to upload different image.</p>
+                                                <div class='alert'>Uploaded image is too big. Try to upload different image.</div>
                                                 <?php
                                             }else if($_FILES["productimage"]["size"] == 0){
                                                 /*
@@ -762,7 +899,7 @@
                                             }else{
                                             	if($_FILES['productimage']['error'] > 0) { 
                                             	    ?>
-                                            	    <p>Error during uploading new picture. Try again later.</p>
+                                            	    <div class='alert'>Error during uploading new picture. Try again later.</div>
                                             	    <?php
                                             	}
                                             	$extsAllowed = array( 'jpg', 'jpeg', 'png' );
@@ -775,9 +912,9 @@
                                                 	createThumbnail($name, "upload/" . $newppic ."-thumb." . $extension, 256);
                                                 	
                                                 	//success!
-                                                	mysqli_query($connection, "INSERT INTO $tableproducts (userid, productid, title, price, description, ext, moreimages) VALUES ('$userid', '$productid', '$title' ,'$price', '$description', '$extension', '$moreimages')");
+                                                	mysqli_query($connection, "INSERT INTO $tableproducts (userid, productid, title, price, description, ext, moreimages, catid) VALUES ('$userid', '$productid', '$title' ,'$price', '$description', '$extension', '$moreimages', $catid)");
                                                 	?>
-                                                	<p><?php uilang("Great! New product has been added") ?>.</p>
+                                                	<div class='alert'><?php uilang("Great! New product has been added") ?>.</div>
                                                 	<script>
                                                     setTimeout(function(){
                                                         location.href = "<?php echo $baseurl ?>?dashboard"
@@ -786,13 +923,13 @@
                                                 	<?php
                                             	} else {
                                             	    ?>
-                                            	    <p><?php uilang("Incomplete information") ?></p>
+                                            	    <div class='alert'><?php uilang("Incomplete information") ?></div>
                                             	    <?php
                                             	}
                                             }
                                         }else{
                                             ?>
-                                            <p><?php uilang("Incomplete information") ?></p>
+                                            <div class='alert'><?php uilang("Incomplete information") ?></div>
                                             <?php
                                         }
                                         
@@ -810,14 +947,15 @@
                                         $phone = mysqli_real_escape_string($connection, $_POST["phone"]);
                                         $address = mysqli_real_escape_string($connection, $_POST["address"]);
                                         $waenabled = mysqli_real_escape_string($connection, $_POST["waenabled"]);
+                                        $latlng = mysqli_real_escape_string($connection, $_POST["latlng"]);
                                         
                                         if($name != "" && $phone != "" && $address != ""){
                                             
-                                            mysqli_query($connection, "UPDATE $tableusers SET name='$name', phone='$phone', address='$address', waenabled = $waenabled WHERE userid = '$userid'");
+                                            mysqli_query($connection, "UPDATE $tableusers SET name='$name', phone='$phone', address='$address', waenabled = $waenabled, latlng = '$latlng' WHERE userid = '$userid'");
                                             
                                             ?>
 
-                                            <p>Your profile has been updated.</p>
+                                            <div class='alert'><?php uilang("Your profile has been updated") ?>.</div>
                                             <script>
                                                 setTimeout(function(){
                                                     location.href = "<?php echo $baseurl ?>?dashboard"
@@ -827,7 +965,7 @@
                                             <?php
                                         }else{
                                             ?>
-                                            <p>Incomplete information!</p>
+                                            <div class='alert'>Incomplete information!</div>
                                             <?php
                                         }
                                         ?>
@@ -854,16 +992,17 @@
                                             $newprice = mysqli_real_escape_string($connection, $_POST["price"]);
                                             $newdescription = mysqli_real_escape_string($connection, $_POST["description"]);
                                             $moreimages = mysqli_real_escape_string($connection, $_POST["moreimages"]);
+                                            $catid = mysqli_real_escape_string($connection, $_POST["catid"]);
 
                                             if($newtitle != "" && $newprice != "" && $newdescription != ""){
                                                 
                                                 if($userid == mysqli_fetch_assoc(mysqli_query($connection, "SELECT * FROM $tableproducts WHERE productid='$productid' "))["userid"]){
-                                                    mysqli_query($connection, "UPDATE $tableproducts SET title = '$newtitle', price = '$newprice', description = '$newdescription', moreimages = '$moreimages' WHERE productid = '$productid' AND userid = '$userid'");
+                                                    mysqli_query($connection, "UPDATE $tableproducts SET title = '$newtitle', price = '$newprice', description = '$newdescription', moreimages = '$moreimages', catid = $catid WHERE productid = '$productid' AND userid = '$userid'");
                                                 
                                                     $maxsize = 2097152;
                                                     if(($_FILES['productimage']['size'] >= $maxsize)){
                                                         ?>
-                                                        <p>Uploaded image is too big. Try to upload different image.</p>
+                                                        <div class='alert'>Uploaded image is too big. Try to upload different image.</div>
                                                         <?php
                                                     }else if($_FILES["productimage"]["size"] == 0){
                                                         /*
@@ -874,7 +1013,7 @@
                                                     }else{
                                                     	if($_FILES['productimage']['error'] > 0) { 
                                                     	    ?>
-                                                    	    <p>Error during uploading new picture. Try again later.</p>
+                                                    	    <div class='alert'>Error during uploading new picture. Try again later.</div>
                                                     	    <?php
                                                     	}
                                                     	$extsAllowed = array( 'jpg', 'jpeg', 'png' );
@@ -887,13 +1026,13 @@
                                                         	createThumbnail($name, "upload/" . $newppic ."-thumb." . $extension, 256);
                                                         	
                                                         	?>
-                                                        	<p>Great! New photo has been added.</p>
+                                                        	<div class='alert'>Great! New photo has been added.</div>
                                                         	<?php
                                                     	}
                                                     }
                                                     
                                                     ?>
-                                                    <p><?php uilang("Product has been successfully updated") ?>.</p>
+                                                    <div class='alert'><?php uilang("Product has been successfully updated") ?>.</div>
                                                     <script>
                                                         setTimeout(function(){
                                                             location.href = "<?php echo $baseurl ?>?dashboard"
@@ -902,14 +1041,14 @@
                                                     <?php
                                                 }else{
                                                     ?>
-                                                    <p>You are not authorized!</p>
+                                                    <div class='alert'>You are not authorized!</div>
                                                     <?php
                                                 }
                                                 
                                                 
                                             }else{
                                                 ?>
-                                                <p>Incomplete information!</p>
+                                                <div class='alert'>Incomplete information!</div>
                                                 <?php
                                             }
                                         }else{
@@ -922,8 +1061,35 @@
                                                 <input name="price" type="number" placeholder="<?php uilang("Price") ?>" value="<?php echo $row["price"] ?>">
                                                 <label><?php uilang("Description") ?></label>
                                                 <textarea name="description" placeholder="<?php uilang("Description") ?>"><?php echo $row["description"] ?></textarea>
+                                                
+                                                <label><?php uilang("Category") ?></label>
+                                                <select name="catid">
+                                                    <?php
+                                                    $catsql = "SELECT * FROM $tablecategories ORDER BY category ASC";
+                                                    $catresult = mysqli_query($connection, $catsql);
+                                                    if(mysqli_num_rows($catresult) > 0){
+                                                        while($catrow = mysqli_fetch_assoc($catresult)){
+                                                            if($catrow["id"] == $row["catid"]){
+                                                                ?>
+                                                                <option value="<?php echo $catrow["id"] ?>" selected="selected"><?php echo $catrow["category"] ?></option>
+                                                                <?php
+                                                            }else{
+                                                                ?>
+                                                                <option value="<?php echo $catrow["id"] ?>"><?php echo $catrow["category"] ?></option>
+                                                                <?php
+                                                            }
+                                                        }
+                                                    }
+                                                    if($row["catid"] == 0){
+                                                        ?>
+                                                        <option value="0" selected="selected"><?php echo uilang("Other") ?></option>
+                                                        <?php
+                                                    }
+                                                    ?>
+                                                </select>
+                                                
                                                 <label><?php uilang("Current product photo (Click if you want to replace it)") ?>:</label>
-                                                <img src="upload/<?php echo $productid ?>.<?php echo $row["ext"] ?>" width="100%" style="cursor: pointer; border-radius: 10px;" onclick="$('#productimageupdate').click()">
+                                                <img src="<?php echo $baseurl ?>upload/<?php echo $productid ?>.<?php echo $row["ext"] ?>" width="100%" style="cursor: pointer; border-radius: 10px;" onclick="$('#productimageupdate').click()">
                                                 <input type="file" name="productimage" accept="image/*" id="productimageupdate" style="display: none;">
                                                 <label><?php uilang("Add more images from Gallery") ?>:</label>
                                                 <input name="moreimages" style="display: none;" class="moreimagesinput" value="<?php echo $row["moreimages"] ?>">
@@ -933,7 +1099,7 @@
                                                 <input name="updateproduct" type="submit" value="<?php uilang("Update") ?>" class="submitbutton">
                                             </form>
                                             
-                                            <p><i class="fa fa-link"></i> <?php uilang("Click") ?> <a class="textlink" href="<?php echo $baseurl ?>?product=<?php echo $productid ?>"><?php uilang("here") ?></a> <?php uilang("to view this product") ?>.</p>
+                                            <p><i class="fa fa-link"></i> <?php uilang("Click") ?> <a class="textlink" href="<?php echo $baseurl ?>product/<?php echo $productid ?>"><?php uilang("here") ?></a> <?php uilang("to view this product") ?>.</p>
                                             <p style="color: red"><i class="fa fa-trash"></i> <?php uilang("Click") ?> <a class="textlink" href="<?php echo $baseurl ?>?dashboard&delete=<?php echo $productid ?>"><?php uilang("here") ?></a> <?php uilang("to delete it") ?>.</p>
                                             
                                             <script>
@@ -947,7 +1113,7 @@
                                                         if(tmparray[i] != ""){
                                                             var imgfile = tmparray[i];
                                                             console.log("ukkkakakakka")
-                                                            $(".addmoreimgvisual").eq(1).append("<div class='addedfromgallery' style='background: url(upload/"+imgfile+") no-repeat center center; background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;'><div onclick=removeAddedGalimage2('" +imgfile+ "') style='padding: 20px; margin: 20px; background-color: white; border-radius: 10px; color: red; cursor: pointer; font-weight: bold; display: inline-block;'><i class='fa fa-times'></i> <?php uilang("Remove") ?></div></div>")
+                                                            $(".addmoreimgvisual").eq(1).append("<div class='addedfromgallery' style='background: url(<?php echo $baseurl ?>upload/"+imgfile+") no-repeat center center; background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;'><div onclick=removeAddedGalimage2('" +imgfile+ "') style='padding: 20px; margin: 20px; background-color: white; border-radius: 10px; color: red; cursor: pointer; font-weight: bold; display: inline-block;'><i class='fa fa-times'></i> <?php uilang("Remove") ?></div></div>")
                                                         }
                                                     }
                                                 }
@@ -993,15 +1159,15 @@
                                         
                                         if($userid == mysqli_fetch_assoc(mysqli_query($connection, "SELECT * FROM $tableproducts WHERE productid='$productid' "))["userid"]){
 
-                                            if(file_exists("upload/" . $productid . "." . $ext))
-                                                unlink("upload/" . $productid . "." . $ext);
-                                            if(file_exists("upload/" . $productid . "-thumb" . "." . $ext))
-                                                unlink("upload/" . $productid . "-thumb" . "." . $ext);
+                                            if(file_exists($baseurl . "upload/" . $productid . "." . $ext))
+                                                unlink($baseurl . "upload/" . $productid . "." . $ext);
+                                            if(file_exists($baseurl . "upload/" . $productid . "-thumb" . "." . $ext))
+                                                unlink($baseurl . "upload/" . $productid . "-thumb" . "." . $ext);
                                                 
                                             mysqli_query($connection, "DELETE FROM $tableproducts WHERE productid = '$productid' AND userid = '$userid'");
                                             
                                             ?>
-                                            <p><?php uilang("Product has been successfully deleted") ?>.</p>
+                                            <div class='alert'><?php uilang("Product has been successfully deleted") ?>.</div>
                                             <script>
                                                 setTimeout(function(){
                                                     location.href = "<?php echo $baseurl ?>?dashboard"
@@ -1011,7 +1177,7 @@
                                             
                                         }else{
                                             ?>
-                                            <p>You are not authorized!</p>
+                                            <div class='alert'>You are not authorized!</div>
                                             <?php
                                         }
                                         
@@ -1111,7 +1277,7 @@
                         }else{
                             
                             ?>
-                            <p align="center">You must login first to access this page.</p>
+                            <div class='alert'>You must login first to access this page.</div>
                             <?php
                         }
                         
@@ -1119,8 +1285,6 @@
                     </div>
                     <?php
                 }else if(isset($_GET["product"])){
-                    
-                    include("adscript.php");
                     
                     $productid = mysqli_real_escape_string($connection, $_GET["product"]);
                     $sql = "SELECT * FROM $tableproducts WHERE productid = '$productid'";
@@ -1136,7 +1300,7 @@
                             <div class="singleproductholder">
                                 <div class="singleproductrow sprleft">
                                     <div class="bigproductimage" onclick="viewimage('<?php echo $row["productid"] ?>', '<?php echo $row["ext"] ?>', false)">
-                                        <img src="upload/<?php echo $row["productid"] ?>.<?php echo $row["ext"] ?>" width="100%">
+                                        <img src="<?php echo $baseurl ?>upload/<?php echo $row["productid"] ?>.<?php echo $row["ext"] ?>" width="100%" alt="<?php echo $websitename . " - " .  $row["title"] . " | " . $websitetitle ?>">
                                     </div>
                                     <?php
                                     include("adscriptvertical.php");
@@ -1149,12 +1313,21 @@
                                             <?php
                                             if($row["price"] != 0){
                                                 ?>
-                                                <span style="font-size: 14px;"><?php uilang("Just for") ?></span> <span style="color: <?php echo $primarycolor ?>"><i class="fa fa-tag"></i><?php echo $currencysymbol . number_format($row["price"]) ?></span>
+                                                <br><!--<span style="font-size: 14px;"><?php uilang("Just for") ?></span>--> <span style="color: <?php echo $primarycolor ?>"><i class="fa fa-tag"></i><?php echo $currencysymbol . number_format($row["price"]) ?></span>
                                                 <?php
                                             }
                                             ?>
                                         </h1>
-                                        <h4><span style="font-size: 12px;"><?php uilang("Added by") ?></span> <a class="textlink" href="<?php echo $baseurl ?>?user=<?php echo $sellerid ?>"><i class="fa fa-user"></i> <?php echo $sellerinfo["name"] ?></a> <span style="font-size: 12px;"><?php uilang("from") ?></span> <i class="fa fa-map-marker"></i> <?php echo $sellerinfo["address"] ?></h4>
+                                        <?php
+                                        $prodcat = "";
+                                        if($row["catid"] != 0){
+                                            $catid = $row["catid"];
+                                            $sqlcat = "SELECT * FROM $tablecategories WHERE id = $catid";
+                                            $cat = mysqli_fetch_assoc(mysqli_query($connection, $sqlcat));
+                                            $prodcat = "<a href='" .$baseurl. "page/1/category/" .$cat["category"]. "'><span class='highlight'><i class='fa " . $cat["faicon"] . "'></i> " . $cat["category"] . "</span></a>";
+                                        }
+                                        ?>
+                                        <h4><div style="font-size: 12px;"><span class="highlight"><i class="fa fa-eye"></i> <?php echo $row["views"] ?></span><?php echo $prodcat; uilang("Added by"); ?> <a class="textlink" href="<?php echo $baseurl ?>user/<?php echo $sellerid ?>"><i class="fa fa-user"></i> <?php echo $sellerinfo["name"] ?></a> <span style="font-size: 12px;"><?php uilang("from") ?></span> <i class="fa fa-map-marker"></i> <?php echo ucfirst($sellerinfo["address"]) ?></h4>
                                         <p><?php echo nl2br($row["description"]) ?></p>
                                         
                                         <?php
@@ -1170,15 +1343,30 @@
                                         
                                         ?>
                                         
+                                        <h3><?php uilang("Approximate location") ?></h3>
+                                        <?php
+                                        $mapq = str_replace(" ", "+", $sellerinfo["address"]);
+                                            if($sellerinfo["latlng"] != "")
+                                                $mapq = $sellerinfo["latlng"];
+                                        ?>
+                                        <iframe
+                                          width="100%"
+                                          height="450"
+                                          frameborder="0" style="border:0"
+                                          src="https://www.google.com/maps/embed/v1/place?key=AIzaSyAAnjB2ufKlYxNmCRoS784oynVH47T5uZA
+                                            &q=<?php echo $mapq ?>" allowfullscreen>
+                                        </iframe>
+                                        
                                         <div>
                                             <?php
                                             
                                             //if($_SESSION["userid"] != $sellerid){
                                                 if(isset($_GET["chat"])){
                                                     ?>
+                                                    <a name="chatbox" style="display: block; position: relative; top: -100px; visibility: hidden;"></a>
                                                     <div class="messaging">
                                                         <h3><?php uilang("Messaging") ?></h3>
-                                                        <p style="font-size: 12px;"><?php uilang("You are sending a message to") ?> <a class="textlink" href="<?php echo $baseurl ?>?user=<?php echo $sellerid ?>"><i class="fa fa-user"></i> <?php echo $sellerinfo["name"] ?></a>.</p>
+                                                        <p style="font-size: 12px;"><?php uilang("You are sending a message to") ?> <a class="textlink" href="<?php echo $baseurl ?>user/<?php echo $sellerid ?>"><i class="fa fa-user"></i> <?php echo $sellerinfo["name"] ?></a>.</p>
                                                         <div id="currentchatconversation"></div>
                                                         <div id="messaging"></div>
                                                         <script>
@@ -1192,15 +1380,17 @@
                                                     
                                                     if($sellerinfo["waenabled"] == 1){
                                                         ?>
-                                                        <a href="https://wa.me/<?php echo $sellerinfo["phone"] ?>?text=<?php uilang("Hi, I came across this link")?> <?php echo $baseurl . "?product=" . "$productid" ?> <?php uilang("and I want to ask some questions") ?>..."><div class="chatbutton"><i class="fa fa-whatsapp"></i> <?php uilang("Chat on WhatsApp") ?></div></a>
+                                                        <a href="https://wa.me/<?php echo $sellerinfo["phone"] ?>?text=<?php uilang("Hi, I came across this link")?> <?php echo $baseurl . "product/" . "$productid" ?> <?php uilang("and I want to ask some questions") ?>..."><div class="chatbutton"><i class="fa fa-whatsapp"></i> <?php uilang("Chat on WhatsApp") ?></div></a>
                                                         <?php
                                                     }
                                                     
+                                                    
+                                                    
                                                     ?>
-                                                    <a href="<?php echo $baseurl ?>?product=<?php echo $productid ?>&chat=<?php echo $sellerid ?>"><div class="chatbutton" id="onlinechatbutton"><i class="fa fa-envelope"></i> <?php uilang("Send Message") ?></div></a>
+                                                    <a href="<?php echo $baseurl ?>product/<?php echo $productid ?>&chat=<?php echo $sellerid ?>#chatbox"><div class="chatbutton" id="onlinechatbutton"><i class="fa fa-envelope"></i> <?php uilang("Send Message") ?></div></a>
                                                     
                                                     <script>
-                                                        $.post("messagingsystem.php", { "isselleronline" : "<?php echo $sellerid ?>" }, function(data){
+                                                        $.post("<?php echo $baseurl ?>messagingsystem.php", { "isselleronline" : "<?php echo $sellerid ?>" }, function(data){
                                                             if(data != "0"){
                                                                 var d = new Date()
                                                                 d = d.getTime()
@@ -1211,6 +1401,16 @@
                                                         } )
                                                     </script>
                                                     <?php
+                                                    
+                                                    if($sellerinfo["latlng"] != ""){
+                                                        ?>
+                                                        <a href="https://www.google.com/maps/search/?api=1&query=<?php echo $sellerinfo["latlng"] ?>" target="_blank"><div class="chatbutton"><i class="fa fa-map"></i> <?php uilang("Open Map") ?></div></a>
+                                                        <?php
+                                                    }else{
+                                                        ?>
+                                                        <a href="https://www.google.com/maps/search/?api=1&query=<?php echo $sellerinfo["address"] ?>" target="_blank"><div class="chatbutton"><i class="fa fa-map"></i> <?php uilang("Open Map") ?></div></a>
+                                                        <?php
+                                                    }
                                                 }
                                             //}
                                             
@@ -1218,7 +1418,7 @@
                                         </div>
                                         <div style="margin-bottom: 20px; font-size: 12px;">
                                             <?php
-                                            showSharer($baseurl . "?product=" . $productid , $row["title"] . " - " . $websitename);
+                                            showSharer($baseurl . "product/" . $productid , $row["title"] . " - " . $websitename);
                                             ?>
                                         </div>
                                         <div style="width: 100%; overflow: auto; box-sizing: border-box;">
@@ -1226,22 +1426,42 @@
                                             <div id="fb-root"></div>
                                             <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&amp;version=v5.0&amp;appId=569420283509636&amp;autoLogAppEvents=1"></script>
                                              
-                                            <div class="fb-comments" data-href="<?php echo $baseurl ?>?product=<?php echo $productid ?>" data-width="100%" style="width: 100%; box-sizing: border-box;" data-numposts="5"></div>
+                                            <div class="fb-comments" data-href="<?php echo $baseurl ?>product/<?php echo $productid ?>" data-width="100%" style="width: 100%; box-sizing: border-box;" data-numposts="5"></div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            <!-- you may like -->
+                            <?php
+                            include("adscript.php");
+                            showRandomProducts();
+                            showPopularProducts();
+                            lastProductsByCat(5);
+                            ?>
                         </div>
+                        
+                        <script>
+                            function viewedThis(productid){
+                                $.post("<?php echo $baseurl ?>viewcounter.php", {
+                                    productid : productid
+                                }, function(data){
+                                    console.log(data)
+                                })
+                            }
+                            viewedThis("<?php echo $productid ?>")
+                        </script>
+                        
                         <?php
                         
                     }else{
                         ?>
-                        <p align="center">There is nothing here, sir.</p>
+                        <div class='alert'>There is nothing here, sir.</div>
                         <?php
                     }
                 }else if(isset($_GET["user"])){
                     
-                    include("adscript.php");
+                    
+                    
                     
                     $userid = mysqli_real_escape_string($connection, $_GET["user"]);
                     $sql = "SELECT * FROM $tableusers WHERE userid = '$userid'";
@@ -1253,19 +1473,23 @@
                         
                         <div class="middlebox">
                             
+                            
+                            
+                            
                             <h1><?php uilang("Products added by") ?> <?php echo $row["name"] ?></h1>
-                            <p><i class="fa fa-map-marker"></i> <?php echo $row["address"] ?></p>
+                            <p><i class="fa fa-map-marker"></i> <?php echo ucfirst($row["address"]) ?></p>
                             
                             <?php
+                            
                             $sql = "SELECT * FROM $tableproducts WHERE userid = '$userid' ORDER BY id DESC";
                             $result = mysqli_query($connection, $sql);
                             if(mysqli_num_rows($result) > 0){
                                 while($productrow = mysqli_fetch_assoc($result)){
                                     
                                     ?>
-                                    <a href="<?php echo $baseurl ?>?product=<?php echo $productrow["productid"] ?>">
+                                    <a href="<?php echo $baseurl ?>product/<?php echo $productrow["productid"] ?>">
                                         <div class="productthumbnail">
-                                            <div class="thumbnailimage" style="margin-bottom: 10px; background: url(upload/<?php echo $productrow["productid"] ?>-thumb.<?php echo $productrow["ext"] ?>) no-repeat center center; background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;">
+                                            <div class="thumbnailimage" style="margin-bottom: 10px; background: url(<?php echo $baseurl ?>upload/<?php echo $productrow["productid"] ?>-thumb.<?php echo $productrow["ext"] ?>) no-repeat center center; background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;">
                                                 <?php
                                                 if($productrow["price"] != 0){
                                                     ?>
@@ -1277,11 +1501,11 @@
                                                 ?>
                                             </div>
                                             
-                                            
+                                            <h5 style="margin: 0px; color: gray; font-size: 10px;"><i class="fa fa-map-marker"></i> <?php echo ucfirst($row["address"]) ?></h5>
                                             <h3 style="margin: 0px;"><?php echo $productrow["title"] ?></h3>
                                             
                                             
-                                            <h5 style="margin: 0px;"><i class="fa fa-user"></i> <?php echo $row["name"] ?></h5>
+                                            <h5 style="margin: 0px;"><i class="fa fa-user"></i> <?php echo $row["name"] ?> <i class="fa fa-eye"></i> <?php echo $productrow["views"] ?></h5>
                                             <div class="shorttext">
                                                 <?php echo $productrow["description"] ?>
                                             </div>
@@ -1291,17 +1515,22 @@
                                 }
                             }else{
                                 ?>
-                                <p align="center"><?php uilang("Coming soon!") ?></p>
+                                <div class='alert'><?php uilang("Coming soon!") ?></div>
                                 <?php
                             }
+                            
+                            
+                            
                             ?>
+                            
+                            
                             
                         </div>
                         
                         <?php
                     }else{
                         ?>
-                        <p align="center">There is nothing here, sir.</p>
+                        <div class='alert'>There is nothing here, sir.</div>
                         <?php
                     }
                     
@@ -1319,19 +1548,18 @@
                     ?>
                     <div class="middlebox">
                         <form method="post" action="<?php echo $baseurl ?>?search">
-                            
                             <div id="searchbox">
-                                <div class="sbitem" style="width: 50px;">
+                                <div class="sbitem" style="width: 30px;">
                                     <i class="fa fa-search"></i>
                                 </div>
                                 <div class="sbitem">
                                     <input name="search" placeholder="<?php uilang("What are you looking for?") ?>" style="outline: none; border: none; background-color: inherit; margin: 0px;">
                                 </div>
                                 <div class="sbitem" style="width: 100px;">
-                                    <input type="submit" value="<?php uilang("Find it!") ?>" style="background-color: <?php echo $primarycolor ?>; margin: 0px; color: white; border-radius: 20px; outline: none;">
+                                    <input class="findbutton" type="submit" value="<?php uilang("Find it!") ?>">
                                 </div>
                             </div>
-                            
+                        </form>    
                             
                             <?php
                             if(isset($_POST["search"])){
@@ -1343,20 +1571,19 @@
                                 if($query != ""){
                                     if(mysqli_num_rows($result) > 0){
                                         
-                                        include("adscript.php");
-                                        
                                         ?>
                                         
                                         <h3 align="center" style="margin: 30px;"><?php uilang("Search results") ?>:</h3>
                                         <?php
                                         while($row = mysqli_fetch_assoc($result)){
                                             $uid = $row["userid"];
-                                            $sellername = mysqli_fetch_assoc(mysqli_query($connection, "SELECT * FROM $tableusers WHERE userid = '$uid'"))["name"];
+                                            $userrow = mysqli_fetch_assoc(mysqli_query($connection, "SELECT * FROM $tableusers WHERE userid = '$uid'"));
+                                            $sellername = $userrow["name"];
                                             
                                             ?>
-                                            <a href="<?php echo $baseurl ?>?product=<?php echo $row["productid"] ?>">
+                                            <a href="<?php echo $baseurl ?>product/<?php echo $row["productid"] ?>">
                                                 <div class="productthumbnail">
-                                                    <div class="thumbnailimage" style="margin-bottom: 10px; background: url(upload/<?php echo $row["productid"] ?>-thumb.<?php echo $row["ext"] ?>) no-repeat center center; background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;">
+                                                    <div class="thumbnailimage" style="margin-bottom: 10px; background: url(<?php echo $baseurl ?>upload/<?php echo $row["productid"] ?>-thumb.<?php echo $row["ext"] ?>) no-repeat center center; background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;">
                                                         <?php 
                                                         if($row["price"] != 0){
                                                             ?>
@@ -1367,10 +1594,10 @@
                                                         }
                                                         ?>
                                                     </div>
-    
+                                                    <h5 style="margin: 0px; color: gray; font-size: 10px;"><i class="fa fa-map-marker"></i> <?php echo ucfirst($userrow["address"]) ?></h5>
                                                     <h3 style="margin: 0px;"><?php echo $row["title"] ?></h3>
     
-                                                    <h5 style="margin: 0px;"><i class="fa fa-user"></i> <?php echo $sellername ?></h5>
+                                                    <h5 style="margin: 0px;"><i class="fa fa-user"></i> <?php echo $sellername ?> <i class="fa fa-eye"></i> <?php echo $row["views"] ?></h5>
                                                     <div class="shorttext">
                                                         <?php echo $row["description"] ?>
                                                     </div>
@@ -1378,22 +1605,25 @@
                                             </a>
                                             <?php
                                         }
+                                        
                                     }else{
                                         ?>
                                         <h3 align="center" style="margin: 30px;"><?php uilang("Search results") ?>:</h3>
-                                        <p align="center"><?php uilang("Nothing found") ?>.</p>
+                                        <div class='alert'><?php uilang("Nothing found") ?>.</div>
                                         <?php
                                     }
                                 }else{
                                     ?>
                                     <h3 align="center" style="margin: 30px;"><?php uilang("Search results") ?>:</h3>
-                                    <p align="center"><?php uilang("Nothing found") ?>.</p>
+                                    <div class='alert'><?php uilang("Nothing found") ?>.</div>
                                     <?php
                                 }
                             }
-                            ?>
                             
-                        </form>
+                            showRandomProducts();
+                            showPopularProducts();
+                            lastProductsByCat(5);
+                        ?>
                     </div>
                     <?php
                 }else if(isset($_GET["page"])){
@@ -1403,88 +1633,151 @@
                     ?>
                     <div style="text-align: center;">
                         <?php
-                        $currentpagenumber = mysqli_real_escape_string($connection, $_GET["page"]) - 1;
+                        $currentpagenumber = intval(mysqli_real_escape_string($connection, $_GET["page"])) - 1;
                         $nextpage = $currentpagenumber + 2;
                         $prevpage = $currentpagenumber;
                         $offset = $currentpagenumber * $maxpaginationresult;
                         
                         $totalresult = 0;
-                        $tmpsql = "SELECT * FROM $tableproducts ORDER BY id DESC";
-                        $totalresult = mysqli_num_rows(mysqli_query($connection, $tmpsql));
                         
-                        $sql = "SELECT * FROM $tableproducts ORDER BY id DESC LIMIT $offset, $maxpaginationresult";
-                        $result = mysqli_query($connection, $sql);
-                        if(mysqli_num_rows($result) > 0){
+                        $catparameter = "";
+                        if(isset($_GET["category"])){
+                            $catname = mysqli_real_escape_string($connection, $_GET["category"]);
+                            $catid = mysqli_fetch_assoc(mysqli_query($connection, "SELECT * FROM $tablecategories WHERE category = '$catname'"))["id"];
+                            $catparameter = "WHERE catid = $catid";
                             
-                            
-                            while($row = mysqli_fetch_assoc($result)){
-                                
-                                $uid = $row["userid"];
-                                $sellername = mysqli_fetch_assoc(mysqli_query($connection, "SELECT * FROM $tableusers WHERE userid = '$uid'"))["name"];
-                                
-                                ?>
-                                <a href="<?php echo $baseurl ?>?product=<?php echo $row["productid"] ?>">
-                                    <div class="productthumbnail">
-                                        <div class="thumbnailimage" style="margin-bottom: 10px; background: url(upload/<?php echo $row["productid"] ?>-thumb.<?php echo $row["ext"] ?>) no-repeat center center; background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;">
-                                            <?php
-                                            if($row["price"] != 0){
-                                                ?>
-                                                <div style="display: inline-block;">
-                                                    <div class="pricetag"><i class="fa fa-tag"></i> <?php echo $currencysymbol . number_format($row["price"]) ?></div>
-                                                </div>
-                                                <?php
-                                            }
-                                            ?>
-                                        </div>
-                                        <h3 style="margin: 0px; display: block;"><?php echo $row["title"] ?></h3>
-                                        <h5 style="margin: 0px;"><i class="fa fa-user"></i> <?php echo $sellername ?></h5>
-                                        <div class="shorttext">
-                                            <?php echo $row["description"] ?>
-                                        </div>
-                                    </div>
-                                </a>
-                                <?php
-                            }
-                            
-                        }
-                        ?>
-                        <div style='margin: 50px;'>
-                            <?php
-                            
-                            
-                            $pages = ceil($totalresult/$maxpaginationresult);
-                            
-                            if($currentpagenumber > 0){
-                                ?>
-                                <a href='?page=<?php echo $prevpage ?>'><div class='pagenumber'><i class="fa fa-arrow-left"></i></div></a>
-                                <?php
-                            }
-                            
-                            
-                            for ($x = 0; $x < $pages; $x++) {
-                                $currentnumber = $x + 1;
-                                if($currentpagenumber+1 == $currentnumber){
-                                    ?>
-                                    <a href='?page=<?php echo $currentnumber ?>'><div class='pagenumber' style='color: white; background-color: <?php echo $primarycolor ?>'><?php echo $currentnumber ?></div></a>
-                                    <?php
-                                }else
-                                    echo "<a href='?page=" . $currentnumber . "'><div class='pagenumber'>$currentnumber</div></a>";
-                            }
-                            
-                            if($currentpagenumber < $pages-1){
-                                ?>
-                                <a href='?page=<?php echo $nextpage ?>'><div class='pagenumber'><i class="fa fa-arrow-right"></i></div></a>
-                                <?php
-                            }
                             ?>
+                            <h2 align='center'><?php uilang("Products in category") ?>: <?php echo $catname; ?></h2>
+                            <?php
+                        }
+                        
+                        
+                        
+                        $tmpsql = "SELECT * FROM $tableproducts " . $catparameter . " ORDER BY id DESC";
+                        $tmpsqlquery = mysqli_query($connection, $tmpsql);
+                        if($tmpsqlquery != 0){
+                            $totalresult = mysqli_num_rows($tmpsqlquery);
+                        
+                            if($totalresult > 0){
+                                $sql = "SELECT * FROM $tableproducts " . $catparameter . " ORDER BY id DESC LIMIT $offset, $maxpaginationresult";
+                                $result = mysqli_query($connection, $sql);
+                                
+                                if($result){
+                                    if(mysqli_num_rows($result) > 0){
+                                    
+                                    
+                                        while($row = mysqli_fetch_assoc($result)){
+                                            
+                                            $uid = $row["userid"];
+                                            $userq = mysqli_query($connection, "SELECT * FROM $tableusers WHERE userid = '$uid'");
+                                            $userrow = mysqli_fetch_assoc($userq);
+                                            $sellername = $userrow["name"];
+                                            
+                                            ?>
+                                            <a href="<?php echo $baseurl ?>product/<?php echo $row["productid"] ?>">
+                                                <div class="productthumbnail">
+                                                    <div class="thumbnailimage" style="margin-bottom: 10px; background: url(<?php echo $baseurl ?>upload/<?php echo $row["productid"] ?>-thumb.<?php echo $row["ext"] ?>) no-repeat center center; background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;">
+                                                        <?php
+                                                        if($row["price"] != 0){
+                                                            ?>
+                                                            <div style="display: inline-block;">
+                                                                <div class="pricetag"><i class="fa fa-tag"></i> <?php echo $currencysymbol . number_format($row["price"]) ?></div>
+                                                            </div>
+                                                            <?php
+                                                        }
+                                                        ?>
+                                                    </div>
+                                                    <h5 style="margin: 0px; color: gray; font-size: 10px;"><i class="fa fa-map-marker"></i> <?php echo ucfirst($userrow["address"]) ?></h5>
+                                                    <h3 style="margin: 0px; display: block;"><?php echo $row["title"] ?></h3>
+                                                    <h5 style="margin: 0px;"><i class="fa fa-user"></i> <?php echo $sellername ?> <i class="fa fa-eye"></i> <?php echo $row["views"] ?></h5>
+                                                    <div class="shorttext">
+                                                        <?php echo $row["description"] ?>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                            <?php
+                                        }
+                                        
+                                    }
+                                }
+                                
+                                ?>
+                                
+                                <div style='margin: 50px;'>
+                                    <?php
+                                    
+                                    
+                                    $pages = ceil($totalresult/$maxpaginationresult);
+                                    $urlcatparam = "";
+                                    if(isset($_GET["category"]))
+                                        $urlcatparam = "/category/" . urlencode($_GET["category"]);
+                                    if($currentpagenumber > 0){
+                                        ?>
+                                        <a href='<?php echo $baseurl ?>page/<?php echo $prevpage . $urlcatparam ?>'><div class='pagenumber'><i class="fa fa-arrow-left"></i></div></a>
+                                        <?php
+                                    }
+                                    
+                                    
+                                    for ($x = 0; $x < $pages; $x++) {
+                                        $currentnumber = $x + 1;
+                                        if($currentpagenumber+1 == $currentnumber){
+                                            ?>
+                                            <a href='<?php echo $baseurl ?>page/<?php echo $currentnumber . $urlcatparam ?>'><div class='pagenumber' style='color: white; background-color: <?php echo $primarycolor ?>'><?php echo $currentnumber ?></div></a>
+                                            <?php
+                                        }else
+                                            echo "<a href='" . $baseurl . "page/" . $currentnumber . $urlcatparam . "'><div class='pagenumber'>$currentnumber</div></a>";
+                                    }
+                                    
+                                    if($currentpagenumber < $pages-1){
+                                        ?>
+                                        <a href='<?php echo $baseurl ?>page/<?php echo $nextpage . $urlcatparam ?>'><div class='pagenumber'><i class="fa fa-arrow-right"></i></div></a>
+                                        <?php
+                                    }
+                                    ?>
+                                </div>
+                                <?php
+                            }
+                        }else{
+                            ?>
+                            <p><?php uilang("Nothing found") ?></p>
+                            <?php
+                        }
+                        
+                        
+                        ?>
+                        <div style="text-align: center; margin-top: 50px;">
+                        
+                            <?php
+                            showRandomProducts();
+                            showPopularProducts();
+                            lastProductsByCat(5);
+                            ?>
+                            
                         </div>
+                        
                     </div>
                     <?php
                 }else{
                     
-                    //include("adscript.php");
+                    
                     
                     ?>
+                    
+                    <form method="post" action="<?php echo $baseurl ?>?search">
+                        <div id="searchbox">
+                            <div class="sbitem" style="width: 30px;">
+                                <i class="fa fa-search"></i>
+                            </div>
+                            <div class="sbitem">
+                                <input name="search" placeholder="<?php uilang("What are you looking for?") ?>" style="outline: none; border: none; background-color: inherit; margin: 0px;">
+                            </div>
+                            <div class="sbitem" style="width: 100px;">
+                                <input class="findbutton" type="submit" value="<?php uilang("Find it!") ?>">
+                            </div>
+                        </div>
+                    </form>    
+                    
+                    <h2 align="center"><?php uilang("Recently added") ?></h2>
                     <div style="text-align: center;">
                         
                         <div>
@@ -1500,14 +1793,14 @@
                                 
                                 while($row = mysqli_fetch_assoc($result)){
                                     $uid = $row["userid"];
-                                    
-                                    
-                                    $sellername = mysqli_fetch_assoc(mysqli_query($connection, "SELECT * FROM $tableusers WHERE userid = '$uid'"))["name"];
+                                    $userq = mysqli_query($connection, "SELECT * FROM $tableusers WHERE userid = '$uid'");
+                                    $userrow = mysqli_fetch_assoc($userq);
+                                    $sellername = $userrow["name"];
                                     
                                     ?>
-                                    <a href="<?php echo $baseurl ?>?product=<?php echo $row["productid"] ?>">
+                                    <a href="<?php echo $baseurl ?>product/<?php echo $row["productid"] ?>">
                                         <div class="productthumbnail">
-                                            <div class="thumbnailimage" style="margin-bottom: 10px; background: url(upload/<?php echo $row["productid"] ?>-thumb.<?php echo $row["ext"] ?>) no-repeat center center; background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;">
+                                            <div class="thumbnailimage" style="margin-bottom: 10px; background: url(<?php echo $baseurl ?>upload/<?php echo $row["productid"] ?>-thumb.<?php echo $row["ext"] ?>) no-repeat center center; background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;">
                                                 <?php
                                                 if($row["price"] != 0){
                                                     ?>
@@ -1518,8 +1811,9 @@
                                                 }
                                                 ?>
                                             </div>
+                                            <h5 style="margin: 0px; color: gray; font-size: 10px;"><i class="fa fa-map-marker"></i> <?php echo ucfirst($userrow["address"]) ?></h5>
                                             <h3 style="margin: 0px; display: block;"><?php echo $row["title"] ?></h3>
-                                            <h5 style="margin: 0px;"><i class="fa fa-user"></i> <?php echo $sellername ?></h5>
+                                            <h5 style="margin: 0px;"><i class="fa fa-user"></i> <?php echo $sellername ?> <i class="fa fa-eye"></i> <?php echo $row["views"] ?></h5>
                                             <div class="shorttext">
                                                 <?php echo $row["description"] ?>
                                             </div>
@@ -1534,6 +1828,8 @@
                             }
                             
                             ?>
+                            
+                            
                         </div>
                         <div style="margin: 50px;">
                             <?php
@@ -1543,14 +1839,27 @@
                             for ($x = 0; $x < $pages; $x++) {
                                 $currentnumber = $x + 1;
                                 if($currentnumber == 1)
-                                    echo "<a href='?page=" . $currentnumber . "'><div class='pagenumber' style='color: white; background-color: ".$primarycolor."'>$currentnumber</div></a>";
+                                    echo "<a href='" .$baseurl. "page/" . $currentnumber . "'><div class='pagenumber' style='color: white; background-color: ".$primarycolor."'>$currentnumber</div></a>";
                                 else
-                                    echo "<a href='?page=" . $currentnumber . "'><div class='pagenumber'>$currentnumber</div></a>";
+                                    echo "<a href='" .$baseurl. "page/" . $currentnumber . "'><div class='pagenumber'>$currentnumber</div></a>";
                             }
                             
                             ?>
-                            <a href='?page=2'><div class='pagenumber'><i class="fa fa-arrow-right"></i></div></a>
+                            <a href='<?php echo $baseurl ?>page/2'><div class='pagenumber'><i class="fa fa-arrow-right"></i></div></a>
                         </div>
+                        
+                        
+                        <div style="text-align: center; margin-top: 50px;">
+                    
+                            <?php
+                            include("adscript.php");
+                            showRandomProducts();
+                            showPopularProducts();
+                            lastProductsByCat(5);
+                            ?>
+                            
+                        </div>
+                        
                     </div>
                     <?php
                 }
@@ -1592,15 +1901,29 @@
             }
             
             $(document).ready(function(){
-                /*
-                $('.homeslider').slick({
+                var maxranp = 2
+                if(innerWidth > 450)
+                    maxranp = 3
+                if(innerWidth > 750)
+                    maxranp = 5
+                if(innerWidth > 900)
+                    maxranp = 7
+                $('#randomproducts').slick({
+                    slidesToShow: maxranp,
+                    slidesToScroll: maxranp,
+                    autoplaySpeed: 3000,
                     autoplay : true,
                     infinite: true,
-                    speed: 600,
-                    pauseOnFocus: false,
-                    pauseOnHover: false,
                 });
-                */
+                
+                $('#popularproducts').slick({
+                    slidesToShow: maxranp,
+                    slidesToScroll: maxranp,
+                    autoplaySpeed: 5000,
+                    autoplay : true,
+                    infinite: true,
+                });
+                
             })
             
             function openlink(url){
@@ -1661,7 +1984,7 @@
                     dbtn = "<div style='padding: 20px;'><a href='?dashboard&deletegalimage="+imageid+"&ext="+ext+"'><i class='fa fa-trash'></i> <?php uilang("Delete this image") ?></a></div>";
                 else
                     dbtn = "<div style='padding: 20px;'><a onclick='$(\"#imageviewer\").fadeOut()'><i class='fa fa-times'></i> <?php uilang("Close") ?></a></div>"
-                $("#imageviewer").html("<div onclick='hideImageviewer()' style='text-align: center'><img src='upload/" + imageid + "." + ext + "' style='width: 100%; max-width: 720px;'>" + dbtn + "</div>").fadeIn()
+                $("#imageviewer").html("<div onclick='hideImageviewer()' style='text-align: center'><img src='<?php echo $baseurl ?>upload/" + imageid + "." + ext + "' style='width: 100%; max-width: 720px;'>" + dbtn + "</div>").fadeIn()
             }
             
             function hideImageviewer(){
@@ -1697,7 +2020,7 @@
                     }
                 }
                 $(".moreimagesinput").val(tmptxt + imgfile + ",")
-                $(".addmoreimgvisual").append("<div class='addedfromgallery' style='background: url(upload/"+imgfile+") no-repeat center center; background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;'><div onclick=removeAddedGalimage('" +imgfile+ "') style='padding: 20px; margin: 20px; background-color: white; border-radius: 10px; color: red; cursor: pointer; font-weight: bold; display: inline-block;'><i class='fa fa-times'></i> <?php uilang("Remove") ?></div></div>")
+                $(".addmoreimgvisual").append("<div class='addedfromgallery' style='background: url(<?php echo $baseurl ?>upload/"+imgfile+") no-repeat center center; background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;'><div onclick=removeAddedGalimage('" +imgfile+ "') style='padding: 20px; margin: 20px; background-color: white; border-radius: 10px; color: red; cursor: pointer; font-weight: bold; display: inline-block;'><i class='fa fa-times'></i> <?php uilang("Remove") ?></div></div>")
                 $("#galpicker").fadeOut()
             }
             
@@ -1722,10 +2045,12 @@
                     $(".addmoreimgvisual").html("")
             }
             
-            
-            
+            //alert("Mohon maf, situs dalam perbaikan. Silahkan kunjungi beberapa saat lagi.")
         </script>
         
         
+        <p style="display: none;"><?php echo get_client_ip() ?></p>
+
     </body>
 </html>
+

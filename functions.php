@@ -1,4 +1,86 @@
 <?php
+
+function lastProductsByCat($num){
+    global $baseurl;
+    global $connection;
+    global $tableproducts;
+    global $tablecategories;
+    $sql = "SELECT * FROM $tablecategories ORDER BY category ASC";
+    $result = mysqli_query($connection, $sql);
+    if(mysqli_num_rows($result) > 0){
+        ?>
+        <div style="text-align: center">
+        <h2 style="margin-top: 30px;"><?php uilang("Recent Products by Category") ?></h2>
+        <?php
+        while($row = mysqli_fetch_assoc($result)){
+            $catid = $row["id"];
+            $catsql = "SELECT * FROM $tableproducts WHERE catid = $catid ORDER BY id DESC LIMIT $num";
+            $catresult = mysqli_query($connection, $catsql);
+            if(mysqli_num_rows($catresult) >= $num){
+                echo "<div class='catcard'><div class='catcardtitle'><i class='fa " .$row["faicon"]. "'></i> " . $row["category"] . "</div>";
+                while($catrow = mysqli_fetch_assoc($catresult)){
+                    echo "<a href='" .$baseurl. "product/" .$catrow["productid"]. "'><div class='catcarditem'><span class='highlight'><i class='fa fa-eye'></i> " .$catrow["views"]. "</span> " . $catrow["title"] . "</div></a>";
+                }
+                ?>
+                <div style="text-align: center; padding: 20px;">
+                    <a class="textlink" href="<?php echo $baseurl ?>page/1/category/<?php echo urlencode($row["category"]) ?>"><?php uilang("Show more...") ?></a>
+                </div>
+                </div>
+                <?php
+            }
+        }
+        echo "</div>";
+    }
+}
+
+
+
+function showPopularProducts(){
+    global $connection;
+    global $tableproducts;
+    global $baseurl;
+    $sql = "SELECT * FROM $tableproducts ORDER BY views DESC LIMIT 30";
+    $result = mysqli_query($connection, $sql);
+    ?>
+    <h2 style="margin-top: 30px;"><?php uilang("Most popular") ?></h2>
+    <div id='popularproducts' style='max-width: 920px; margin: 0 auto;'>
+    <?php
+    if(mysqli_num_rows($result) > 10){
+        
+        while($row = mysqli_fetch_assoc($result)){
+            ?>
+            <div style="display: inline-block; text-align: center;">
+                <div class='productthumbnail' style='width: 100px; display: inline-block;'><a href='<?php echo $baseurl . "product/" . $row["productid"] ?>'><div style='width: 100px; height: 100px; background: url(<?php echo $baseurl ?>upload/<?php echo $row["productid"] ?>-thumb.<?php echo $row["ext"] ?>) no-repeat center center; background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;'></div></a></div>
+            </div>
+            <?php
+        }
+    }
+    echo "</div>";
+}
+
+function showRandomProducts(){
+    global $connection;
+    global $tableproducts;
+    global $baseurl;
+    $sql = "SELECT * FROM $tableproducts ORDER BY RAND() LIMIT 30";
+    $result = mysqli_query($connection, $sql);
+    ?>
+    <h2 style="margin-top: 30px;"><?php uilang("You may lke these") ?></h2>
+    <div id='randomproducts' style='max-width: 920px; margin: 0 auto;'>
+    <?php
+    if(mysqli_num_rows($result) > 10){
+        
+        while($row = mysqli_fetch_assoc($result)){
+            ?>
+            <div style="display: inline-block; text-align: center;">
+                <div class='productthumbnail' style='width: 100px; display: inline-block;'><a href='<?php echo $baseurl . "product/" . $row["productid"] ?>'><div style='width: 100px; height: 100px; background: url(<?php echo $baseurl ?>upload/<?php echo $row["productid"] ?>-thumb.<?php echo $row["ext"] ?>) no-repeat center center; background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;'></div></a></div>
+            </div>
+            <?php
+        }
+    }
+    echo "</div>";
+}
+
 function getRandomNumbers(){
     return substr(str_shuffle(str_repeat("0123456789", 5)), 0, 10);
 }
@@ -80,4 +162,26 @@ function showSharer($url, $title){
 
     <?php
 }
+
+
+// Function to get the client IP address
+function get_client_ip() {
+    $ipaddress = '';
+    if (isset($_SERVER['HTTP_CLIENT_IP']))
+        $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
+    else if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
+        $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
+    else if(isset($_SERVER['HTTP_X_FORWARDED']))
+        $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
+    else if(isset($_SERVER['HTTP_FORWARDED_FOR']))
+        $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
+    else if(isset($_SERVER['HTTP_FORWARDED']))
+        $ipaddress = $_SERVER['HTTP_FORWARDED'];
+    else if(isset($_SERVER['REMOTE_ADDR']))
+        $ipaddress = $_SERVER['REMOTE_ADDR'];
+    else
+        $ipaddress = 'UNKNOWN';
+    return $ipaddress;
+}
+
 ?>

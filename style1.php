@@ -1,8 +1,8 @@
 /* SCROLLBAR STYLING */
 /* width */
 ::-webkit-scrollbar {
-    width: 2px;
-	height: 2px;
+    width: 10px;
+	height: 5px;
 }
 /* Track */
 ::-webkit-scrollbar-track {
@@ -10,11 +10,11 @@
 }
 /* Handle */
 ::-webkit-scrollbar-thumb {
-    background: black; 
+    background: <?php echo $primarycolor ?>; 
 }
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-    background: #555; 
+    background: <?php echo $primarycolordarker ?>; 
 }
 
 h1, h2, h3, h4, h5, p{
@@ -38,8 +38,9 @@ body{
     font-family: 'Dosis', sans-serif;
     background-color: #4a4a4a;
     
+    overflow-x: hidden;
     
-    background: url(images/footerimage.jpg) no-repeat fixed center; 
+    background: url(<?php echo $baseurl ?>images/footerimage.jpg) no-repeat fixed center; 
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
@@ -76,6 +77,7 @@ body{
 .middle{
     background-color: #f9f9f9;
     padding: 20px;
+    overflow-x: hidden;
 }
 
 .footeritem{
@@ -112,6 +114,10 @@ input, button, textarea, select{
     margin-bottom: 20px;
 }
 
+option{
+    padding: 20px;
+}
+
 textarea{
     height: 200px;
     font-family: 'Dosis', sans-serif;
@@ -133,7 +139,7 @@ button, .submitbutton{
 .chatbutton{
     display: block;
     border-radius: 10px;
-    padding: 20px;
+    padding: 14px;
     margin: 5px;
     color: white;
     font-size: 20px;
@@ -144,7 +150,7 @@ button, .submitbutton{
     cursor: pointer;
     font-weight: bold;
     color: <?php echo $primarycolor ?>;
-    transition: background-color 0.25s;
+    transition: background-color 0.5s;
 }
 
 .chatbutton:hover{
@@ -153,7 +159,7 @@ button, .submitbutton{
 }
 
 #mainbanner{
-    background: url(images/mainbanner.jpg) no-repeat center center; 
+    background: url(<?php echo $baseurl ?>images/mainbanner.jpg) no-repeat center center; 
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
@@ -180,6 +186,7 @@ button, .submitbutton{
     border: 1px solid white;
     text-align: left;
     margin: 10px;
+    border-radius: 5px; 
     -webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.15);
     -moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.15);
     box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.15);
@@ -212,7 +219,7 @@ button, .submitbutton{
     padding: 20px;
     cursor: pointer;
     text-align: right;
-    transition: background-color 0.25s;
+    transition: background-color 0.5s;
 }
 
 .mobilevisible{
@@ -230,6 +237,7 @@ button, .submitbutton{
 .thumbnailimage{
     width: 100%;
     height: 200px;
+    border-radius: 5px; 
 }
 
 .shorttext{
@@ -269,7 +277,58 @@ button, .submitbutton{
     background-color: white;
 }
 
+.xplore{
+    display: block;
+}
+
+.catcard{
+    display: block;
+    border: 1px solid <?php echo $primarycolor ?>;
+    margin: 10px;
+    text-align: left;
+    border-radius: 5px;
+    
+    -webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.15);
+    -moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.15);
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.15);
+}
+
+.catcardtitle{
+    background-color: <?php echo $primarycolor ?>;
+    padding: 10px;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+}
+
+.catcarditem{
+    padding: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    font-size: 12px;
+    
+    width: 100%;
+	display: inline-block;
+	box-sizing: border-box;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+}
+.catcarditem:hover{
+    background-color: white;
+}
+
 @media (min-width: 720px){
+    
+    .catcard{
+        display: inline-block;
+        vertical-align: top;
+        width: 256px;
+    }
+    
+    .xplore{
+        display: inline-block;
+    }
     
     .thumbnailimage{
         width: 200px; height: 200px; 
@@ -350,18 +409,29 @@ button, .submitbutton{
 .bigproductimage{
     margin-bottom: 10px; 
     margin-top: 10px;
-    padding: 10px; 
+    padding: 10px;
+    border-radius: 5px; 
     background-color: white;
+    
     -webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.15);
     -moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.15);
     box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.15);
+    
     cursor: pointer;
 }
 
+.bigproductimage img{
+    border-radius: 5px; 
+}
+
 #searchbox{
-    margin-bottom: 10px; 
+    max-width: 928px;
+    margin: 0 auto;
+    margin-bottom: 50px; 
     margin-top: 10px;
-    padding: 25px; background-color: white;
+    padding: 14px; 
+    background-color: white;
+    
     -webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.15);
     -moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.15);
     box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.15);
@@ -371,7 +441,7 @@ button, .submitbutton{
     
     display: table;
     width: 100%;
-    border-radius: 30px;
+    border-radius: 10px;
     box-sizing: border-box;
 }
 
@@ -393,7 +463,7 @@ label{
     border-radius: 10px;
     padding: 10px;
     
-    background: url(images/chatbg.jpg) repeat; 
+    background: url(<?php echo $baseurl ?>images/chatbg.jpg) repeat; 
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
@@ -478,7 +548,7 @@ tr:hover{
     padding-bottom: 20px;
     padding-top: 20px;
     
-    background: url(images/chatbg.jpg) repeat; 
+    background: url(<?php echo $baseurl ?>images/chatbg.jpg) repeat; 
     
 }
 
@@ -578,11 +648,12 @@ tr:hover{
 .pagenumber{
     display: inline-block;
     background-color: white;
+    border-radius: 3px;
     border: 1px solid <?php echo $primarycolor ?>;
     padding: 10px;
     margin: 3px;
     cursor: pointer;
-    transition: background-color 0.25s;
+    transition: background-color 0.5s;
 }
 
 .pagenumber:hover{
@@ -595,3 +666,44 @@ hr{
     margin-top: 30px;
     margin-bottom: 30px;
 }
+
+.abinlink{
+    color: <?php echo $primarycolor ?>;
+}
+.abinlink:hover{
+    text-decoration: underline;
+}
+
+.findbutton{
+    background-color: <?php echo $primarycolor ?>; margin: 0px; color: white; border-radius: 10px; outline: none;
+    cursor: pointer;
+    transition: background-color 0.5s;
+}
+.findbutton:hover{
+    background-color: <?php echo $primarycolordarker ?>;
+}
+
+#categorybar{
+    background-color: white;
+    padding: 10px;
+}
+
+.highlight{
+    display: inline-block; 
+    color: white; 
+    padding: 3px; 
+    padding-left: 6px; 
+    padding-right: 6px; 
+    border-radius: 5px; 
+    margin: 3px; 
+    background-color: <?php echo $primarycolor ?>;
+    border: 1px solid white;
+}
+.highlight:hover{
+    background-color: white;
+    border: 1px solid <?php echo $primarycolor ?>;
+    color: <?php echo $primarycolor ?>;
+    cursor: pointer;
+    transition: background-color 0.5s;
+}
+
