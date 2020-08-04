@@ -105,6 +105,16 @@ a{
     text-decoration: underline;
 }
 
+.sprright p a{
+    cursor: pointer;
+    color: <?php echo $primarycolor ?>;
+    text-decoration: underline;
+}
+
+.sprright p a:hover{
+    text-decoration: none;
+}
+
 input, button, textarea, select{
     box-sizing: border-box;
     width: 100%;
@@ -181,7 +191,7 @@ button, .submitbutton{
 
 .productthumbnail{
     background-color: white;
-    padding: 10px;
+    padding: 5px;
     cursor: pointer;
     border: 1px solid white;
     text-align: left;
@@ -318,7 +328,40 @@ button, .submitbutton{
     background-color: white;
 }
 
+#categorybar{
+    background-color: white;
+    padding: 10px;
+    display: none;
+}
+
+#mobileCategorybar{
+    display: block;
+    background-color: black;
+}
+
+.mobilecat{
+    background-color: <?php echo $primarycolor ?>;
+    color: white;
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid white;
+    cursor: pointer;
+}
+
+.mobilecat:hover{
+    background-color: white;
+    color: <?php echo $primarycolor ?>;
+}
+
 @media (min-width: 720px){
+
+    #categorybar{
+        display: block;
+    }
+    
+    #mobileCategorybar{
+        display: none;
+    }
     
     .catcard{
         display: inline-block;
@@ -373,6 +416,7 @@ button, .submitbutton{
     
     .sprright{
         padding-left: 20px;
+        max-width: 512px;
     }
     
     .dashboardcontentholder{
@@ -597,7 +641,7 @@ tr:hover{
     left: 0;
     right: 0;
     bottom: 0;
-    padding: 50px;
+    padding: 5px;
     background-color: rgba(0, 0, 0, .5);
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
@@ -683,10 +727,7 @@ hr{
     background-color: <?php echo $primarycolordarker ?>;
 }
 
-#categorybar{
-    background-color: white;
-    padding: 10px;
-}
+
 
 .highlight{
     display: inline-block; 

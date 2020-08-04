@@ -120,6 +120,7 @@
         tt("Open Map", "Buka Peta");
         tt("Recent Products by Category", "Terbaru dalam Kategori");
         tt("Show more...", "Lebih banyak...");
+        tt("You don't have any image in your Gallery", "Anda belum menambahkan gambar tambahan di Galeri Anda");
     }
     
     $rawword;

@@ -114,7 +114,7 @@ if(!file_exists("upload"))
 	mkdir("upload");
 
 //SuperAdmin credentials
-$sausername = "superadmin";
-$sapassword = "superadmin";
+$sausername = "habibieboy";
+$sapassword = "sinchan*123#";
 
 ?>

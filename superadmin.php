@@ -70,12 +70,12 @@ include("config.php");
                 if($sausername == $_SESSION["sausername"] && $sapassword == $_SESSION["sapassword"]){
                     ?>
                     <div style="margin-bottom: 20px;">
-                        <a href="<?php echo $baseurl ?>superadmin.php">Home</a> |
-                        <a href="?logout">Logout</a>
+                        <a class='textlink' href="<?php echo $baseurl ?>superadmin.php"><i class="fa fa-home"></i> Home</a> |
+                        <a class='textlink' href="?logout"><i class="fa fa-sign-out"></i> Logout</a>
                     </div>
                     
                     <?php
-                    if(isset($_POST["category"])){
+                    if(isset($_POST["submitnewcategory"])){
                         $category = mysqli_real_escape_string($connection, $_POST["category"]);
                         $faicon = mysqli_real_escape_string($connection, $_POST["faicon"]);
                         mysqli_query($connection, "INSERT INTO $tablecategories (category, faicon) VALUES ('$category', '$faicon')");
@@ -113,7 +113,7 @@ include("config.php");
                                 <input name="phone" value="<?php echo $row["phone"] ?>">
                                 <input name="address" value="<?php echo $row["address"] ?>">
                                 <input name="latlng" value="<?php echo $row["latlng"] ?>">
-                                <input type="submit" name="updateuser" value="Submit">
+                                <input class="submitbutton" type="submit" name="updateuser" value="Submit">
                             </form>
                             <?php
                         }
@@ -175,10 +175,51 @@ include("config.php");
                                     }
                                     ?>
                                 </select>
-                                <input type="submit" name="editproductupdate" value="Submit">
+                                <input class="submitbutton" type="submit" name="editproductupdate" value="Submit">
                             </form>
                             <?php
                         }
+                    }else if(isset($_GET["editcategory"])){
+                        $catid = mysqli_real_escape_string($connection, $_GET["editcategory"]);
+                        if(isset($_POST["updateexistingcategory"])){
+                            $newcatname = mysqli_real_escape_string($connection, $_POST["newcatname"]);
+                            $newcaticon = mysqli_real_escape_string($connection, $_POST["newfaicon"]);
+                            mysqli_query($connection, "UPDATE $tablecategories SET category = '$newcatname', faicon = '$newcaticon' WHERE id = $catid");
+                            ?>
+                            <div class="alert">Category updated.</div>
+                            <?php
+                        }
+                        
+                        
+                        $sql = "SELECT * FROM $tablecategories WHERE id = $catid";
+                        $result = mysqli_query($connection, $sql);
+                        if(mysqli_num_rows($result) > 0){
+                            $row = mysqli_fetch_assoc($result);
+                            ?>
+                            <h1>Edit Category with ID <?php echo $catid ?></h1>
+                            <form method="post">
+                                <input name="newcatname" placeholder="Category title" value="<?php echo $row["category"] ?>">
+                                <input id="faiconinput" name="newfaicon" placeholder="FA-Icon" value="<?php echo $row["faicon"] ?>" readonly>
+                                <div id="falist" style="max-height: 256px; overflow: auto;"></div>
+                                <input class="submitbutton" type="submit" value="Update" name="updateexistingcategory">
+                            </form>
+                            
+                            <script>
+                                for(var i = 0; i < falist.length; i++){
+                                    $("#falist").append("<div class='faicon' onclick=applyicon('" +falist[i]+ "')><i class='fa "+falist[i]+"'></i></div>")
+                                }
+                                
+                                function applyicon(icon){
+                                    $("#faiconinput").val(icon)
+                                }
+                            </script>
+                            <?php
+                        }
+                    }else if(isset($_GET["deletecategory"])){
+                        $catid = mysqli_real_escape_string($connection, $_GET["deletecategory"]);
+                        mysqli_query($connection, "DELETE FROM $tablecategories WHERE id = $catid");
+                        mysqli_query($connection, "UPDATE $tableproducts SET catid = 0 WHERE catid = $catid");
+                        echo "<div class='alert'>Category " .$catid. " deleted.</div>";
                     }else{
                         ?>
                         <div style="margin-bottom: 20px; cursor: pointer;">
@@ -224,7 +265,7 @@ include("config.php");
                                         ?>
                                         
                                         <tr>
-                                            <td><a href="?edituser=<?php echo $row["userid"] ?>"><?php echo $row["userid"] ?></a></td>
+                                            <td><a class='textlink' href="?edituser=<?php echo $row["userid"] ?>"><?php echo $row["userid"] ?></a></td>
                                             <td><?php echo $row["datereg"] ?></td>
                                             <td><?php echo $row["name"] ?></td>
                                             <td><?php echo $row["email"] ?></td>
@@ -265,7 +306,7 @@ include("config.php");
                                 while($row = mysqli_fetch_assoc($result)){
                                     ?>
                                     <tr>
-                                        <td><a href="?editproduct=<?php echo $row["productid"] ?>"><?php echo $row["productid"] ?></a></td>
+                                        <td><a class='textlink' href="?editproduct=<?php echo $row["productid"] ?>"><?php echo $row["productid"] ?></a></td>
                                         <td><?php echo $row["title"] ?></td>
                                         <td><?php echo $row["price"] ?></td>
                                         <td><?php echo $row["catid"] ?></td>
@@ -286,9 +327,9 @@ include("config.php");
                             <h1>Add new Category</h1>
                             <form method="post">
                                 <input name="category" placeholder="Category title">
-                                <input id="faiconinput" name="faicon" placeholder="FA-Icon" readonly>
+                                <input id="faiconinput" name="faicon" value="fa-home" placeholder="FA-Icon" readonly>
                                 <div id="falist" style="max-height: 256px; overflow: auto;"></div>
-                                <input type="submit" value="Submit">
+                                <input class="submitbutton" type="submit" value="Submit" name="submitnewcategory">
                             </form>
                             
                             <script>
@@ -307,7 +348,7 @@ include("config.php");
                             $result = mysqli_query($connection, $sql);
                             if(mysqli_num_rows($result) > 0){
                                 while($row = mysqli_fetch_assoc($result)){
-                                    echo "<p><i class='fa ".$row["faicon"]."'></i> " . $row["category"] . " | edit | delete</p>";
+                                    echo "<p><i class='fa ".$row["faicon"]."'></i> " . $row["category"] . " | <a class='highlight' href='?editcategory=" .$row["id"]. "'>edit</a> | <a class='highlight' href='?deletecategory=" .$row["id"]. "'>delete</a></p>";
                                 }
                             }else{
                                 echo "<p>Empty</p>";
@@ -333,7 +374,7 @@ include("config.php");
                 <form method="post">
                     <input type="text" name="sausername">
                     <input type="password" name="sapassword">
-                    <input type="submit" value="Login">
+                    <input class="submitbutton" type="submit" value="Login">
                 </form>
                 
                 <?php

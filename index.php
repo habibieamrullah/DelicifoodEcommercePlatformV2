@@ -187,18 +187,18 @@
                 <?php 
                 if(isset($_SESSION["email"])){
                     ?>
-                    <a href="<?php echo $baseurl ?>?dashboard"><div class="ablink"><?php uilang("Dashboard"); ?></div></a>
-                    <a href="<?php echo $baseurl ?>?logout"><div class="ablink"><?php uilang("Logout"); ?></div></a>
+                    <a href="<?php echo $baseurl ?>dashboard"><div class="ablink"><?php uilang("Dashboard"); ?></div></a>
+                    <a href="<?php echo $baseurl ?>logout"><div class="ablink"><?php uilang("Logout"); ?></div></a>
                     <?php
                 }else{
                     ?>
-                    <a href="<?php echo $baseurl ?>?login"><div class="ablink"><?php uilang("Login"); ?></div></a>
-                    <a href="<?php echo $baseurl ?>?register"><div class="ablink"><?php uilang("Register"); ?></div></a>
+                    <a href="<?php echo $baseurl ?>login"><div class="ablink"><?php uilang("Login"); ?></div></a>
+                    <a href="<?php echo $baseurl ?>register"><div class="ablink"><?php uilang("Register"); ?></div></a>
                     <?php
                 }
                 ?>
-                <a href="<?php echo $baseurl ?>?about"><div class="ablink"><?php uilang("About"); ?></div></a>
-                <a href="<?php echo $baseurl ?>?search"><div class="ablink"><i class="fa fa-search"></i></div></a>
+                <a href="<?php echo $baseurl ?>about"><div class="ablink"><?php uilang("About"); ?></div></a>
+                <a href="<?php echo $baseurl ?>search"><div class="ablink"><i class="fa fa-search"></i></div></a>
                 
             </div>
         </div>
@@ -213,10 +213,26 @@
                 $result = mysqli_query($connection, $sql);
                 while($row = mysqli_fetch_assoc($result)){
                     ?>
-                    <a href="<?php echo $baseurl ?>page/1/category/<?php echo urlencode($row["category"]) ?>"><div class="highlight"><i class="fa <?php echo $row["faicon"] ?>"></i> <?php echo $row["category"] ?></div></a>
+                    <a href="<?php echo $baseurl ?>page/1/category/<?php echo urlencode($row["category"]) ?>#categorybar"><div class="highlight"><i class="fa <?php echo $row["faicon"] ?>"></i> <?php echo $row["category"] ?></div></a>
                     <?php
                 }
                 ?>
+            </div>
+        </div>
+        <div id="mobileCategorybar">
+            <div style="margin: 0 auto; text-align: center;">
+                <div onclick="toggleCatContent()" style="text-align: center; cursor: pointer; padding: 20px; backrgound-color: black; color: white;"><i class="fa fa-bars"></i> <?php uilang("Browse by category") ?></div>
+                <div id="mobilecatcontent" style="display: none;">
+                <?php
+                $sql = "SELECT * FROM $tablecategories ORDER BY category ASC";
+                $result = mysqli_query($connection, $sql);
+                while($row = mysqli_fetch_assoc($result)){
+                    ?>
+                    <a href="<?php echo $baseurl ?>page/1/category/<?php echo urlencode($row["category"]) ?>#mobileCategorybar"><div class="mobilecat"><i style="width: 40px; text-align: center;" class="fa <?php echo $row["faicon"] ?>"></i> <?php echo $row["category"] ?></div></a>
+                    <?php
+                }
+                ?>
+                </div>
             </div>
         </div>
         <div class="middle">
@@ -478,10 +494,8 @@
                                             $sql = "SELECT * FROM $tablegallery WHERE userid = '$userid' ORDER BY id DESC";
                                             $result = mysqli_query($connection, $sql);
                                             if(mysqli_num_rows($result) < 100){
-                                                $maxsize = 2097152;
-                                                if(($_FILES['newimageforgallery']['size'] >= $maxsize)){
-                                                    echo "<div class='alert'>Your image is too large. Try different image.</div>";
-                                                }else if($_FILES["newimageforgallery"]["size"] == 0){
+                                                $maxsize = 524288;
+                                                if($_FILES["newimageforgallery"]["size"] == 0){
                                                     //
                                                 }else{
                                                 	if($_FILES['newimageforgallery']['error'] > 0) { echo "<div class='alert'>Error during uploading new picture, try again</div>"; }
@@ -491,12 +505,17 @@
                                                 	if (in_array($extension, $extsAllowed) ) { 
                                                 	    $newppic = substr(str_shuffle(str_repeat("0123456789abcdefghijklmnopqrstuvwxyz", 5)), 0, 10);
                                                     	$name = "upload/" . $newppic .".". $extension;
-                                                    	$result = move_uploaded_file($_FILES['newimageforgallery']['tmp_name'], $name);
+                                                    	
+                                                    	if(($_FILES['newimageforgallery']['size'] >= $maxsize)){
+                                                            createThumbnail($_FILES['newimageforgallery']['tmp_name'], "upload/" . $newppic .".". $extension, 512);
+                                                        }else{
+                                                            $result = move_uploaded_file($_FILES['newimageforgallery']['tmp_name'], $name);
+                                                        }
                                                     	?>
                                                     	<div class="alert"><?php uilang("New image has been added") ?></div>
                                                     	<?php
                                                     	mysqli_query($connection, "INSERT INTO $tablegallery (userid, imagefile, ext) VALUES ('$userid', '$newppic', '$extension')");
-                                                    	createThumbnail($name, "upload/" . $newppic ."-thumb." . $extension, 256);
+                                                    	createThumbnail($name, "upload/" . $newppic ."-thumb." . $extension, 192);
                                                     	
                                                 	} else { echo "<div class='alert'>Image file is not valid. Please try again.</div>"; }
                                                 }
@@ -884,12 +903,8 @@
                                         
                                         if($title != "" && $price != "" && $description != ""){
                                     
-                                            $maxsize = 2097152;
-                                            if(($_FILES['productimage']['size'] >= $maxsize)){
-                                                ?>
-                                                <div class='alert'>Uploaded image is too big. Try to upload different image.</div>
-                                                <?php
-                                            }else if($_FILES["productimage"]["size"] == 0){
+                                            $maxsize = 524288;
+                                            if($_FILES["productimage"]["size"] == 0){
                                                 /*
                                                 ?>
                                                 <p>Uploaded image is file is invalid. Try to upload different image.</p>
@@ -907,9 +922,13 @@
                                             	if (in_array($extension, $extsAllowed) ) { 
                                             	    $newppic = $productid;
                                                 	$name = "upload/" . $newppic .".". $extension;
-                                                	$result = move_uploaded_file($_FILES['productimage']['tmp_name'], $name);
-                                                	createThumbnail($name, "upload/" . $newppic ."-thumb." . $extension, 256);
                                                 	
+                                                	if(($_FILES['productimage']['size'] >= $maxsize)){
+                                            			createThumbnail($_FILES['productimage']['tmp_name'], "upload/" . $newppic .".". $extension, 512);
+                                            		}else{
+                                            		    $result = move_uploaded_file($_FILES['productimage']['tmp_name'], $name);
+                                            		}
+                                                	createThumbnail($name, "upload/" . $newppic ."-thumb." . $extension, 192);
                                                 	//success!
                                                 	mysqli_query($connection, "INSERT INTO $tableproducts (userid, productid, title, price, description, ext, moreimages, catid) VALUES ('$userid', '$productid', '$title' ,'$price', '$description', '$extension', '$moreimages', $catid)");
                                                 	?>
@@ -998,12 +1017,8 @@
                                                 if($userid == mysqli_fetch_assoc(mysqli_query($connection, "SELECT * FROM $tableproducts WHERE productid='$productid' "))["userid"]){
                                                     mysqli_query($connection, "UPDATE $tableproducts SET title = '$newtitle', price = '$newprice', description = '$newdescription', moreimages = '$moreimages', catid = $catid WHERE productid = '$productid' AND userid = '$userid'");
                                                 
-                                                    $maxsize = 2097152;
-                                                    if(($_FILES['productimage']['size'] >= $maxsize)){
-                                                        ?>
-                                                        <div class='alert'>Uploaded image is too big. Try to upload different image.</div>
-                                                        <?php
-                                                    }else if($_FILES["productimage"]["size"] == 0){
+                                                    $maxsize = 524288;
+                                                    if($_FILES["productimage"]["size"] == 0){
                                                         /*
                                                         ?>
                                                         <p>Uploaded image is file is invalid. Try to upload different image.</p>
@@ -1021,8 +1036,14 @@
                                                     	if (in_array($extension, $extsAllowed) ) { 
                                                     	    $newppic = $productid;
                                                         	$name = "upload/" . $newppic .".". $extension;
-                                                        	$result = move_uploaded_file($_FILES['productimage']['tmp_name'], $name);
-                                                        	createThumbnail($name, "upload/" . $newppic ."-thumb." . $extension, 256);
+                                                        	
+                                                        	if(($_FILES['productimage']['size'] >= $maxsize)){
+                                                    			createThumbnail($_FILES['productimage']['tmp_name'], "upload/" . $newppic .".". $extension, 512);
+                                                    		}else{
+                                                    		    $result = move_uploaded_file($_FILES['productimage']['tmp_name'], $name);
+                                                    		}
+                                                        	
+                                                        	createThumbnail($name, "upload/" . $newppic ."-thumb." . $extension, 192);
                                                         	
                                                         	?>
                                                         	<div class='alert'>Great! New photo has been added.</div>
@@ -1327,7 +1348,7 @@
                                         }
                                         ?>
                                         <h4><div style="font-size: 12px;"><span class="highlight"><i class="fa fa-eye"></i> <?php echo $row["views"] ?></span><?php echo $prodcat; uilang("Added by"); ?> <a class="textlink" href="<?php echo $baseurl ?>user/<?php echo $sellerid ?>"><i class="fa fa-user"></i> <?php echo $sellerinfo["name"] ?></a> <span style="font-size: 12px;"><?php uilang("from") ?></span> <i class="fa fa-map-marker"></i> <?php echo ucfirst($sellerinfo["address"]) ?></h4>
-                                        <p><?php echo nl2br($row["description"]) ?></p>
+                                        <p><?php echo nl2br(linkify($row["description"])) ?></p>
                                         
                                         <?php
                                         if($row["moreimages"] != ""){
@@ -1871,17 +1892,17 @@
                 <?php 
                 if(isset($_SESSION["email"])){
                     ?>
-                    <div class="footeritem"><a href="<?php echo $baseurl ?>?dashboard"><?php uilang("Dashboard"); ?></a></div>
-                    <div class="footeritem"><a href="<?php echo $baseurl ?>?logout"><?php uilang("Logout"); ?></a></div>
+                    <div class="footeritem"><a href="<?php echo $baseurl ?>dashboard"><?php uilang("Dashboard"); ?></a></div>
+                    <div class="footeritem"><a href="<?php echo $baseurl ?>logout"><?php uilang("Logout"); ?></a></div>
                     <?php
                 }else{
                     ?>
-                    <div class="footeritem"><a href="<?php echo $baseurl ?>?login"><?php uilang("Login"); ?></a></div>
-                    <div class="footeritem"><a href="<?php echo $baseurl ?>?register"><?php uilang("Register"); ?></a></div>
+                    <div class="footeritem"><a href="<?php echo $baseurl ?>login"><?php uilang("Login"); ?></a></div>
+                    <div class="footeritem"><a href="<?php echo $baseurl ?>register"><?php uilang("Register"); ?></a></div>
                     <?php
                 }
                 ?>
-                <div class="footeritem"><a href="<?php echo $baseurl ?>?about"><?php uilang("About"); ?></a></div>
+                <div class="footeritem"><a href="<?php echo $baseurl ?>about"><?php uilang("About"); ?></a></div>
             </div>
             
             <div style="margin: 30px;">
@@ -1903,7 +1924,7 @@
                 if(innerWidth > 450)
                     maxranp = 3
                 if(innerWidth > 750)
-                    maxranp = 5
+                    maxranp = 4
                 if(innerWidth > 900)
                     maxranp = 7
                 $('#randomproducts').slick({
@@ -1998,7 +2019,7 @@
                 if(galitemslength > 0){
                     $("#galpicker").append( "<div><button style='margin-top: 30px; max-width: 200px; ' onclick=\"$('#galpicker').fadeOut()\"><?php uilang("Close") ?></button></div>" ).fadeIn();
                 }else{
-                    $("#galpicker").html( "<h2>Nothing found!</h2><div>You don't have any image in your Gallery.</div><div><button style='max-width: 200px; margin-top: 30px;' onclick=\"$('#galpicker').fadeOut()\"><?php uilang("Close") ?></button></div>" ).fadeIn();
+                    $("#galpicker").html( "<h2><?php uilang("Nothing found") ?>!</h2><div><?php uilang("You don't have any image in your Gallery") ?>.</div><div><button style='max-width: 200px; margin-top: 30px;' onclick=\"$('#galpicker').fadeOut()\"><?php uilang("Close") ?></button></div>" ).fadeIn();
                 }
             }
             
@@ -2041,6 +2062,10 @@
                 $(".moreimagesinput").val(tmptxt)
                 if($(".moreimagesinput").val() == "")
                     $(".addmoreimgvisual").html("")
+            }
+            
+            function toggleCatContent(){
+                $("#mobilecatcontent").slideToggle()
             }
             
             //alert("Mohon maf, situs dalam perbaikan. Silahkan kunjungi beberapa saat lagi.")
