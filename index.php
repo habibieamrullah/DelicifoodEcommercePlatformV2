@@ -4,8 +4,6 @@
     include("uilang.php");
     include("functions.php");
     include("mailing.php");
-
-    
 ?>
 
 
@@ -1112,7 +1110,7 @@
                                                 <img src="<?php echo $baseurl ?>upload/<?php echo $productid ?>.<?php echo $row["ext"] ?>" width="100%" style="cursor: pointer; border-radius: 10px;" onclick="$('#productimageupdate').click()">
                                                 <input type="file" name="productimage" accept="image/*" id="productimageupdate" style="display: none;">
                                                 <label><?php uilang("Add more images from Gallery") ?>:</label>
-                                                <input name="moreimages" style="display: none;" class="moreimagesinput" value="<?php echo $row["moreimages"] ?>">
+                                                <input name="moreimages" style="display: none;" class="moreimagesinput" value="">
                                                 <div class="addmoreimgvisual"></div>
                                                 <div class="addmoreimgbutton" onclick="showGalPicker()"><i class="fa fa-image"></i> <?php uilang("Click to add more images from Gallery") ?></div>
                                                 <br><br>
@@ -1123,6 +1121,7 @@
                                             <p style="color: red"><i class="fa fa-trash"></i> <?php uilang("Click") ?> <a class="textlink" href="<?php echo $baseurl ?>?dashboard&delete=<?php echo $productid ?>"><?php uilang("here") ?></a> <?php uilang("to delete it") ?>.</p>
                                             
                                             <script>
+                                                $(".moreimagesinput").val("<?php echo $row["moreimages"] ?>")
                                                 function moreimagesToVisual(){
                                                     var tmpinpval = $(".moreimagesinput").eq(1).val()
                                                     var tmparray = []
@@ -2026,7 +2025,7 @@
             function addToGalPickerInput(imgfile){
                 var tmpinpval = $(".moreimagesinput").val()
                 var tmparray = []
-                if(tmpinpval.split(",").length > 1){
+                if(tmpinpval.split(",").length > 0){
                     tmparray = tmpinpval.split(",")
                 }
                 var tmptxt = ""
