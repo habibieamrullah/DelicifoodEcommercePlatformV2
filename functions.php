@@ -111,6 +111,7 @@ function shorten_text($text, $max_length = 140, $cut_off = '...', $keep_word = f
 }
 
 function showSharer($url, $title){
+	//powered by https://sharingbuttons.io/
     ?>
     <!-- Sharingbutton Facebook -->
     <a class="resp-sharing-button__link" href="https://facebook.com/sharer/sharer.php?u=<?php echo urlencode($url) ?>" target="_blank" rel="noopener" aria-label="Share on Facebook">
