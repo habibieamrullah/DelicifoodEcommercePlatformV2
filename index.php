@@ -185,18 +185,18 @@
                 <?php 
                 if(isset($_SESSION["email"])){
                     ?>
-                    <a href="<?php echo $baseurl ?>dashboard"><div class="ablink"><?php uilang("Dashboard"); ?></div></a>
-                    <a href="<?php echo $baseurl ?>logout"><div class="ablink"><?php uilang("Logout"); ?></div></a>
+                    <a href="<?php echo $baseurl ?>?dashboard"><div class="ablink"><?php uilang("Dashboard"); ?></div></a>
+                    <a href="<?php echo $baseurl ?>?logout"><div class="ablink"><?php uilang("Logout"); ?></div></a>
                     <?php
                 }else{
                     ?>
-                    <a href="<?php echo $baseurl ?>login"><div class="ablink"><?php uilang("Login"); ?></div></a>
-                    <a href="<?php echo $baseurl ?>register"><div class="ablink"><?php uilang("Register"); ?></div></a>
+                    <a href="<?php echo $baseurl ?>?login"><div class="ablink"><?php uilang("Login"); ?></div></a>
+                    <a href="<?php echo $baseurl ?>?register"><div class="ablink"><?php uilang("Register"); ?></div></a>
                     <?php
                 }
                 ?>
-                <a href="<?php echo $baseurl ?>about"><div class="ablink"><?php uilang("About"); ?></div></a>
-                <a href="<?php echo $baseurl ?>search"><div class="ablink"><i class="fa fa-search"></i></div></a>
+                <a href="<?php echo $baseurl ?>?about"><div class="ablink"><?php uilang("About"); ?></div></a>
+                <a href="<?php echo $baseurl ?>?search"><div class="ablink"><i class="fa fa-search"></i></div></a>
                 
             </div>
         </div>
@@ -211,7 +211,7 @@
                 $result = mysqli_query($connection, $sql);
                 while($row = mysqli_fetch_assoc($result)){
                     ?>
-                    <a href="<?php echo $baseurl ?>page/1/category/<?php echo urlencode($row["category"]) ?>#categorybar"><div class="highlight"><i class="fa <?php echo $row["faicon"] ?>"></i> <?php echo $row["category"] ?></div></a>
+                    <a href="<?php echo $baseurl ?>?page=1&category=<?php echo urlencode($row["category"]) ?>#categorybar"><div class="highlight"><i class="fa <?php echo $row["faicon"] ?>"></i> <?php echo $row["category"] ?></div></a>
                     <?php
                 }
                 ?>
@@ -226,7 +226,7 @@
                 $result = mysqli_query($connection, $sql);
                 while($row = mysqli_fetch_assoc($result)){
                     ?>
-                    <a href="<?php echo $baseurl ?>page/1/category/<?php echo urlencode($row["category"]) ?>#mobileCategorybar"><div class="mobilecat"><i style="width: 40px; text-align: center;" class="fa <?php echo $row["faicon"] ?>"></i> <?php echo $row["category"] ?></div></a>
+                    <a href="<?php echo $baseurl ?>?page=1&category=<?php echo urlencode($row["category"]) ?>#mobileCategorybar"><div class="mobilecat"><i style="width: 40px; text-align: center;" class="fa <?php echo $row["faicon"] ?>"></i> <?php echo $row["category"] ?></div></a>
                     <?php
                 }
                 ?>
@@ -725,7 +725,7 @@
                                                 <script>
                                                     setTimeout(function(){
                                                         $("#messagestable").hide()
-                                                        $("#messagecontent").show().html("<div><div onclick='backToMessages()' class='textlink'><i class='fa fa-arrow-left'></i> <?php uilang("Back") ?></div><div style='padding: 20px; font-size: 12px;'><p style='font-size: 12px;'><?php uilang("Message ID") ?>: <? echo $row["messageid"] ?></p><p><b><?php uilang("Sender") ?>:</b> <?php echo $row["senderemail"] ?><br><b><?php uilang("Date") ?>:</b> <?php echo $mrow["timestamp"] ?><br><b><?php uilang("Product ID") ?>:</b> <a class='textlink' href='<?php echo $baseurl ?>product/<?php echo $row["productid"] ?>'><?php echo $row["productid"] ?></a></p><div align='right'><div class='msg'><div class='msgtimestamp'><?php echo $mrow["timestamp"] ?></div><div class='msgbody'><?php echo $mrow["content"] ?></div></div></div></div><div id='replies'></div><textarea id='offlinereplyinput' style='margin-bottom: 0px; margin-top: 20px;'></textarea><p style='font-size: 12px;'>*<?php uilang("Your reply message will be mailed to") ?>: <?php echo $row["senderemail"] ?></p><button class='submitbutton' onclick='offlinereply()'><?php uilang("Send Message") ?></button></div>")
+                                                        $("#messagecontent").show().html("<div><div onclick='backToMessages()' class='textlink'><i class='fa fa-arrow-left'></i> <?php uilang("Back") ?></div><div style='padding: 20px; font-size: 12px;'><p style='font-size: 12px;'><?php uilang("Message ID") ?>: <? echo $row["messageid"] ?></p><p><b><?php uilang("Sender") ?>:</b> <?php echo $row["senderemail"] ?><br><b><?php uilang("Date") ?>:</b> <?php echo $mrow["timestamp"] ?><br><b><?php uilang("Product ID") ?>:</b> <a class='textlink' href='<?php echo $baseurl ?>?product=<?php echo $row["productid"] ?>'><?php echo $row["productid"] ?></a></p><div align='right'><div class='msg'><div class='msgtimestamp'><?php echo $mrow["timestamp"] ?></div><div class='msgbody'><?php echo $mrow["content"] ?></div></div></div></div><div id='replies'></div><textarea id='offlinereplyinput' style='margin-bottom: 0px; margin-top: 20px;'></textarea><p style='font-size: 12px;'>*<?php uilang("Your reply message will be mailed to") ?>: <?php echo $row["senderemail"] ?></p><button class='submitbutton' onclick='offlinereply()'><?php uilang("Send Message") ?></button></div>")
                                                     }, 500)
                                                     
                                                     
@@ -1117,7 +1117,7 @@
                                                 <input name="updateproduct" type="submit" value="<?php uilang("Update") ?>" class="submitbutton">
                                             </form>
                                             
-                                            <p><i class="fa fa-link"></i> <?php uilang("Click") ?> <a class="textlink" href="<?php echo $baseurl ?>product/<?php echo $productid ?>"><?php uilang("here") ?></a> <?php uilang("to view this product") ?>.</p>
+                                            <p><i class="fa fa-link"></i> <?php uilang("Click") ?> <a class="textlink" href="<?php echo $baseurl ?>?product=<?php echo $productid ?>"><?php uilang("here") ?></a> <?php uilang("to view this product") ?>.</p>
                                             <p style="color: red"><i class="fa fa-trash"></i> <?php uilang("Click") ?> <a class="textlink" href="<?php echo $baseurl ?>?dashboard&delete=<?php echo $productid ?>"><?php uilang("here") ?></a> <?php uilang("to delete it") ?>.</p>
                                             
                                             <script>
@@ -1343,10 +1343,10 @@
                                             $catid = $row["catid"];
                                             $sqlcat = "SELECT * FROM $tablecategories WHERE id = $catid";
                                             $cat = mysqli_fetch_assoc(mysqli_query($connection, $sqlcat));
-                                            $prodcat = "<a href='" .$baseurl. "page/1/category/" .$cat["category"]. "'><span class='highlight'><i class='fa " . $cat["faicon"] . "'></i> " . $cat["category"] . "</span></a>";
+                                            $prodcat = "<a href='" .$baseurl. "?page=1&category=" .$cat["category"]. "'><span class='highlight'><i class='fa " . $cat["faicon"] . "'></i> " . $cat["category"] . "</span></a>";
                                         }
                                         ?>
-                                        <h4><div style="font-size: 12px;"><span class="highlight"><i class="fa fa-eye"></i> <?php echo $row["views"] ?></span><?php echo $prodcat; uilang("Added by"); ?> <a class="textlink" href="<?php echo $baseurl ?>user/<?php echo $sellerid ?>"><i class="fa fa-user"></i> <?php echo $sellerinfo["name"] ?></a> <span style="font-size: 12px;"><?php uilang("from") ?></span> <i class="fa fa-map-marker"></i> <?php echo ucfirst($sellerinfo["address"]) ?></h4>
+                                        <h4><div style="font-size: 12px;"><span class="highlight"><i class="fa fa-eye"></i> <?php echo $row["views"] ?></span><?php echo $prodcat; uilang("Added by"); ?> <a class="textlink" href="<?php echo $baseurl ?>?user=<?php echo $sellerid ?>"><i class="fa fa-user"></i> <?php echo $sellerinfo["name"] ?></a> <span style="font-size: 12px;"><?php uilang("from") ?></span> <i class="fa fa-map-marker"></i> <?php echo ucfirst($sellerinfo["address"]) ?></h4>
                                         <p><?php echo nl2br(linkify($row["description"])) ?></p>
                                         
                                         <?php
@@ -1384,7 +1384,7 @@
                                                     <a name="chatbox" style="display: block; position: relative; top: -100px; visibility: hidden;"></a>
                                                     <div class="messaging">
                                                         <h3><?php uilang("Messaging") ?></h3>
-                                                        <p style="font-size: 12px;"><?php uilang("You are sending a message to") ?> <a class="textlink" href="<?php echo $baseurl ?>user/<?php echo $sellerid ?>"><i class="fa fa-user"></i> <?php echo $sellerinfo["name"] ?></a>.</p>
+                                                        <p style="font-size: 12px;"><?php uilang("You are sending a message to") ?> <a class="textlink" href="<?php echo $baseurl ?>?user=<?php echo $sellerid ?>"><i class="fa fa-user"></i> <?php echo $sellerinfo["name"] ?></a>.</p>
                                                         <div id="currentchatconversation"></div>
                                                         <div id="messaging"></div>
                                                         <script>
@@ -1405,7 +1405,7 @@
                                                     
                                                     
                                                     ?>
-                                                    <a href="<?php echo $baseurl ?>product/<?php echo $productid ?>&chat=<?php echo $sellerid ?>#chatbox"><div class="chatbutton" id="onlinechatbutton"><i class="fa fa-envelope"></i> <?php uilang("Send Message") ?></div></a>
+                                                    <a href="<?php echo $baseurl ?>?product=<?php echo $productid ?>&chat=<?php echo $sellerid ?>#chatbox"><div class="chatbutton" id="onlinechatbutton"><i class="fa fa-envelope"></i> <?php uilang("Send Message") ?></div></a>
                                                     
                                                     <script>
                                                         $.post("<?php echo $baseurl ?>messagingsystem.php", { "isselleronline" : "<?php echo $sellerid ?>" }, function(data){
@@ -1444,7 +1444,7 @@
                                             <div id="fb-root"></div>
                                             <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&amp;version=v5.0&amp;appId=569420283509636&amp;autoLogAppEvents=1"></script>
                                              
-                                            <div class="fb-comments" data-href="<?php echo $baseurl ?>product/<?php echo $productid ?>" data-width="100%" style="width: 100%; box-sizing: border-box;" data-numposts="5"></div>
+                                            <div class="fb-comments" data-href="<?php echo $baseurl ?>?product=<?php echo $productid ?>" data-width="100%" style="width: 100%; box-sizing: border-box;" data-numposts="5"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -1505,7 +1505,7 @@
                                 while($productrow = mysqli_fetch_assoc($result)){
                                     
                                     ?>
-                                    <a href="<?php echo $baseurl ?>product/<?php echo $productrow["productid"] ?>">
+                                    <a href="<?php echo $baseurl ?>?product=<?php echo $productrow["productid"] ?>">
                                         <div class="productthumbnail">
                                             <div class="thumbnailimage" style="margin-bottom: 10px; background: url(<?php echo $baseurl ?>upload/<?php echo $productrow["productid"] ?>-thumb.<?php echo $productrow["ext"] ?>) no-repeat center center; background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;">
                                                 <?php
@@ -1599,7 +1599,7 @@
                                             $sellername = $userrow["name"];
                                             
                                             ?>
-                                            <a href="<?php echo $baseurl ?>product/<?php echo $row["productid"] ?>">
+                                            <a href="<?php echo $baseurl ?>?product=<?php echo $row["productid"] ?>">
                                                 <div class="productthumbnail">
                                                     <div class="thumbnailimage" style="margin-bottom: 10px; background: url(<?php echo $baseurl ?>upload/<?php echo $row["productid"] ?>-thumb.<?php echo $row["ext"] ?>) no-repeat center center; background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;">
                                                         <?php 
@@ -1692,7 +1692,7 @@
                                             $sellername = $userrow["name"];
                                             
                                             ?>
-                                            <a href="<?php echo $baseurl ?>product/<?php echo $row["productid"] ?>">
+                                            <a href="<?php echo $baseurl ?>?product=<?php echo $row["productid"] ?>">
                                                 <div class="productthumbnail">
                                                     <div class="thumbnailimage" style="margin-bottom: 10px; background: url(<?php echo $baseurl ?>upload/<?php echo $row["productid"] ?>-thumb.<?php echo $row["ext"] ?>) no-repeat center center; background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;">
                                                         <?php
@@ -1731,7 +1731,7 @@
                                         $urlcatparam = "/category/" . urlencode($_GET["category"]);
                                     if($currentpagenumber > 0){
                                         ?>
-                                        <a href='<?php echo $baseurl ?>page/<?php echo $prevpage . $urlcatparam ?>'><div class='pagenumber'><i class="fa fa-arrow-left"></i></div></a>
+                                        <a href='<?php echo $baseurl ?>?page=<?php echo $prevpage . $urlcatparam ?>'><div class='pagenumber'><i class="fa fa-arrow-left"></i></div></a>
                                         <?php
                                     }
                                     
@@ -1740,15 +1740,15 @@
                                         $currentnumber = $x + 1;
                                         if($currentpagenumber+1 == $currentnumber){
                                             ?>
-                                            <a href='<?php echo $baseurl ?>page/<?php echo $currentnumber . $urlcatparam ?>'><div class='pagenumber' style='color: white; background-color: <?php echo $primarycolor ?>'><?php echo $currentnumber ?></div></a>
+                                            <a href='<?php echo $baseurl ?>?page=<?php echo $currentnumber . $urlcatparam ?>'><div class='pagenumber' style='color: white; background-color: <?php echo $primarycolor ?>'><?php echo $currentnumber ?></div></a>
                                             <?php
                                         }else
-                                            echo "<a href='" . $baseurl . "page/" . $currentnumber . $urlcatparam . "'><div class='pagenumber'>$currentnumber</div></a>";
+                                            echo "<a href='" . $baseurl . "?page=" . $currentnumber . $urlcatparam . "'><div class='pagenumber'>$currentnumber</div></a>";
                                     }
                                     
                                     if($currentpagenumber < $pages-1){
                                         ?>
-                                        <a href='<?php echo $baseurl ?>page/<?php echo $nextpage . $urlcatparam ?>'><div class='pagenumber'><i class="fa fa-arrow-right"></i></div></a>
+                                        <a href='<?php echo $baseurl ?>?page=<?php echo $nextpage . $urlcatparam ?>'><div class='pagenumber'><i class="fa fa-arrow-right"></i></div></a>
                                         <?php
                                     }
                                     ?>
@@ -1816,7 +1816,7 @@
                                     $sellername = $userrow["name"];
                                     
                                     ?>
-                                    <a href="<?php echo $baseurl ?>product/<?php echo $row["productid"] ?>">
+                                    <a href="<?php echo $baseurl ?>?product=<?php echo $row["productid"] ?>">
                                         <div class="productthumbnail">
                                             <div class="thumbnailimage" style="margin-bottom: 10px; background: url(<?php echo $baseurl ?>upload/<?php echo $row["productid"] ?>-thumb.<?php echo $row["ext"] ?>) no-repeat center center; background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;">
                                                 <?php
@@ -1857,13 +1857,13 @@
                             for ($x = 0; $x < $pages; $x++) {
                                 $currentnumber = $x + 1;
                                 if($currentnumber == 1)
-                                    echo "<a href='" .$baseurl. "page/" . $currentnumber . "'><div class='pagenumber' style='color: white; background-color: ".$primarycolor."'>$currentnumber</div></a>";
+                                    echo "<a href='" .$baseurl. "?page=" . $currentnumber . "'><div class='pagenumber' style='color: white; background-color: ".$primarycolor."'>$currentnumber</div></a>";
                                 else
-                                    echo "<a href='" .$baseurl. "page/" . $currentnumber . "'><div class='pagenumber'>$currentnumber</div></a>";
+                                    echo "<a href='" .$baseurl. "?page=" . $currentnumber . "'><div class='pagenumber'>$currentnumber</div></a>";
                             }
                             
                             ?>
-                            <a href='<?php echo $baseurl ?>page/2'><div class='pagenumber'><i class="fa fa-arrow-right"></i></div></a>
+                            <a href='<?php echo $baseurl ?>?page=2'><div class='pagenumber'><i class="fa fa-arrow-right"></i></div></a>
                         </div>
                         
                         
@@ -1891,17 +1891,17 @@
                 <?php 
                 if(isset($_SESSION["email"])){
                     ?>
-                    <div class="footeritem"><a href="<?php echo $baseurl ?>dashboard"><?php uilang("Dashboard"); ?></a></div>
-                    <div class="footeritem"><a href="<?php echo $baseurl ?>logout"><?php uilang("Logout"); ?></a></div>
+                    <div class="footeritem"><a href="<?php echo $baseurl ?>?dashboard"><?php uilang("Dashboard"); ?></a></div>
+                    <div class="footeritem"><a href="<?php echo $baseurl ?>?logout"><?php uilang("Logout"); ?></a></div>
                     <?php
                 }else{
                     ?>
-                    <div class="footeritem"><a href="<?php echo $baseurl ?>login"><?php uilang("Login"); ?></a></div>
-                    <div class="footeritem"><a href="<?php echo $baseurl ?>register"><?php uilang("Register"); ?></a></div>
+                    <div class="footeritem"><a href="<?php echo $baseurl ?>?login"><?php uilang("Login"); ?></a></div>
+                    <div class="footeritem"><a href="<?php echo $baseurl ?>?register"><?php uilang("Register"); ?></a></div>
                     <?php
                 }
                 ?>
-                <div class="footeritem"><a href="<?php echo $baseurl ?>about"><?php uilang("About"); ?></a></div>
+                <div class="footeritem"><a href="<?php echo $baseurl ?>?about"><?php uilang("About"); ?></a></div>
             </div>
             
             <div style="margin: 30px;">

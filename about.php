@@ -13,5 +13,4 @@
     <li>Start selling from your online store! Use PayPal or other payment options to accept major credit cards. 100% commission free from us.</li>
 </ul>
 
-
 <p>Our direction will be highlight that the lockdown has caused many to loose jobs and the way business is conducted is changed forever.</p>

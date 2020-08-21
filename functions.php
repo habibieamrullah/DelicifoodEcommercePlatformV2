@@ -18,13 +18,13 @@ function lastProductsByCat($num){
             $catresult = mysqli_query($connection, $catsql);
             if(mysqli_num_rows($catresult) >= $num){
                 echo "<div class='catcard'><div class='catcardtitle'><i class='fa " .$row["faicon"]. "'></i> " . $row["category"] . "</div>";
-                while($catrow = mysqli_fetch_assoc($catresult)){
-                    echo "<a href='" .$baseurl. "product/" .$catrow["productid"]. "'><div class='catcarditem'><span class='highlight'><i class='fa fa-eye'></i> " .$catrow["views"]. "</span> " . $catrow["title"] . "</div></a>";
-                }
-                ?>
-                <div style="text-align: center; padding: 20px;">
-                    <a class="textlink" href="<?php echo $baseurl ?>page/1/category/<?php echo urlencode($row["category"]) ?>"><?php uilang("Show more...") ?></a>
-                </div>
+					while($catrow = mysqli_fetch_assoc($catresult)){
+						echo "<a href='" .$baseurl. "?product=" .$catrow["productid"]. "'><div class='catcarditem'><span class='highlight'><i class='fa fa-eye'></i> " .$catrow["views"]. "</span> " . $catrow["title"] . "</div></a>";
+					}
+					?>
+					<div style="text-align: center; padding: 20px;">
+						<a class="textlink" href="<?php echo $baseurl ?>?page=1&category=<?php echo urlencode($row["category"]) ?>"><?php uilang("Show more...") ?></a>
+					</div>
                 </div>
                 <?php
             }
@@ -50,7 +50,7 @@ function showPopularProducts(){
         while($row = mysqli_fetch_assoc($result)){
             ?>
             <div style="display: inline-block; text-align: center;">
-                <div class='productthumbnail' style='width: 100px; display: inline-block;'><a href='<?php echo $baseurl . "product/" . $row["productid"] ?>'><div style='width: 100px; height: 100px; background: url(<?php echo $baseurl ?>upload/<?php echo $row["productid"] ?>-thumb.<?php echo $row["ext"] ?>) no-repeat center center; background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;'></div></a></div>
+                <div class='productthumbnail' style='width: 100px; display: inline-block;'><a href='<?php echo $baseurl . "?product=" . $row["productid"] ?>'><div style='width: 100px; height: 100px; background: url(<?php echo $baseurl ?>?upload=<?php echo $row["productid"] ?>-thumb.<?php echo $row["ext"] ?>) no-repeat center center; background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;'></div></a></div>
             </div>
             <?php
         }
@@ -73,7 +73,7 @@ function showRandomProducts(){
         while($row = mysqli_fetch_assoc($result)){
             ?>
             <div style="display: inline-block; text-align: center;">
-                <div class='productthumbnail' style='width: 100px; display: inline-block;'><a href='<?php echo $baseurl . "product/" . $row["productid"] ?>'><div style='width: 100px; height: 100px; background: url(<?php echo $baseurl ?>upload/<?php echo $row["productid"] ?>-thumb.<?php echo $row["ext"] ?>) no-repeat center center; background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;'></div></a></div>
+                <div class='productthumbnail' style='width: 100px; display: inline-block;'><a href='<?php echo $baseurl . "?product=" . $row["productid"] ?>'><div style='width: 100px; height: 100px; background: url(<?php echo $baseurl ?>?upload=<?php echo $row["productid"] ?>-thumb.<?php echo $row["ext"] ?>) no-repeat center center; background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;'></div></a></div>
             </div>
             <?php
         }

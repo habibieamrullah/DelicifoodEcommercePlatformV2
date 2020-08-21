@@ -4,10 +4,11 @@
 $websitename = "Delicifood";
 $websitetitle = "Delicifood Ecommerce Platform V2";
 $websitetags = "ecommerce, platform, php, source code";
-$baseurl = "https://localhost/delicifood/index.php";
+$baseurl = "http://localhost/ThirteeNov/Delicifood2/";
 $currencysymbol = "$";
 $maxgalleryimg = 100; //Maximum amount of images a user can add to the image gallery.
 $maxpaginationresult = 12;
+$prettyUrl = false;
 
 //Site UI language: en (English), id (Bahasa Indonesia)
 $defaultlang = "en";
@@ -18,7 +19,7 @@ $primarycolordarker = "#7e00ce";
 $bodybg = "#cbcbcb";
 
 //Google Map API Key
-$gmapapi = "xxxxxx";
+$gmapapi = "YOUR_API_KEY";
 
 //Mailing settings
 $emailhost = "mail.somedomain.com";
@@ -28,8 +29,8 @@ $emailpassword = "somepassword";
 //Database connection
 $host = "localhost";
 $dbuser = "root";
-$dbpassword = "xxx";
-$databasename = "somedatabase";
+$dbpassword = "";
+$databasename = "mydatabase";
 $databaseprefix = "delicifood_";
 $connection = mysqli_connect($host, $dbuser, $dbpassword, $databasename);
 $connection->set_charset("utf8");
@@ -114,7 +115,7 @@ if(!file_exists("upload"))
 	mkdir("upload");
 
 //SuperAdmin credentials
-$sausername = "habibieboy";
-$sapassword = "sinchan*123#";
+$sausername = "admin";
+$sapassword = "admin";
 
 ?>
