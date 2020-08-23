@@ -1676,7 +1676,7 @@
                         
                         $tmpsql = "SELECT * FROM $tableproducts " . $catparameter . " ORDER BY id DESC";
                         $tmpsqlquery = mysqli_query($connection, $tmpsql);
-                        if($tmpsqlquery != 0){
+                        if($tmpsqlquery){
                             $totalresult = mysqli_num_rows($tmpsqlquery);
                         
                             if($totalresult > 0){
