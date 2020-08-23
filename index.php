@@ -135,7 +135,7 @@
                 $("#onlinestatus").css({
                     "background-color" : "gray"
                 })
-                $.post("messagingsystem.php", {
+                $.post("<?php echo $baseurl ?>messagingsystem.php", {
                     "selleroffline" : e,
                     "password" : p
                 })
@@ -398,7 +398,7 @@
                                     <div class="dashboardleftbutton" onclick="dbpage(1)"><i class="fa fa-plus" style="width: 20px;"></i> <?php uilang("Add") ?></div>
                                     <div class="dashboardleftbutton" onclick="dbpage(2)"><i class="fa fa-cubes" style="width: 20px;"></i> <?php uilang("Products") ?></div>
                                     <div class="dashboardleftbutton" onclick="dbpage(3)"><i class="fa fa-image" style="width: 20px;"></i> <?php uilang("Gallery") ?></div>
-                                    <div class="dashboardleftbutton" onclick="dbpage(4)"><i class="fa fa-user" style="width: 20px;"></i> <?php uilang("Profile") ?></div>
+                                    <div class="dashboardleftbutton" onclick="dbpage(4);"><i class="fa fa-user" style="width: 20px;"></i> <?php uilang("Profile") ?></div>
                                     <div class="dashboardleftbutton" onclick="dbpage(5)"><i class="fa fa-envelope" style="width: 20px;"></i> <?php uilang("Messages") ?> <span id="messagescount"></span></div>
                                     <div class="dashboardleftbutton" onclick="dbpage(6)"><i class="fa fa-commenting" style="width: 20px;"></i> <?php uilang("Chats") ?> <span id="onlinestatus">Offline</span></div>
                                 </div>
@@ -502,18 +502,18 @@
                                                 	$extension = pathinfo($uploadedfile, PATHINFO_EXTENSION);
                                                 	if (in_array($extension, $extsAllowed) ) { 
                                                 	    $newppic = substr(str_shuffle(str_repeat("0123456789abcdefghijklmnopqrstuvwxyz", 5)), 0, 10);
-                                                    	$name = "upload/" . $newppic .".". $extension;
+                                                    	$galimagename = "upload/" . $newppic .".". $extension;
                                                     	
                                                     	if(($_FILES['newimageforgallery']['size'] >= $maxsize)){
                                                             createThumbnail($_FILES['newimageforgallery']['tmp_name'], "upload/" . $newppic .".". $extension, 512);
                                                         }else{
-                                                            $result = move_uploaded_file($_FILES['newimageforgallery']['tmp_name'], $name);
+                                                            $result = move_uploaded_file($_FILES['newimageforgallery']['tmp_name'], $galimagename);
                                                         }
                                                     	?>
                                                     	<div class="alert"><?php uilang("New image has been added") ?></div>
                                                     	<?php
                                                     	mysqli_query($connection, "INSERT INTO $tablegallery (userid, imagefile, ext) VALUES ('$userid', '$newppic', '$extension')");
-                                                    	createThumbnail($name, "upload/" . $newppic ."-thumb." . $extension, 192);
+                                                    	createThumbnail($galimagename, "upload/" . $newppic ."-thumb." . $extension, 192);
                                                     	
                                                 	} else { echo "<div class='alert'>Image file is not valid. Please try again.</div>"; }
                                                 }
@@ -530,10 +530,10 @@
                                             $sql = "SELECT * FROM $tablegallery WHERE imagefile = '$imagefile' AND userid = '$userid'";
                                             if(mysqli_num_rows(mysqli_query($connection, $sql)) > 0){
                                                 mysqli_query($connection, "DELETE FROM $tablegallery WHERE imagefile = '$imagefile'");
-                                                if(file_exists($baseurl . "upload/" . $imagefile . "." . $imageext))
-                                                    unlink($baseurl . "upload/" . $imagefile . "." . $imageext);
-                                                if(file_exists($baseurl . "upload/" . $imagefile . "-thumb" . "." . $imageext))
-                                                    unlink($baseurl . "upload/" . $imagefile . "-thumb" . "." . $imageext);
+                                                if(file_exists("upload/" . $imagefile . "." . $imageext))
+                                                    unlink("upload/" . $imagefile . "." . $imageext);
+                                                if(file_exists("upload/" . $imagefile . "-thumb" . "." . $imageext))
+                                                    unlink("upload/" . $imagefile . "-thumb" . "." . $imageext);
                                                 ?>
                                                 <div class="alert"><?php uilang("Image removed") ?>.</div>
                                                 <?php
@@ -615,6 +615,8 @@
                                                     <?php
                                                 }
                                                 ?>
+												
+												
                                             </select>
                                             
                                             
@@ -644,6 +646,7 @@
                                         </form>
                                         
                                         <script>
+											
                                             function initMap() {
                                                 var myLatlng = {lat: -6.21462 , lng: 106.84513};
                                                 
@@ -748,7 +751,7 @@
                                                     function offlinereply(){
                                                         var replyinput = $("#offlinereplyinput").val()
                                                         if(replyinput != ""){
-                                                            $.post("messagingsystem.php", {
+                                                            $.post("<?php echo $baseurl ?>messagingsystem.php", {
                                                                 "messageid" : "<?php echo $messageid ?>",
                                                                 "userid" : "<?php echo $userid ?>",
                                                                 "senderemail" : "<?php echo $_SESSION["email"] ?>",
@@ -1178,10 +1181,10 @@
                                         
                                         if($userid == mysqli_fetch_assoc(mysqli_query($connection, "SELECT * FROM $tableproducts WHERE productid='$productid' "))["userid"]){
 
-                                            if(file_exists($baseurl . "upload/" . $productid . "." . $ext))
-                                                unlink($baseurl . "upload/" . $productid . "." . $ext);
-                                            if(file_exists($baseurl . "upload/" . $productid . "-thumb" . "." . $ext))
-                                                unlink($baseurl . "upload/" . $productid . "-thumb" . "." . $ext);
+                                            if(file_exists("upload/" . $productid . "." . $ext))
+                                                unlink("upload/" . $productid . "." . $ext);
+                                            if(file_exists("upload/" . $productid . "-thumb" . "." . $ext))
+                                                unlink("upload/" . $productid . "-thumb" . "." . $ext);
                                                 
                                             mysqli_query($connection, "DELETE FROM $tableproducts WHERE productid = '$productid' AND userid = '$userid'");
                                             
@@ -1265,7 +1268,7 @@
                                     })
                                     var d = new Date()
                                     d = d.getTime()
-                                    $.post("messagingsystem.php", { "sol" : "<?php echo $userid ?>", "password" : "<?php echo $_SESSION["password"] ?>", "lastonline" : d }, function(data){
+                                    $.post("<?php echo $baseurl ?>messagingsystem.php", { "sol" : "<?php echo $userid ?>", "password" : "<?php echo $_SESSION["password"] ?>", "lastonline" : d }, function(data){
                                         $("#chatsupdatecripts").html(data)
                                     })
                                 }
@@ -1904,6 +1907,8 @@
                 <div class="footeritem"><a href="<?php echo $baseurl ?>?about"><?php uilang("About"); ?></a></div>
             </div>
             
+            
+            
             <div style="margin: 30px;">
                 <p style="font-size: 10px;">© Copyright <?php echo $websitename ?> <?php echo date("Y"); ?>. All rights reserved.</p>
             </div>
@@ -1961,7 +1966,7 @@
             ?>
             
             function updatechatconversation(n){
-                $.post("messagingsystem.php", {
+                $.post("<?php echo $baseurl ?>messagingsystem.php", {
                     "updatechatconversation" : n
                 }, function(data){
                     $("#currentchatconversation").html(data)
@@ -1973,7 +1978,7 @@
                 var currentreply = $("#currentchatreplyinput").val()
                 if(currentreply != ""){
                     var messagingtype = 0
-                    $.post("messagingsystem.php", {
+                    $.post("<?php echo $baseurl ?>messagingsystem.php", {
                         "userid" : "xxx",
                         "productid" : "xxx",
                         "offlinemessage" : messagingtype,

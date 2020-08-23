@@ -106,7 +106,7 @@
         tt("Your password has been updated", "Password berhasil diperbarui");
         tt("Incorrect old password", "Password lama salah");
         tt("Approximate location", "Lokasi perkiraan penjual");
-        tt("You may lke these", "Anda mungkin tertarik");
+        tt("You may like these", "Anda mungkin tertarik");
         tt("Most popular", "Paling populer");
         tt("Recently added", "Baru ditambahkan");
         tt("Your approximate location", "Lokasi perkiraan Anda");

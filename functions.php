@@ -50,7 +50,7 @@ function showPopularProducts(){
         while($row = mysqli_fetch_assoc($result)){
             ?>
             <div style="display: inline-block; text-align: center;">
-                <div class='productthumbnail' style='width: 100px; display: inline-block;'><a href='<?php echo $baseurl . "?product=" . $row["productid"] ?>'><div style='width: 100px; height: 100px; background: url(<?php echo $baseurl ?>?upload=<?php echo $row["productid"] ?>-thumb.<?php echo $row["ext"] ?>) no-repeat center center; background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;'></div></a></div>
+                <div class='productthumbnail' style='width: 100px; display: inline-block;'><a href='<?php echo $baseurl . "?product=" . $row["productid"] ?>'><div style='width: 100px; height: 100px; background: url(<?php echo $baseurl ?>upload/<?php echo $row["productid"] ?>-thumb.<?php echo $row["ext"] ?>) no-repeat center center; background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;'></div></a></div>
             </div>
             <?php
         }
@@ -73,7 +73,7 @@ function showRandomProducts(){
         while($row = mysqli_fetch_assoc($result)){
             ?>
             <div style="display: inline-block; text-align: center;">
-                <div class='productthumbnail' style='width: 100px; display: inline-block;'><a href='<?php echo $baseurl . "?product=" . $row["productid"] ?>'><div style='width: 100px; height: 100px; background: url(<?php echo $baseurl ?>?upload=<?php echo $row["productid"] ?>-thumb.<?php echo $row["ext"] ?>) no-repeat center center; background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;'></div></a></div>
+                <div class='productthumbnail' style='width: 100px; display: inline-block;'><a href='<?php echo $baseurl . "?product=" . $row["productid"] ?>'><div style='width: 100px; height: 100px; background: url(<?php echo $baseurl ?>upload/<?php echo $row["productid"] ?>-thumb.<?php echo $row["ext"] ?>) no-repeat center center; background-size: cover; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;'></div></a></div>
             </div>
             <?php
         }
