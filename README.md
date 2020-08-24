@@ -3,7 +3,9 @@ Free PHP based ecommerce platform
 
 Delicifood is a free PHP based ecommerce platform or online listing website system that enable you to make a very simple and yet fully functioning ecommere platform, for example a food & beverage marketplace, electronics, property and so on.
 
-Watch this overview video about it: coming soon...
+Watch this overview video to see how it works: 
+
+https://www.youtube.com/watch?v=jQ8ldmzAvic
 
 Features:
 - User login & registration
