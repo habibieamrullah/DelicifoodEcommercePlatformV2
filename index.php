@@ -1401,7 +1401,7 @@
                                                     
                                                     if($sellerinfo["waenabled"] == 1){
                                                         ?>
-                                                        <a href="https://wa.me/<?php echo $sellerinfo["phone"] ?>?text=<?php uilang("Hi, I came across this link")?> <?php echo $baseurl . "product/" . "$productid" ?> <?php uilang("and I want to ask some questions") ?>..."><div class="chatbutton"><i class="fa fa-whatsapp"></i> <?php uilang("Chat on WhatsApp") ?></div></a>
+                                                        <a href="https://wa.me/<?php echo $sellerinfo["phone"] ?>?text=<?php uilang("Hi, I came across this link")?> <?php echo $baseurl . "?product=" . "$productid" ?> <?php uilang("and I want to ask some questions") ?>..."><div class="chatbutton"><i class="fa fa-whatsapp"></i> <?php uilang("Chat on WhatsApp") ?></div></a>
                                                         <?php
                                                     }
                                                     
