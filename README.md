@@ -27,3 +27,9 @@ Previous version: https://github.com/habibieamrullah/DelicifoodEcommercePlatform
 ## FAQ
 I can not see "Most Popular" and "You May Like" slider contents
 - It is because you don't have enough product to display. At least have 10 products added then you will see it.
+
+## Support me if you like my work
+Support me if you like this work, by:
+- Subscribe to my channel: https://www.youtube.com/c/ThirteeNov
+- Become a patron: https://www.patreon.com/thirteenov
+- Send any amount donation: https://paypal.me/habibieamrullah
