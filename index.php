@@ -931,7 +931,7 @@
                                             		}
                                                 	createThumbnail($name, "upload/" . $newppic ."-thumb." . $extension, 192);
                                                 	//success!
-                                                	mysqli_query($connection, "INSERT INTO $tableproducts (userid, productid, title, price, description, ext, moreimages, catid) VALUES ('$userid', '$productid', '$title' ,'$price', '$description', '$extension', '$moreimages', $catid)");
+                                                	mysqli_query($connection, "INSERT INTO $tableproducts (userid, productid, title, price, description, ext, moreimages, catid, views) VALUES ('$userid', '$productid', '$title' ,'$price', '$description', '$extension', '$moreimages', $catid, 0)");
                                                 	?>
                                                 	<div class='alert'><?php uilang("Great! New product has been added") ?>.</div>
                                                 	<script>
@@ -1436,6 +1436,9 @@
                                             //}
                                             
                                             ?>
+											
+											<!--<a href="#" class="chatbutton"><i class="fa fa-shopping-cart"></i> <?php uilang("Add to Cart") ?></a>-->
+
                                         </div>
                                         <div style="margin-bottom: 20px; font-size: 12px;">
                                             <?php
