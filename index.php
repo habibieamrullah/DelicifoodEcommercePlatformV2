@@ -1734,7 +1734,7 @@
                                     $pages = ceil($totalresult/$maxpaginationresult);
                                     $urlcatparam = "";
                                     if(isset($_GET["category"]))
-                                        $urlcatparam = "/category/" . urlencode($_GET["category"]);
+                                        $urlcatparam = "&category=" . urlencode($_GET["category"]);
                                     if($currentpagenumber > 0){
                                         ?>
                                         <a href='<?php echo $baseurl ?>?page=<?php echo $prevpage . $urlcatparam ?>'><div class='pagenumber'><i class="fa fa-arrow-left"></i></div></a>
