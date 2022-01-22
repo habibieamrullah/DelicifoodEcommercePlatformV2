@@ -409,7 +409,7 @@
                                             <label><?php uilang("Title") ?></label>
                                             <input name="title" placeholder="<?php uilang("Title"); ?>">
                                             <label><?php uilang("Price") ?></label>
-                                            <input name="price" type="number" placeholder="<?php uilang("Price"); ?>" value="0">
+                                            <input name="price" type="number" placeholder="<?php uilang("Price"); ?>" value="0" step=".01">
                                             <label><?php uilang("Description") ?></label>
                                             <textarea name="description" placeholder="<?php uilang("Description"); ?>"></textarea>
                                             <label><?php uilang("Category") ?></label>
@@ -457,7 +457,7 @@
                                                             if($productrow["price"] != 0){
                                                                 ?>
                                                                 <div style="display: inline-block;">
-                                                                    <div class="pricetag"><i class="fa fa-tag"></i> <?php echo $currencysymbol . number_format($productrow["price"]) ?></div>
+                                                                    <div class="pricetag"><i class="fa fa-tag"></i> <?php echo $currencysymbol . number_format($productrow["price"], 2) ?></div>
                                                                 </div>
                                                                 <?php
                                                             } 
@@ -1335,7 +1335,7 @@
                                             <?php
                                             if($row["price"] != 0){
                                                 ?>
-                                                <br><!--<span style="font-size: 14px;"><?php uilang("Just for") ?></span>--> <span style="color: <?php echo $primarycolor ?>"><i class="fa fa-tag"></i><?php echo $currencysymbol . number_format($row["price"]) ?></span>
+                                                <br><!--<span style="font-size: 14px;"><?php uilang("Just for") ?></span>--> <span style="color: <?php echo $primarycolor ?>"><i class="fa fa-tag"></i><?php echo $currencysymbol . number_format($row["price"], 2) ?></span>
                                                 <?php
                                             }
                                             ?>
@@ -1518,7 +1518,7 @@
                                                 if($productrow["price"] != 0){
                                                     ?>
                                                     <div style="display: inline-block;">
-                                                        <div class="pricetag"><i class="fa fa-tag"></i> <?php echo $currencysymbol . number_format($productrow["price"]) ?></div>
+                                                        <div class="pricetag"><i class="fa fa-tag"></i> <?php echo $currencysymbol . number_format($productrow["price"], 2) ?></div>
                                                     </div>
                                                     <?php
                                                 }
@@ -1612,7 +1612,7 @@
                                                         if($row["price"] != 0){
                                                             ?>
                                                             <div style="display: inline-block;">
-                                                                <div class="pricetag"><i class="fa fa-tag"></i> <?php echo $currencysymbol . number_format($row["price"]) ?></div>
+                                                                <div class="pricetag"><i class="fa fa-tag"></i> <?php echo $currencysymbol . number_format($row["price"], 2) ?></div>
                                                             </div>
                                                             <?php
                                                         }
@@ -1705,7 +1705,7 @@
                                                         if($row["price"] != 0){
                                                             ?>
                                                             <div style="display: inline-block;">
-                                                                <div class="pricetag"><i class="fa fa-tag"></i> <?php echo $currencysymbol . number_format($row["price"]) ?></div>
+                                                                <div class="pricetag"><i class="fa fa-tag"></i> <?php echo $currencysymbol . number_format($row["price"], 2) ?></div>
                                                             </div>
                                                             <?php
                                                         }
@@ -1829,7 +1829,7 @@
                                                 if($row["price"] != 0){
                                                     ?>
                                                     <div style="display: inline-block;">
-                                                        <div class="pricetag"><i class="fa fa-tag"></i> <?php echo $currencysymbol . number_format($row["price"]) ?></div>
+                                                        <div class="pricetag"><i class="fa fa-tag"></i> <?php echo $currencysymbol . number_format($row["price"], 2) ?></div>
                                                     </div>
                                                     <?php
                                                 }
